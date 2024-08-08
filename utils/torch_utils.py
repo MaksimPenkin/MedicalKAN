@@ -167,7 +167,6 @@ def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, e
         for idx, (x, y) in enumerate(tqdm(dataloader, total=steps, leave=False)):
             if idx >= steps:
                 break
-            # x, y = (blob["left_image"], blob["sparse_disparity"]), blob["disparity"]
             y = move_data_device(y, device=device)
             callbacks.on_train_batch_begin(idx)
             logs = _train_step(model, x, y, criterion, optimizer, keys=keys)
@@ -182,7 +181,6 @@ def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, e
             for idx, (x, y) in enumerate(tqdm(val_dataloader, total=val_steps, leave=False)):
                 if idx >= val_steps:
                     break
-                # x, y = (blob["left_image"], blob["sparse_disparity"]), blob["disparity"]
                 y = move_data_device(y, device=device)
                 callbacks.on_test_batch_begin(idx)
                 logs = _eval_step(model, x, y, criterion, keys=keys)
@@ -212,7 +210,6 @@ def inference_func(model, dataloader, limit_batches=1.0, keys=None, device="cpu"
             if idx >= steps:
                 break
             with torch.no_grad():
-                # (x["left_image"], x["sparse_disparity"])
                 _ = forward_wrapper(model, x, keys=keys)
 
 
