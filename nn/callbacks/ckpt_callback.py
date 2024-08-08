@@ -6,7 +6,7 @@ import os
 import torch
 from utils.os_utils import create_folder
 
-from callbacks.base_callback import ICallback
+from nn.callbacks.base_callback import ICallback
 
 
 class ModelCheckpointCallback(ICallback):

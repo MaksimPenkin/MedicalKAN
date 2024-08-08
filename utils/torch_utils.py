@@ -142,8 +142,8 @@ def _train_step(model, x, y, criterion, optimizer, keys=None):
 
 def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, epochs=1, val_dataloader=None,
                limit_batches=1.0, keys=None, device="cpu"):
-    import losses, optimizers
-    from callbacks.base_callback import CompositeCallback
+    from nn import losses, optimizers
+    from nn.callbacks.base_callback import CompositeCallback
     from metrics.base_metric import CompositeMetric
 
     steps = int(limit_batches * len(dataloader))

@@ -2,9 +2,9 @@
 # @author   Maksim Penkin <mapenkin@sberbank.ru>
 # """
 
-from callbacks.base_callback import ICallback
-from callbacks.ckpt_callback import ModelCheckpointCallback
-from callbacks.tb_callback import TensorBoardCallback
+from nn.callbacks.base_callback import ICallback
+from nn.callbacks.ckpt_callback import ModelCheckpointCallback
+from nn.callbacks.tb_callback import TensorBoardCallback
 
 from utils.serialization_utils import create_object
 
