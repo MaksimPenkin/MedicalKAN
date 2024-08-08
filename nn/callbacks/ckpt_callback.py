@@ -24,7 +24,7 @@ class ModelCheckpointCallback(ICallback):
         if isinstance(value, int):
             assert value > 0
         elif value != "epoch":
-            raise ValueError("callbacks/ckpt_callback.py: class ModelCheckpointCallback: @save_freq.setter: "
+            raise ValueError("nn/callbacks/ckpt_callback.py: class ModelCheckpointCallback: @save_freq.setter: "
                              f"error: expected `save_freq` to be `epoch` or int, found: {value} of type {type(value)}.")
         self._save_freq = value
 
