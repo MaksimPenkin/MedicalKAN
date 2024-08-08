@@ -6,7 +6,7 @@ import os, socket
 from datetime import datetime
 from torch.utils.tensorboard import SummaryWriter
 
-from tools.optimization.callbacks.base_callback import ICallback
+from callbacks.base_callback import ICallback
 
 
 class TensorBoardCallback(ICallback):

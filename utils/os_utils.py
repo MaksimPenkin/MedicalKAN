@@ -12,7 +12,7 @@ def delete_file(fp):
     elif os.path.isdir(fp):
         shutil.rmtree(fp)
     else:
-        raise ValueError("tools/optimization/utils/os_utils.py: def delete_file(...): "
+        raise ValueError("utils/os_utils.py: def delete_file(...): "
                          f"error: failed to delete: {fp}.")
 
 
@@ -28,7 +28,7 @@ def create_folder(folder, exist_ok=False, force=False):
         if force:
             reset_folder(folder)
         else:
-            raise FileExistsError("tools/optimization/utils/os_utils.py: def create_folder(...): "
+            raise FileExistsError("utils/os_utils.py: def create_folder(...): "
                                   f"error: cannot create folder, that already exists: {folder}. "
                                   "In order to reset the folder, set force=True.")
 
@@ -53,7 +53,7 @@ def dump(obj, fp):
         with open(fp, "w") as f:
             yaml.dump(obj, f)
     else:
-        raise ValueError("tools/optimization/utils/os_utils.py: def dump(...): "
+        raise ValueError("utils/os_utils.py: def dump(...): "
                          f"error: expected `.json` or `.yaml` file, found: {fp}.")
 
 
@@ -67,7 +67,7 @@ def load(fp):
         with open(fp, "r") as f:
             config = yaml.safe_load(f)
     else:
-        raise ValueError("tools/optimization/utils/os_utils.py: def load(...): "
+        raise ValueError("utils/os_utils.py: def load(...): "
                          f"error: expected `.json` or `.yaml` file, found: {fp}.")
 
     return config

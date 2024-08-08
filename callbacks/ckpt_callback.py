@@ -4,9 +4,9 @@
 
 import os
 import torch
-from tools.optimization.utils.os_utils import create_folder
+from utils.os_utils import create_folder
 
-from tools.optimization.callbacks.base_callback import ICallback
+from callbacks.base_callback import ICallback
 
 
 class ModelCheckpointCallback(ICallback):
@@ -24,7 +24,7 @@ class ModelCheckpointCallback(ICallback):
         if isinstance(value, int):
             assert value > 0
         elif value != "epoch":
-            raise ValueError("tools/optimization/callbacks/ckpt_callback.py: class ModelCheckpointCallback: @save_freq.setter: "
+            raise ValueError("callbacks/ckpt_callback.py: class ModelCheckpointCallback: @save_freq.setter: "
                              f"error: expected `save_freq` to be `epoch` or int, found: {value} of type {type(value)}.")
         self._save_freq = value
 

@@ -7,7 +7,7 @@ import os
 import numpy as np
 import cv2
 
-from tools.optimization.utils.os_utils import create_folder
+from utils.os_utils import create_folder
 
 
 def check3dimage(img):
@@ -17,10 +17,10 @@ def check3dimage(img):
         img = img[..., np.newaxis]
     elif img.ndim == 3:
         if img.shape[-1] not in [1, 3]:
-            raise ValueError("tools/optimization/utils/io_utils.py: def check3dimage(...): "
+            raise ValueError("utils/io_utils.py: def check3dimage(...): "
                              f"error: expected 1-channel or 3-channel 3 dimensional image, found shape: {img.shape}.")
     else:
-        raise ValueError("tools/optimization/utils/io_utils.py: def check3dimage(...): "
+        raise ValueError("utils/io_utils.py: def check3dimage(...): "
                          f"error: expected 2 or 3 dimensional image, found shape: {img.shape}.")
 
     return img
@@ -54,7 +54,7 @@ def encode_raw(img, save_path):
 def read_img(read_path, dtype=None, shape=None, normalize=None):
     # Setup.
     if not os.path.exists(read_path):
-        raise ValueError("tools/optimization/utils/io_utils.py: def read_img(...): "
+        raise ValueError("utils/io_utils.py: def read_img(...): "
                          f"error: `read_path` does not exist: {read_path}.")
     ext = os.path.splitext(read_path)[-1].lower()
 
@@ -64,7 +64,7 @@ def read_img(read_path, dtype=None, shape=None, normalize=None):
     elif ext in [".raw", ".bin"]:
         img = decode_raw(read_path, dtype, shape)
     else:
-        raise ValueError("tools/optimization/utils/io_utils.py: def read_img(...): "
+        raise ValueError("utils/io_utils.py: def read_img(...): "
                          f"error: unrecognized filename extension found: {read_path}. "
                          "Only `.png`, `.jpeg`, `.jpg`, `.raw` or `.bin` are supported.")
 
@@ -93,6 +93,6 @@ def save_img(img, save_path):
     elif ext in [".raw", ".bin"]:
         encode_raw(img, save_path)
     else:
-        raise ValueError("tools/optimization/utils/io_utils.py: def save_img(...): "
+        raise ValueError("utils/io_utils.py: def save_img(...): "
                          f"error: unrecognized filename extension found: {save_path}. "
                          "Only `.png`, `.jpeg`, `.jpg`, `.raw` or `.bin` are supported.")

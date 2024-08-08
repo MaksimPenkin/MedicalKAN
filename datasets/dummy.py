@@ -4,7 +4,7 @@
 
 from itertools import zip_longest
 from torch.utils.data import Dataset, DataLoader
-from tools.optimization.utils.torch_utils import torch_dtype, torch_random
+from utils.torch_utils import torch_dtype, torch_random
 
 
 class RandomUniformDataset(Dataset):

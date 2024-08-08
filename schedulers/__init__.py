@@ -4,7 +4,7 @@
 
 from torch.optim.lr_scheduler import LRScheduler, LinearLR, ExponentialLR, PolynomialLR, CyclicLR
 
-from tools.optimization.utils.serialization_utils import create_object
+from utils.serialization_utils import create_object
 
 
 def get(identifier, **kwargs):

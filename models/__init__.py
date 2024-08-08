@@ -2,12 +2,10 @@
 # @author   Maksim Penkin <mapenkin@sberbank.ru>
 # """
 
-import os
-
 import torch
-from tools.optimization.models.resnet import resnet18, resnet50, resnet101
+from models.resnet import resnet18, resnet50, resnet101
 
-from tools.optimization.utils.serialization_utils import create_object
+from utils.serialization_utils import create_object
 
 
 def get(identifier, checkpoint=None, **kwargs):

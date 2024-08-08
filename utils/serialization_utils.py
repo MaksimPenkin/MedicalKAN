@@ -3,7 +3,7 @@
 # """
 
 import os
-from tools.optimization.utils.os_utils import dynamic_import_module, load
+from utils.os_utils import dynamic_import_module, load
 
 
 def create_config(identifier, **kwargs):

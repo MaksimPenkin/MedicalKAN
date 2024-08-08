@@ -5,7 +5,7 @@
 import inspect
 from torch.nn import CrossEntropyLoss
 
-from tools.optimization.utils.serialization_utils import create_object
+from utils.serialization_utils import create_object
 
 
 def get(identifier, **kwargs):

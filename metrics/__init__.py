@@ -2,9 +2,9 @@
 # @author   Maksim Penkin <mapenkin@sberbank.ru>
 # """
 
-from tools.optimization.metrics.base_metric import IMetric, MeanMetric
+from metrics.base_metric import IMetric, MeanMetric
 
-from tools.optimization.utils.serialization_utils import create_object
+from utils.serialization_utils import create_object
 
 
 def get(identifier, **kwargs):

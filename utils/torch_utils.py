@@ -142,9 +142,9 @@ def _train_step(model, x, y, criterion, optimizer, keys=None):
 
 def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, epochs=1, val_dataloader=None,
                limit_batches=1.0, keys=None, device="cpu"):
-    from tools.optimization import losses, optimizers
-    from tools.optimization.callbacks.base_callback import CompositeCallback
-    from tools.optimization.metrics.base_metric import CompositeMetric
+    import losses, optimizers
+    from callbacks.base_callback import CompositeCallback
+    from metrics.base_metric import CompositeMetric
 
     steps = int(limit_batches * len(dataloader))
     val_steps = len(val_dataloader) if val_dataloader is not None else None
@@ -217,7 +217,7 @@ def inference_func(model, dataloader, limit_batches=1.0, keys=None, device="cpu"
 
 
 def latency_func(model, shapes, dtypes=None, warmup=10, iteration=100, device="cpu"):
-    from tools.optimization.datasets.dummy import random_uniform
+    from datasets.dummy import random_uniform
 
     model.to(device)
     model.eval()

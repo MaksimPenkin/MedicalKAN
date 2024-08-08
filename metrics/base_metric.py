@@ -17,7 +17,7 @@ class IMetric:
         elif isinstance(name, str):
             self._name = name
         else:
-            raise ValueError("tools/optimization/metrics/base_metric.py: class IMetric: def __init__(...): "
+            raise ValueError("metrics/base_metric.py: class IMetric: def __init__(...): "
                              f"error: expected `name` to be string or None, found: {name} of type {type(name)}.")
 
     @abc.abstractmethod

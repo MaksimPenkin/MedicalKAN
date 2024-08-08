@@ -2,13 +2,11 @@
 # @author   Maksim Penkin <mapenkin@sberbank.ru>
 # """
 
-import os
-
 from torch.utils.data import DataLoader
-from tools.optimization.datasets.imagenet import imagenet1k
-from tools.optimization.datasets.dummy import random_uniform
+from datasets.imagenet import imagenet1k
+from datasets.dummy import random_uniform
 
-from tools.optimization.utils.serialization_utils import create_object
+from utils.serialization_utils import create_object
 
 
 def get(identifier, **kwargs):

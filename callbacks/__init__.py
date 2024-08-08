@@ -2,11 +2,11 @@
 # @author   Maksim Penkin <mapenkin@sberbank.ru>
 # """
 
-from tools.optimization.callbacks.base_callback import ICallback
-from tools.optimization.callbacks.ckpt_callback import ModelCheckpointCallback
-from tools.optimization.callbacks.tb_callback import TensorBoardCallback
+from callbacks.base_callback import ICallback
+from callbacks.ckpt_callback import ModelCheckpointCallback
+from callbacks.tb_callback import TensorBoardCallback
 
-from tools.optimization.utils.serialization_utils import create_object
+from utils.serialization_utils import create_object
 
 
 def get(identifier, **kwargs):
