@@ -6,7 +6,6 @@
 import os, sys
 import argparse
 from argparse import RawTextHelpFormatter
-sys.path.append('../')
 
 from datetime import datetime
 from tqdm import tqdm
@@ -78,18 +77,17 @@ def train(model, device, train_loader, optimizer, criterion):
     train_loss = 0
     train_writer = SummaryWriter(log_dir=os.path.join("./runs", datetime.now().strftime("%b%d_%H-%M-%S")))
     # Process the images in batches
-    for batch_idx, blob in enumerate(tqdm(train_loader)):
+    for batch_idx, (x, y) in enumerate(tqdm(train_loader)):
         # Recall that GPU is optimized for the operations we are dealing with
-        data, target = blob["x"], blob["y"]
-        data, target = data.to(device), target.to(device)
+        x, y = x.to(device), y.to(device)
         # Reset the optimizer
         optimizer.zero_grad()
 
         # Push the data forward through the model layers
-        output = model(data)
+        output = model(x)
 
         # Get the loss
-        loss = criterion(output, target)
+        loss = criterion(output, y)
 
         # Keep a running total
         train_loss += loss.item()
