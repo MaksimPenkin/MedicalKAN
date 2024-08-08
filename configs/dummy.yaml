@@ -1,0 +1,8 @@
+class_name: random_uniform
+config:
+  shapes:
+  - - 3
+    - 224
+    - 224
+  n: 20
+  batch_size: 1
