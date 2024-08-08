@@ -26,7 +26,7 @@ class TensorBoardCallback(ICallback):
         elif isinstance(value, int):
             assert value > 0
         elif value != "epoch":
-            raise ValueError("tools/optimization/callbacks/tb_callback.py: class TensorBoardCallback: @update_freq.setter: "
+            raise ValueError("nn/callbacks/tb_callback.py: class TensorBoardCallback: @update_freq.setter: "
                              f"error: expected `update_freq` to be `epoch`, `batch` or int, found: {value} of type {type(value)}.")
         self._update_freq = value
 

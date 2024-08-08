@@ -53,7 +53,7 @@ def torch_dtype(dtype):
     elif isinstance(dtype, str):
         return TORCH_DTYPES[dtype]
     else:
-        raise TypeError("tools/optimization/utils/torch_utils.py: def torch_dtype(...): "
+        raise TypeError("utils/torch_utils.py: def torch_dtype(...): "
                         f"error: expected `dtype` to be None, torch.dtype or str, found: {dtype} of type {type(dtype)}.")
 
 
@@ -77,7 +77,7 @@ def move_data_device(data, device="cpu"):
     elif isinstance(data, (list, tuple)):
         d = [move_data_device(v, device=device) for v in data]
     else:
-        raise TypeError("tools/optimization/utils/torch_utils.py: def move_data_device(...): "
+        raise TypeError("utils/torch_utils.py: def move_data_device(...): "
                         f"error: expected `data` to be dict, list or tuple, or torch.Tensor, found: {data} of type {type(data)}.")
 
     return d

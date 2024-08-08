@@ -40,7 +40,7 @@ def create_object_from_config(config, module_objects=None):
     """
     Usage example,
 
-    from tools.optimization.models.resnet import resnet18
+    from nn.models.resnet import resnet18
 
     module_objects = {
         "resnet18": resnet18
