@@ -23,8 +23,8 @@ from datasets.ixi import MatDataset
 
 from torch.utils.tensorboard import SummaryWriter
 
-from kan_convolutional.KANConv import KAN_Convolutional_Layer
-from kan_convolutional.KANLinear import KANLinear
+from nn.layers.kan_convolutional.KANConv import KAN_Convolutional_Layer
+from nn.layers.kan_convolutional.KANLinear import KANLinear
 
 from scipy.io import savemat
 

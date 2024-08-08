@@ -1,6 +1,6 @@
 import torch
 import math
-from KANLinear import KANLinear
+from nn.layers.kan_convolutional.KANLinear import KANLinear
 import convolution
 
 
