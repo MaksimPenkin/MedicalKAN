@@ -49,10 +49,8 @@ class KKAN_Convolutional_Network(nn.Module):
         return x
 
 
-
-
 def parse_args():
-    parser = argparse.ArgumentParser(description="FNO TRAIN command-line arguments", usage="%(prog)s [-h]", formatter_class=RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(description="KAN TRAIN command-line arguments", usage="%(prog)s [-h]", formatter_class=RawTextHelpFormatter)
 
     parser.add_argument("--use_gpu", type=int, default=0,
                         help="gpu index to be used.", metavar="")
