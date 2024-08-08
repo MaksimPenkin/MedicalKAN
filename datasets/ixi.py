@@ -17,14 +17,13 @@ import torchvision.transforms as transforms
 class ToTensor(object):
 
     def __call__(self, sample):
-        sketch, gt = sample['x'], sample['y']
+        sketch, gt = sample[0], sample[1]
 
         # Swap color axis H x W x C -> C X H X W
         sketch = sketch.transpose((2, 0, 1))
         gt = gt.transpose((2, 0, 1))
 
-        return {'x': torch.from_numpy(sketch),
-                'y': torch.from_numpy(gt)}
+        return torch.from_numpy(sketch), torch.from_numpy(gt)
 
 
 class MatDataset(Dataset):
@@ -39,7 +38,7 @@ class MatDataset(Dataset):
         self.csv_data = pd.read_csv(csv_file)
         self.root_dir = root_dir
 
-        if transform is None:
+        if not transform:
             self.transform = transforms.Compose([ToTensor()])
         else:
             self.transform = transform
@@ -59,8 +58,7 @@ class MatDataset(Dataset):
         gt = loadmat(gt_name, appendmat=False)["image"]
         gt = gt[..., np.newaxis].astype(np.float32)
 
-        sample = {'x': sketch,
-                  'y': gt}
+        sample = (sketch, gt)
 
         if self.transform:
             sample = self.transform(sample)
