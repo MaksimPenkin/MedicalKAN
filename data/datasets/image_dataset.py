@@ -2,8 +2,10 @@
 # @author   Maksim Penkin <mapenkin@sberbank.ru>
 # """
 
-from torch.utils.data import Dataset
+from data import samplers
 from utils.io_utils import read_img
+
+from torch.utils.data import Dataset
 
 
 class ImageDataset(Dataset):

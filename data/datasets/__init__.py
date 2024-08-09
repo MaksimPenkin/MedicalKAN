@@ -3,8 +3,8 @@
 # """
 
 from torch.utils.data import DataLoader
-from datasets.imagenet import imagenet1k
-from datasets.dummy import random_uniform
+from data.datasets.dummy_dataset import RandomUniformDataset
+from data.datasets.image_dataset import ImageDataset
 
 from utils.serialization_utils import create_object
 
@@ -12,8 +12,9 @@ from utils.serialization_utils import create_object
 def get(identifier, **kwargs):
     obj = create_object(identifier,
                         module_objects={
-                            "imagenet1k": imagenet1k,
-                            "random_uniform": random_uniform},
+                            "random_uniform": RandomUniformDataset,
+                            "image": ImageDataset
+                        },
                         **kwargs)
 
     if isinstance(obj, DataLoader):

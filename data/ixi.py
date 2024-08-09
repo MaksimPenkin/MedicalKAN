@@ -1,5 +1,12 @@
-from torch.utils.data import DataLoader
+# """
+# @author   Maksim Penkin <mapenkin@sberbank.ru>
+# """
+
+from data.datasets.image_dataset import ImageDataset
+from data.samplers.csv_sampler import CSVSampler
 from torchvision import transforms
+
+from torch.utils.data import DataLoader
 
 
 def ixi(filename, root="", keys=("sketch", "gt"), **kwargs):

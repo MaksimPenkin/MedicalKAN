@@ -3,8 +3,9 @@
 # """
 
 from itertools import zip_longest
-from torch.utils.data import Dataset, DataLoader
 from utils.torch_utils import torch_dtype, torch_random
+
+from torch.utils.data import Dataset
 
 
 class RandomUniformDataset(Dataset):
@@ -32,8 +33,3 @@ class RandomUniformDataset(Dataset):
 
     def __getitem__(self, idx):
         return tuple(torch_random(shape, dtype=dtype) for shape, dtype in zip_longest(self.shapes, self.dtypes))
-
-
-def random_uniform(shapes, dtypes=None, n=1, **kwargs):
-    db = RandomUniformDataset(*shapes, dtypes=dtypes, n=n)
-    return DataLoader(db, **kwargs)
