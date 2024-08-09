@@ -6,10 +6,11 @@ import os
 import argparse
 from argparse import RawTextHelpFormatter
 
-from nn import models
+from nn import models, callbacks
 from data.ixi import ixi
 
 from utils.torch_utils import train_func
+from utils.os_utils import load
 
 
 def parse_args():
@@ -18,10 +19,23 @@ def parse_args():
     parser.add_argument("--use_gpu", type=int, default=0,
                         help="gpu index to be used.", metavar="")
 
-    parser.add_argument("--db", type=str, default="",
+    parser.add_argument("--nn", type=str,
+                        required=True,
+                        help="path to the model configuration file or identifier.", metavar="")
+    parser.add_argument("--ckpt", type=str,
+                        help="path to the checkpoint to be restored in the model.", metavar="")
+
+    parser.add_argument("--db", type=str,
                         help="path to the dataset-filelist.", metavar="")
     parser.add_argument("--db_basedir", type=str, default="",
-                        help="basedir for paths inside the dataset-filelist.", metavar="")
+                        help="basedir for filenames inside the dataset-filelist.", metavar="")
+
+    parser.add_argument("--loss", type=str,
+                        help="path to the loss configuration file or identifier.", metavar="")
+    parser.add_argument("--optimizer", type=str,
+                        help="path to the optimizer configuration file or identifier.", metavar="")
+    parser.add_argument("--callbacks", nargs="+", type=str, default=[],
+                        help="list of the callbacks configuration files to be applied.", metavar="")
 
     parser.add_argument("--batch_size", type=int, default=8,
                         help="batch size.", metavar="")
@@ -47,13 +61,13 @@ def main(args):
                      pin_memory=True)
 
     # Model.
-    model = models.get(args.nn)
+    model = models.get(args.nn, checkpoint=args.ckpt)
 
     # Train!
     train_func(model, dataloader,
                criterion=args.loss,
                optimizer=args.optimizer,
-               callbacks=None,
+               callbacks=[callbacks.get(load(callback)) for callback in args.callbacks],
                epochs=args.epochs,
                val_dataloader=None,
                device=device)
