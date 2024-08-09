@@ -1,5 +1,5 @@
 # """
-# @author   Maksim Penkin <mapenkin@sberbank.ru>
+# @author   Maksim Penkin
 # """
 
 from data.datasets.image_dataset import ImageDataset

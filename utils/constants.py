@@ -1,5 +1,5 @@
 # """
-# @author   Maksim Penkin <mapenkin@sberbank.ru>
+# @author   Maksim Penkin
 # """
 
 IMAGENET_MEAN = [0.485, 0.456, 0.406]

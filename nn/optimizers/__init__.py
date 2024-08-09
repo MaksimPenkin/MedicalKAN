@@ -1,5 +1,5 @@
 # """
-# @author   Maksim Penkin <mapenkin@sberbank.ru>
+# @author   Maksim Penkin
 # """
 
 from torch.optim import Optimizer, Adadelta, Adagrad, Adam, RMSprop, SGD

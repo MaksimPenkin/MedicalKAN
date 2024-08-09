@@ -1,5 +1,5 @@
 # """
-# @author   Maksim Penkin <mapenkin@sberbank.ru>
+# @author   Maksim Penkin
 # """
 
 from torch.optim.lr_scheduler import LRScheduler, LinearLR, ExponentialLR, PolynomialLR, CyclicLR
