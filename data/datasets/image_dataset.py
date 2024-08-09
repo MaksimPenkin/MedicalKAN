@@ -22,4 +22,8 @@ class ImageDataset(Dataset):
         args = self.sampler[idx]
         t = min(len(args), self.sampler.multiplicity)
 
-        return *(read_img(args[i], **{k: v[i] for k, v in self._kwargs.items()}) for i in range(t)), *args[t:]
+        sample = tuple(read_img(args[i], **{k: v[i] for k, v in self._kwargs.items()}) for i in range(t))
+        if self.transform:
+            sample = self.transform(sample)
+
+        return *sample, *args[t:]

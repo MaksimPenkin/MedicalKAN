@@ -9,10 +9,10 @@ class ISampler:
 
     @property
     def multiplicity(self):
-        return 1
+        return self._multiplicity
 
     def __init__(self):
-        pass
+        self._multiplicity = 1
 
     @abc.abstractmethod
     def __len__(self):
