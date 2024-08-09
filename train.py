@@ -41,8 +41,6 @@ def parse_args():
                         help="batch size.", metavar="")
     parser.add_argument("--epochs", type=int, default=1,
                         help="number of epochs.", metavar="")
-    parser.add_argument("--lr", type=float, default=1e-4,
-                        help="learning rate value.", metavar="")
 
     return parser.parse_args()
 
@@ -55,7 +53,7 @@ def main(args):
     # Dataset.
     dataloader = ixi(args.db,
                      root=args.db_basedir,
-                     keys=("sketch", "image"),
+                     key=("sketch", "image"),
                      batch_size=args.batch_size,
                      shuffle=True,
                      pin_memory=True)
