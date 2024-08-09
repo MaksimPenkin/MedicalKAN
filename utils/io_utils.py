@@ -6,6 +6,7 @@ import os
 
 import numpy as np
 import cv2
+from scipy.io import loadmat
 
 from utils.os_utils import create_folder
 
@@ -37,6 +38,13 @@ def decode_png(read_path):
 def decode_raw(read_path, dtype, shape):
     img = np.fromfile(read_path, dtype=dtype)
     img = np.reshape(img, shape, order="C")
+    return img
+
+
+def decode_mat(read_path, key=None):
+    img = loadmat(read_path)
+    if key is not None:
+        img = img[key]
     return img
 
 
