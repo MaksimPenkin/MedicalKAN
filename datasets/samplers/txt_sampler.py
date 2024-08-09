@@ -12,11 +12,20 @@ class TXTSampler(IterableSampler):
     def file(self):
         return self._file
 
+    def _assert_file(self):
+        f = (x.split(" ") for x in self.file)
+        l1 = len(next(f))
+        if not all(len(s) == l1 for s in f):
+            raise ValueError("data/samplers/textpath_sampler.py: class TextPathSampler: def _assert_file(...): "
+                             f"error: expected all lines of file contain the same number `{l1}` of filenames, split by ' '.")
+        return l1
+
     def __init__(self, filename, root="", with_names=False):
         super(TXTSampler, self).__init__()
 
         with open(filename, "rt") as f:
             self._file = f.read().splitlines()
+        self._multiplicity = self._assert_file()
         self._root = root
         self._with_names = bool(with_names)
 

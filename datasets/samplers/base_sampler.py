@@ -7,6 +7,10 @@ import abc
 
 class ISampler:
 
+    @property
+    def multiplicity(self):
+        return 1
+
     def __init__(self):
         pass
 

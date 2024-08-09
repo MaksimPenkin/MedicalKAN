@@ -1,5 +1,5 @@
 # """
-# @author   Maksim Penkin <mapenkin@sberbank.ru>
+# @author   Maksim Penkin
 # """
 
 from itertools import zip_longest
