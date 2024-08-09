@@ -3,7 +3,7 @@
 # """
 
 import inspect
-from torch.nn import CrossEntropyLoss
+from torch.nn import CrossEntropyLoss, MSELoss
 
 from utils.serialization_utils import create_object
 
@@ -11,7 +11,9 @@ from utils.serialization_utils import create_object
 def get(identifier, **kwargs):
     obj = create_object(identifier,
                         module_objects={
-                            "CrossEntropyLoss": CrossEntropyLoss},
+                            "CrossEntropyLoss": CrossEntropyLoss,
+                            "MSELoss": MSELoss
+                        },
                         **kwargs)
 
     if callable(obj):
