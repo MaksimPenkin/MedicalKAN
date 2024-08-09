@@ -1,4 +1,4 @@
 class_name: tensorboard
 config:
-  log_dir: "/workspace/GeometricPerception/ckpts/runs"
+  log_dir: "./_runs"
   update_freq: 100

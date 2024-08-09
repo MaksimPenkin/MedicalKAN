@@ -1,4 +1,4 @@
 class_name: modelcheckpoint
 config:
-  save_path: "/workspace/GeometricPerception/ckpts/demo/model_e{epoch:02d}_b{batch:02d}.pt"
-  save_freq: 100
+  save_path: "./_ckpts/demo/model_e{epoch:02d}_b{batch:02d}.pt"
+  save_freq: epoch
