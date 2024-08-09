@@ -3,6 +3,7 @@
 # """
 
 import torch
+from nn.models.kan import KAN_v0
 from nn.models.resnet import resnet18, resnet50, resnet101
 
 from utils.serialization_utils import create_object
@@ -11,6 +12,7 @@ from utils.serialization_utils import create_object
 def get(identifier, checkpoint=None, **kwargs):
     obj = create_object(identifier,
                         module_objects={
+                            "kan_v0": KAN_v0,
                             "resnet18": resnet18,
                             "resnet50": resnet50,
                             "resnet101": resnet101},
