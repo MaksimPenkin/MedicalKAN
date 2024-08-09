@@ -1,6 +1,5 @@
 # """
 # @author   Maksim Penkin
-
 # """
 
 from data.samplers.base_sampler import IterableSampler

@@ -1,6 +1,5 @@
 # """
 # @author   Maksim Penkin
-
 # """
 
 import os
