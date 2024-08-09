@@ -56,7 +56,7 @@ def encode_raw(img, save_path):
     np.ravel(img, order="C").tofile(save_path)
 
 
-def read_img(read_path, dtype=None, shape=None, normalize=None):
+def read_img(read_path, dtype=None, shape=None, key=None, normalize=None):
     # Setup.
     if not os.path.exists(read_path):
         raise ValueError("utils/io_utils.py: def read_img(...): "
@@ -68,10 +68,12 @@ def read_img(read_path, dtype=None, shape=None, normalize=None):
         img = decode_png(read_path)
     elif ext in [".raw", ".bin"]:
         img = decode_raw(read_path, dtype, shape)
+    elif ext in [".mat"]:
+        img = decode_mat(read_path, key)
     else:
         raise ValueError("utils/io_utils.py: def read_img(...): "
                          f"error: unrecognized filename extension found: {read_path}. "
-                         "Only `.png`, `.jpeg`, `.jpg`, `.raw` or `.bin` are supported.")
+                         "Only `.png`, `.jpeg`, `.jpg`, `.raw`, `.bin` or `.mat` are supported.")
 
     # Process.
     if dtype is not None:
