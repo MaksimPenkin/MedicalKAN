@@ -39,20 +39,28 @@ def parse_args():
     return parser.parse_args()
 
 
-def save_result(x, y, output, imname, save_path):
+def save_result(x, output, imname, save_path):
     imname = os.path.splitext(imname)[0]
     create_folder(save_path, exist_ok=True)
-    create_folder(os.path.join(save_path, "x_y"), exist_ok=True)
-    create_folder(os.path.join(save_path, "x_output"), exist_ok=True)
 
-    z1 = maxmin_norm(np.abs(x - y)) * 255.
-    z2 = maxmin_norm(np.abs(x - output)) * 255.
+    create_folder(os.path.join(save_path, "mat"), exist_ok=True)
+    create_folder(os.path.join(save_path, "png"), exist_ok=True)
+
+    create_folder(os.path.join(save_path, "png", "output"), exist_ok=True)
+    create_folder(os.path.join(save_path, "png", "x"), exist_ok=True)
+    create_folder(os.path.join(save_path, "png", "x_output"), exist_ok=True)
+
+    _z1 = maxmin_norm(np.abs(x - output)) * 255.
+    _x = np.clip(x, 0., 1.) * 255.
+    _output = np.clip(output, 0., 1.) * 255.
 
     save_img(output, os.path.join(save_path, f"{imname}.mat"), key="image")
-    save_img(z1.astype(np.uint8),
-             os.path.join(save_path, "x_y", f"{imname}.png"))
-    save_img(z2.astype(np.uint8),
-             os.path.join(save_path, "x_output", f"{imname}.png"))
+    save_img(_z1.astype(np.uint8),
+             os.path.join(save_path, "png", "x_output", f"{imname}.png"))
+    save_img(_x.astype(np.uint8),
+             os.path.join(save_path, "png", "x", f"{imname}.png"))
+    save_img(_output.astype(np.uint8),
+             os.path.join(save_path, "png", "output", f"{imname}.png"))
 
 
 def main(args):
@@ -74,12 +82,11 @@ def main(args):
     model.to(device)
     model.eval()
     with torch.no_grad():
-        for x, y, imname in tqdm(dataloader):
-            x, y = x.to(device), y.to(device)
+        for x, imname in tqdm(dataloader):
+            x = x.to(device)
             output = model(x)
-            save_result(x.detach().cpu().numpy()[0].transpose((1, 2, 0)),
-                        y.detach().cpu().numpy()[0].transpose((1, 2, 0)),
-                        output.detach().cpu().numpy()[0].transpose((1, 2, 0)),
+            save_result(x.detach().cpu().numpy()[0].transpose((1, 2, 0))[:, :, 0],
+                        output.detach().cpu().numpy()[0].transpose((1, 2, 0))[:, :, 0],
                         imname[0],
                         args.output)
 
