@@ -17,8 +17,8 @@ class ToTensor:
         return tuple(torch.from_numpy(np.transpose(x[..., np.newaxis], axes=(2, 0, 1))) for x in sample)
 
 
-def ixi(filename, root="", key=("sketch", "gt"), **kwargs):
-    db = ImageDataset(CSVSampler(filename, root=root),
+def ixi(sampler, key=("sketch", "gt"), **kwargs):
+    db = ImageDataset(sampler,
                       transform=transforms.Compose([ToTensor()]),
                       key=key)
 

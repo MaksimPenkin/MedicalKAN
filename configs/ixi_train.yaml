@@ -1,0 +1,4 @@
+class_name: csv
+config:
+  filename: "C:/Users/penki/Documents/cmc/data/lists/IXI_0_1/train_kellnerLR_gibbsnoiseLR.csv"
+  root: "C:/Users/penki/Documents/cmc/data/IXI_0_1/255"
