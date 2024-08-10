@@ -54,7 +54,7 @@ def save_result(x, output, imname, save_path):
     _x = np.clip(x, 0., 1.) * 255.
     _output = np.clip(output, 0., 1.) * 255.
 
-    save_img(output, os.path.join(save_path, f"{imname}.mat"), key="image")
+    save_img(output, os.path.join(save_path, "mat", f"{imname}.mat"), key="image")
     save_img(_z1.astype(np.uint8),
              os.path.join(save_path, "png", "x_output", f"{imname}.png"))
     save_img(_x.astype(np.uint8),
