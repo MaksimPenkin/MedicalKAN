@@ -20,7 +20,7 @@ def get(identifier, checkpoint=None, **kwargs):
 
     if isinstance(obj, torch.nn.Module):
         if checkpoint:
-            checkpoint = torch.load(checkpoint, map_location="cpu")
+            checkpoint = torch.load(checkpoint, map_location="cpu", weights_only=True)
             if "state_dict" in checkpoint:
                 checkpoint = checkpoint["state_dict"]
                 state_dict = {name[6:]: checkpoint[name] for name in checkpoint}
