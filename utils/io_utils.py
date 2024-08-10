@@ -6,9 +6,14 @@ import os
 
 import numpy as np
 import cv2
-from scipy.io import loadmat
+from scipy.io import loadmat, savemat
 
 from utils.os_utils import create_folder
+
+
+def maxmin_norm(img):
+    m0, m1 = np.amin(img), np.amax(img)
+    return (img - m0) / (m1 - m0)
 
 
 def check3dimage(img):
@@ -56,6 +61,10 @@ def encode_raw(img, save_path):
     np.ravel(img, order="C").tofile(save_path)
 
 
+def encode_mat(img, save_path, key):
+    savemat(save_path, {key: img})
+
+
 def read_img(read_path, dtype=None, shape=None, key=None, normalize=None):
     # Setup.
     if not os.path.exists(read_path):
@@ -87,7 +96,7 @@ def read_img(read_path, dtype=None, shape=None, key=None, normalize=None):
     return img
 
 
-def save_img(img, save_path):
+def save_img(img, save_path, key=None):
     # Setup.
     save_dir = os.path.split(save_path)[0]
     if save_dir:  # e.g. os.path.split("name.png") -> '', 'name.png'; os.path.split("./name.png") -> '.', 'name.png'
@@ -99,7 +108,9 @@ def save_img(img, save_path):
         encode_png(img, save_path)
     elif ext in [".raw", ".bin"]:
         encode_raw(img, save_path)
+    elif ext in [".mat"]:
+        encode_mat(img, save_path, key)
     else:
         raise ValueError("utils/io_utils.py: def save_img(...): "
                          f"error: unrecognized filename extension found: {save_path}. "
-                         "Only `.png`, `.jpeg`, `.jpg`, `.raw` or `.bin` are supported.")
+                         "Only `.png`, `.jpeg`, `.jpg`, `.raw`, `.bin` or `.mat` are supported.")
