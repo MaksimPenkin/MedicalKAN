@@ -5,14 +5,14 @@
 import os, shutil
 
 
-def delete_file(fp):
-    if os.path.isfile(fp) or os.path.islink(fp):
-        os.unlink(fp)
-    elif os.path.isdir(fp):
-        shutil.rmtree(fp)
+def delete_file(filename):
+    if os.path.isfile(filename) or os.path.islink(filename):
+        os.unlink(filename)
+    elif os.path.isdir(filename):
+        shutil.rmtree(filename)
     else:
         raise ValueError("utils/os_utils.py: def delete_file(...): "
-                         f"error: failed to delete: {fp}.")
+                         f"error: failed to delete: {filename}.")
 
 
 def reset_folder(folder):
