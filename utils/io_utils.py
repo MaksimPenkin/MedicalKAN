@@ -18,13 +18,11 @@ def maxmin_norm(img):
 
 def check3dimage(img):
     img = np.asarray(img)
-
     if img.ndim == 2:
         img = img[..., np.newaxis]
     elif img.ndim != 3:
         raise ValueError("utils/io_utils.py: def check3dimage(...): "
                          f"error: expected 2 or 3 dimensional image, found shape: {img.shape}.")
-
     return img
 
 
