@@ -3,7 +3,6 @@
 # """
 
 from tqdm import tqdm
-import numpy as np
 import torch
 
 
@@ -185,6 +184,7 @@ def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, e
 
 
 def latency_func(model, shapes, dtypes=None, warmup=10, iteration=100, device="cpu"):
+    import numpy as np
     import time
     from datetime import datetime
     from data.dummy import random_uniform
