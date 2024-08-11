@@ -10,7 +10,7 @@ from utils.serialization_utils import create_object
 def get(identifier, **kwargs):
     obj = create_object(identifier,
                         module_objects={
-                            "MeanMetric": MeanMetric},
+                            "mean": MeanMetric},
                         **kwargs)
 
     if isinstance(obj, IMetric):
