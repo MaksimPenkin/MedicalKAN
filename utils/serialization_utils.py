@@ -2,8 +2,28 @@
 # @author   Maksim Penkin
 # """
 
-import os
-from utils.os_utils import dynamic_import_module, load
+import os, json, yaml
+from importlib import import_module
+
+
+def dynamic_import_module(module_name, class_name):
+    return getattr(import_module(module_name), class_name)
+
+
+def load_config(fp):
+    ext = os.path.splitext(fp)[-1].lower()
+
+    if ext == ".json":
+        with open(fp, "r") as f:
+            config = json.load(f)
+    elif ext == ".yaml":
+        with open(fp, "r") as f:
+            config = yaml.safe_load(f)
+    else:
+        raise ValueError("utils/os_utils.py: def load(...): "
+                         f"error: expected `.json` or `.yaml` file, found: {fp}.")
+
+    return config
 
 
 def create_config(identifier, **kwargs):
@@ -22,7 +42,7 @@ def create_config(identifier, **kwargs):
 
     if isinstance(identifier, str):
         if os.path.isfile(identifier):
-            config = load(identifier)
+            config = load_config(identifier)
         else:
             config = {"class_name": str(identifier), "config": {}}
     elif isinstance(identifier, dict):
