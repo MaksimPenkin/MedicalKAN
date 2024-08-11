@@ -20,12 +20,6 @@ def get(identifier, checkpoint=None, **kwargs):
 
     if isinstance(obj, torch.nn.Module):
         if checkpoint:
-            checkpoint = torch.load(checkpoint, map_location="cpu", weights_only=True)
-            if "state_dict" in checkpoint:
-                checkpoint = checkpoint["state_dict"]
-                state_dict = {name[6:]: checkpoint[name] for name in checkpoint}
-            else:
-                state_dict = checkpoint
-            obj.load_state_dict(state_dict, strict=False)
+            obj.load_state_dict(torch.load(checkpoint, map_location="cpu", weights_only=True))
         return obj
     raise ValueError(f"Could not interpret model instance: {obj}.")
