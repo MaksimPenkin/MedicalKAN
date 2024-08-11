@@ -10,7 +10,7 @@
 ```
 cd ~
 python3 -m venv VENV
-cd VENV/Scripts && activate (source VENV/bin/activate)
+cd VENV/Scripts && activate (for Linux: source VENV/bin/activate)
 (VENV): cd ~/MedicalKAN/requirements
 (VENV): pip install -r ./requirements.txt
 ```
