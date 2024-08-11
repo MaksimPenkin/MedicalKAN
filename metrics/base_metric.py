@@ -72,7 +72,8 @@ class CompositeMetric(IMetric):
         super(CompositeMetric, self).__init__(name=name)
 
         if metrics:
-            self.metrics = {m.name: m for m in metrics}  # TODO: add isinstance(m, IMetric) check.
+            assert all(isinstance(m, IMetric) for m in metrics), f"Error: expected all elements of `metrics` IMetric, found: {metrics}."
+            self.metrics = {m.name: m for m in metrics}
         else:
             self.metrics = {}
 

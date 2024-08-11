@@ -218,7 +218,8 @@ class CompositeCallback(ICallback):
         super(CompositeCallback, self).__init__()
 
         if callbacks:
-            self.callbacks = [callback for callback in callbacks]  # TODO: add isinstance(m, ICallback) check.
+            assert all(isinstance(c, ICallback) for c in callbacks), f"Error: expected all elements of `callbacks` ICallback, found: {callbacks}."
+            self.callbacks = [callback for callback in callbacks]
         else:
             self.callbacks = []
 
