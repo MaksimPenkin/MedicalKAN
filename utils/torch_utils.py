@@ -214,7 +214,7 @@ def inference_func(model, dataloader, limit_batches=1.0, keys=None, device="cpu"
 
 
 def latency_func(model, shapes, dtypes=None, warmup=10, iteration=100, device="cpu"):
-    from datasets.dummy import random_uniform
+    from data.dummy import random_uniform
 
     model.to(device)
     model.eval()
