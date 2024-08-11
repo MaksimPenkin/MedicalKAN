@@ -62,10 +62,7 @@ def create_object_from_config(config, module_objects=None):
 
     from nn.models.resnet import resnet18
 
-    module_objects = {
-        "resnet18": resnet18
-    }
-    obj = create_object_from_config(config, module_objects=module_objects)
+    obj = create_object_from_config(config, module_objects={"resnet18": resnet18})
     """
 
     # TODO: implement registration decorator @saving.register_serializable(package='my_package')
