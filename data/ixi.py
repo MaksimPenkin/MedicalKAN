@@ -2,12 +2,11 @@
 # @author   Maksim Penkin
 # """
 
-from data.datasets.image_dataset import ImageDataset
-from data.samplers.csv_sampler import CSVSampler
-from torchvision import transforms
-
 import numpy as np
 import torch
+
+from data.datasets.image_dataset import ImageDataset
+from torchvision import transforms
 from torch.utils.data import DataLoader
 
 
