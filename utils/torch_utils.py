@@ -2,10 +2,7 @@
 # @author   Maksim Penkin
 # """
 
-import json, time
 from tqdm import tqdm
-from datetime import datetime
-
 import numpy as np
 import torch
 
@@ -36,13 +33,12 @@ TORCH_DTYPES = {
 
 def torch_device():
     if torch.cuda.is_available():
-        return json.dumps({
-            "cuda": True,
-            "device_count": torch.cuda.device_count(),
-            "device_current": torch.cuda.current_device(),
-            "device_name": torch.cuda.get_device_name(0)}, indent=4)
+        return {"cuda": True,
+                "device_count": torch.cuda.device_count(),
+                "device_current": torch.cuda.current_device(),
+                "device_name": torch.cuda.get_device_name(0)}
     else:
-        return json.dumps({"cuda": False}, indent=4)
+        return {"cuda": False}
 
 
 def torch_dtype(dtype):
@@ -214,6 +210,8 @@ def inference_func(model, dataloader, limit_batches=1.0, keys=None, device="cpu"
 
 
 def latency_func(model, shapes, dtypes=None, warmup=10, iteration=100, device="cpu"):
+    import time
+    from datetime import datetime
     from data.dummy import random_uniform
 
     model.to(device)
