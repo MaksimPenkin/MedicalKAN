@@ -93,10 +93,7 @@ def forward_wrapper(model, data):
     if isinstance(data, dict):
         output = model(**data)
     elif isinstance(data, (list, tuple)):
-        try:
-            output = model(*data)
-        except:
-            output = model(data)
+        output = model(*data)
     else:
         output = model(data)
 
