@@ -46,7 +46,9 @@ def decode_raw(read_path, dtype, shape):
 
 
 def decode_mat(read_path, key):
-    return np.asarray(loadmat(read_path)[key])
+    img = loadmat(read_path)[key]
+    img = np.asarray(img)
+    return img
 
 
 def encode_png(img, save_path):
