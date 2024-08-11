@@ -105,7 +105,7 @@ def read_img(read_path, dtype=None, shape=None, key=None, normalize=None):
 def save_img(img, save_path, key=None):
     # Setup.
     save_dir = os.path.split(save_path)[0]
-    if save_dir:  # e.g. os.path.split("name.png") -> '', 'name.png'; os.path.split("./name.png") -> '.', 'name.png'
+    if save_dir:
         create_folder(save_dir, exist_ok=True)
     ext = os.path.splitext(save_path)[-1].lower()
 
