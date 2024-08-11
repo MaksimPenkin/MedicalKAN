@@ -79,7 +79,7 @@ def move_data_device(data, device="cpu"):
     return d
 
 
-def forward_wrapper(model, data, keys=None):
+def forward_wrapper(model, data):
     # 1. Device identification.
     try:
         device = next(model.parameters()).device
@@ -91,10 +91,7 @@ def forward_wrapper(model, data, keys=None):
 
     # 3. Forward.
     if isinstance(data, dict):
-        if keys is not None:
-            output = model(**{k: data[k] for k in keys})
-        else:
-            output = model(**data)
+        output = model(**data)
     elif isinstance(data, (list, tuple)):
         try:
             output = model(*data)
@@ -120,16 +117,16 @@ def _split_loss_logs(value):
         return value, {"loss": value.item()}
 
 
-def _eval_step(model, x, y, criterion, keys=None):
+def _eval_step(model, x, y, criterion):
     with torch.no_grad():
-        output = forward_wrapper(model, x, keys=keys)
+        output = forward_wrapper(model, x)
         _, logs = _split_loss_logs(criterion(output, y))
     return {"val_" + k: v for k, v in logs.items()}
 
 
-def _train_step(model, x, y, criterion, optimizer, keys=None):
+def _train_step(model, x, y, criterion, optimizer):
     optimizer.zero_grad()
-    output = forward_wrapper(model, x, keys=keys)
+    output = forward_wrapper(model, x)
     loss, logs = _split_loss_logs(criterion(output, y))
     loss.backward()
     optimizer.step()
@@ -137,7 +134,7 @@ def _train_step(model, x, y, criterion, optimizer, keys=None):
 
 
 def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, epochs=1, val_dataloader=None,
-               limit_batches=1.0, keys=None, device="cpu"):
+               limit_batches=1.0, device="cpu"):
     from nn import losses, optimizers
     from nn.callbacks.base_callback import CompositeCallback
     from metrics.base_metric import CompositeMetric
@@ -165,7 +162,7 @@ def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, e
                 break
             y = move_data_device(y, device=device)
             callbacks.on_train_batch_begin(idx)
-            logs = _train_step(model, x, y, criterion, optimizer, keys=keys)
+            logs = _train_step(model, x, y, criterion, optimizer)
             callbacks.on_train_batch_end(idx, logs=logs)
             train_tracker.update_state(logs, n=x.size(0))  # TODO: add seamless batch_size value extraction.
         epoch_logs = train_tracker.result()
@@ -179,7 +176,7 @@ def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, e
                     break
                 y = move_data_device(y, device=device)
                 callbacks.on_test_batch_begin(idx)
-                logs = _eval_step(model, x, y, criterion, keys=keys)
+                logs = _eval_step(model, x, y, criterion)
                 callbacks.on_test_batch_end(idx, logs=logs)
                 val_tracker.update_state(logs, n=x.size(0))  # TODO: add seamless batch_size value extraction.
             val_logs = val_tracker.result()
@@ -188,25 +185,6 @@ def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, e
 
         callbacks.on_epoch_end(epoch, logs=epoch_logs)
     callbacks.on_train_end(logs=epoch_logs)
-
-
-def inference_func(model, dataloader, limit_batches=1.0, keys=None, device="cpu"):
-    steps = int(limit_batches * len(dataloader))
-    model.to(device)
-    model.eval()
-
-    try:
-        for idx, (x, y) in enumerate(tqdm(dataloader, total=steps)):
-            if idx >= steps:
-                break
-            with torch.no_grad():
-                _ = forward_wrapper(model, x, keys=keys)
-    except:
-        for idx, x in enumerate(tqdm(dataloader, total=steps)):
-            if idx >= steps:
-                break
-            with torch.no_grad():
-                _ = forward_wrapper(model, x, keys=keys)
 
 
 def latency_func(model, shapes, dtypes=None, warmup=10, iteration=100, device="cpu"):
