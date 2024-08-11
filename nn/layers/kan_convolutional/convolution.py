@@ -1,4 +1,7 @@
-#Credits to: https://github.com/detkov/Convolution-From-Scratch/
+# """
+# @author   https://github.com/AntonioTepsich/Convolutional-KANs
+# """
+
 import torch
 import numpy as np
 from typing import List, Tuple, Union

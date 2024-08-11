@@ -1,3 +1,7 @@
+# """
+# @author   https://github.com/AntonioTepsich/Convolutional-KANs
+# """
+
 import torch
 import torch.nn.functional as F
 import math

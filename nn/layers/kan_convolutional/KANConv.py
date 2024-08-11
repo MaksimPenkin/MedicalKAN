@@ -1,3 +1,7 @@
+# """
+# @author   https://github.com/AntonioTepsich/Convolutional-KANs
+# """
+
 import torch
 import math
 from nn.layers.kan_convolutional.KANLinear import KANLinear

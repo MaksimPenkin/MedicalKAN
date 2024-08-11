@@ -1,5 +1,5 @@
 # """
-# @author   Maksim Penkin
+# @author   https://github.com/AntonioTepsich/Convolutional-KANs
 # """
 
 import torch
@@ -8,7 +8,7 @@ from nn.layers.kan_convolutional.KANConv import KAN_Convolutional_Layer
 
 
 class KAN_v0(nn.Module):
-    def __init__(self, device: str = 'cpu'):
+    def __init__(self, device="cpu"):
         super().__init__()
 
         self.conv_kan = KAN_Convolutional_Layer(
