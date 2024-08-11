@@ -6,22 +6,22 @@ import os, json, yaml
 from importlib import import_module
 
 
-def dynamic_import_module(module_name, class_name):
-    return getattr(import_module(module_name), class_name)
+def dynamic_import_module(cls_module, cls_name):
+    return getattr(import_module(cls_module), cls_name)
 
 
-def load_config(fp):
-    ext = os.path.splitext(fp)[-1].lower()
+def load_config(filename):
+    ext = os.path.splitext(filename)[-1].lower()
 
     if ext == ".json":
-        with open(fp, "r") as f:
+        with open(filename, "r") as f:
             config = json.load(f)
     elif ext == ".yaml":
-        with open(fp, "r") as f:
+        with open(filename, "r") as f:
             config = yaml.safe_load(f)
     else:
         raise ValueError("utils/serialization_utils.py: def load_config(...): "
-                         f"error: expected `.json` or `.yaml` file, found: {fp}.")
+                         f"error: expected `.json` or `.yaml` file, found: {filename}.")
 
     return config
 
