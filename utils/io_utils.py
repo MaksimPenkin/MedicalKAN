@@ -21,11 +21,7 @@ def check3dimage(img):
 
     if img.ndim == 2:
         img = img[..., np.newaxis]
-    elif img.ndim == 3:
-        if img.shape[-1] not in [1, 3]:
-            raise ValueError("utils/io_utils.py: def check3dimage(...): "
-                             f"error: expected 1-channel or 3-channel 3 dimensional image, found shape: {img.shape}.")
-    else:
+    elif img.ndim != 3:
         raise ValueError("utils/io_utils.py: def check3dimage(...): "
                          f"error: expected 2 or 3 dimensional image, found shape: {img.shape}.")
 
@@ -35,8 +31,13 @@ def check3dimage(img):
 def decode_png(read_path):
     img = cv2.imread(read_path, -1)
     img = check3dimage(img)
-    if (img.ndim == 3) and (img.shape[-1] == 3):
+    if img.shape[-1] == 3:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    elif img.shape[-1] == 4:
+        img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGBA)
+    elif img.shape[-1] != 1:
+        raise ValueError("utils/io_utils.py: def decode_png(...): "
+                         f"error: expected 1-(GRAY), 3-(RGB) or 4-(RGBA) channel 3 dimensional image, found shape: {img.shape}.")
     return img
 
 
@@ -52,8 +53,13 @@ def decode_mat(read_path, key):
 
 def encode_png(img, save_path):
     img = check3dimage(img)
-    if (img.ndim == 3) and (img.shape[-1] == 3):
+    if img.shape[-1] == 3:
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    elif img.shape[-1] == 4:
+        img = cv2.cvtColor(img, cv2.COLOR_RGBA2BGRA)
+    elif img.shape[-1] != 1:
+        raise ValueError("utils/io_utils.py: def encode_png(...): "
+                         f"error: expected 1-(GRAY), 3-(RGB) or 4-(RGBA) channel 3 dimensional image, found shape: {img.shape}.")
     cv2.imwrite(save_path, img)
 
 
