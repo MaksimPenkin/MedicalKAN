@@ -92,4 +92,7 @@ def main(args):
 
 
 if __name__ == "__main__":
+    from utils.torch_utils import torch_device
+
+    print(torch_device())
     main(parse_args())

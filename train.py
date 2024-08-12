@@ -10,7 +10,7 @@ from nn import models, callbacks
 from data.ixi import ixi
 
 from utils.torch_utils import train_func
-from utils.os_utils import load
+from utils.serialization_utils import load_config
 
 
 def parse_args():
@@ -63,11 +63,14 @@ def main(args):
     train_func(model, dataloader,
                criterion=args.loss,
                optimizer=args.optimizer,
-               callbacks=[callbacks.get(load(callback)) for callback in args.callbacks],
+               callbacks=[callbacks.get(load_config(callback)) for callback in args.callbacks],
                epochs=args.epochs,
                val_dataloader=None,
                device=device)
 
 
 if __name__ == "__main__":
+    from utils.torch_utils import torch_device
+
+    print(torch_device())
     main(parse_args())
