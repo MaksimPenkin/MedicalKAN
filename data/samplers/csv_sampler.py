@@ -2,33 +2,21 @@
 # @author   Maksim Penkin
 # """
 
-import os
 import pandas as pd
-from data.samplers.base_sampler import IterableSampler
+
+from data.samplers.base_sampler import PathSampler
 
 
-class CSVSampler(IterableSampler):
+class CSVSampler(PathSampler):
 
-    @property
-    def file(self):
-        return self._file
+    def _set_data(self, filename):
+        self._data = pd.read_csv(filename)
 
-    def __init__(self, filename, root="", with_names=False):
-        super(CSVSampler, self).__init__()
+    def _set_multiplicity(self):
+        self._multiplicity = len(self.data.columns.values.tolist())
 
-        self._file = pd.read_csv(filename)
-        self._multiplicity = len(self.file.columns.values.tolist())
-        self._root = root
-        self._with_names = bool(with_names)
+    def _get_item(self, item):
+        raise self.data.iloc[item].values.tolist()
 
-    def __len__(self):
-        return len(self.file)
-
-    def __getitem__(self, item):
-        filenames = self.file.iloc[item].values.tolist()
-
-        sample = tuple(os.path.join(self._root, filename) for filename in filenames)
-        if self._with_names:
-            sample += (os.path.split(filenames[0])[-1], )
-
-        return sample
+    def __init__(self, *args, **kwargs):
+        super(CSVSampler, self).__init__(*args, **kwargs)
