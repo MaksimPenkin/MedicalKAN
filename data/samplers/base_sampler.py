@@ -11,13 +11,8 @@ class ISampler:
     def data(self):
         return self._data
 
-    @property
-    def multiplicity(self):
-        return self._multiplicity
-
     def __init__(self):
         self._data = None
-        self._multiplicity = None
 
     @abc.abstractmethod
     def __len__(self):
@@ -58,12 +53,12 @@ class IterableSampler(ISampler):
 
 class PathSampler(IterableSampler):
 
-    @abc.abstractmethod
-    def _set_data(self, filename):
-        raise NotImplementedError("Must be implemented in subclasses.")
+    @property
+    def with_names(self):
+        return self._with_names
 
     @abc.abstractmethod
-    def _set_multiplicity(self):
+    def _set_data(self, filename):
         raise NotImplementedError("Must be implemented in subclasses.")
 
     @abc.abstractmethod
@@ -74,8 +69,6 @@ class PathSampler(IterableSampler):
         super(PathSampler, self).__init__()
 
         self._set_data(filename)
-        self._set_multiplicity()
-
         self._root = root
         self._with_names = bool(with_names)
 
@@ -86,7 +79,7 @@ class PathSampler(IterableSampler):
         filenames = self._get_item(item)
 
         sample = tuple(os.path.join(self._root, filename) for filename in filenames)
-        if self._with_names:
+        if self.with_names:
             sample += (os.path.split(filenames[0])[-1], )
 
         return sample
