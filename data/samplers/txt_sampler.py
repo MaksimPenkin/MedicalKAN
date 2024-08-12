@@ -16,10 +16,5 @@ class TXTSampler(PathSampler):
         lines = (line.rstrip() for line in lines)
         self._data = [line.split(" ") for line in lines if line]
 
-    def _set_multiplicity(self):
-        l1 = len(self.data[0])
-        assert all(len(line) == l1 for line in self.data)
-        self._multiplicity = l1
-
     def _get_data_item(self, item):
         return self.data[item]

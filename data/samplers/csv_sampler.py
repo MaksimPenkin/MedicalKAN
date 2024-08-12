@@ -15,8 +15,5 @@ class CSVSampler(PathSampler):
     def _set_data(self, filename):
         self._data = pd.read_csv(filename)
 
-    def _set_multiplicity(self):
-        self._multiplicity = len(self.data.columns.values.tolist())
-
     def _get_data_item(self, item):
         return self.data.iloc[item].values.tolist()
