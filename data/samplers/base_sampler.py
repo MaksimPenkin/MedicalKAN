@@ -40,14 +40,13 @@ class IterableSampler(ISampler):
 
         self.head = -1
 
-    def _reset(self):
-        self.head = -1
-
     def __next__(self):
+        # Reset sampler, if head is on the limits.
         if (self.head < 0) or (self.head >= self.__len__() - 1):
-            self._reset()
+            self.head = -1
+        # Locate head on the current element.
         self.head += 1
-
+        # Return the current element.
         return self[self.head]
 
 
