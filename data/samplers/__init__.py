@@ -13,8 +13,7 @@ def get(identifier, **kwargs):
     obj = create_object(identifier,
                         module_objects={
                             "csv": CSVSampler,
-                            "txt": TXTSampler
-                        },
+                            "txt": TXTSampler},
                         **kwargs)
 
     if isinstance(obj, ISampler):
