@@ -7,6 +7,9 @@ from data.samplers.base_sampler import PathSampler
 
 class TXTSampler(PathSampler):
 
+    def __init__(self, *args, **kwargs):
+        super(TXTSampler, self).__init__(*args, **kwargs)
+
     def _set_data(self, filename):
         with open(filename, "rt") as f:
             lines = f.read().splitlines()
@@ -20,6 +23,3 @@ class TXTSampler(PathSampler):
 
     def _get_item(self, item):
         return self.data[item]
-
-    def __init__(self, *args, **kwargs):
-        super(TXTSampler, self).__init__(*args, **kwargs)
