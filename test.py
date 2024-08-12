@@ -46,21 +46,19 @@ def save_result(x, output, imname, save_path):
     create_folder(os.path.join(save_path, "mat"), exist_ok=True)
     create_folder(os.path.join(save_path, "png"), exist_ok=True)
 
-    create_folder(os.path.join(save_path, "png", "output"), exist_ok=True)
     create_folder(os.path.join(save_path, "png", "x"), exist_ok=True)
+    create_folder(os.path.join(save_path, "png", "output"), exist_ok=True)
     create_folder(os.path.join(save_path, "png", "x_output"), exist_ok=True)
 
-    _z1 = maxmin_norm(np.abs(x - output)) * 255.
     _x = np.clip(x, 0., 1.) * 255.
     _output = np.clip(output, 0., 1.) * 255.
+    _z1 = maxmin_norm(np.abs(x - output)) * 255.
 
     save_img(output, os.path.join(save_path, "mat", f"{imname}.mat"), key="image")
-    save_img(_z1.astype(np.uint8),
-             os.path.join(save_path, "png", "x_output", f"{imname}.png"))
-    save_img(_x.astype(np.uint8),
-             os.path.join(save_path, "png", "x", f"{imname}.png"))
-    save_img(_output.astype(np.uint8),
-             os.path.join(save_path, "png", "output", f"{imname}.png"))
+
+    save_img(_x.astype(np.uint8), os.path.join(save_path, "png", "x", f"{imname}.png"))
+    save_img(_output.astype(np.uint8), os.path.join(save_path, "png", "output", f"{imname}.png"))
+    save_img(_z1.astype(np.uint8), os.path.join(save_path, "png", "x_output", f"{imname}.png"))
 
 
 def main(args):
