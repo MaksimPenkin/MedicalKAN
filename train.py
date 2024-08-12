@@ -29,9 +29,9 @@ def parse_args():
                         required=True,
                         help="path to the dataset configuration file or identifier.", metavar="")
 
-    parser.add_argument("--loss", type=str,
+    parser.add_argument("--loss", type=str, default="mse",
                         help="path to the loss configuration file or identifier.", metavar="")
-    parser.add_argument("--optimizer", type=str,
+    parser.add_argument("--optimizer", type=str, default="adam",
                         help="path to the optimizer configuration file or identifier.", metavar="")
     parser.add_argument("--callbacks", nargs="+", type=str, default=[],
                         help="list of the callbacks configuration files to be applied.", metavar="")
