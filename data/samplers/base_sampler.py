@@ -57,6 +57,13 @@ class PathSampler(IterableSampler):
     def with_names(self):
         return self._with_names
 
+    def __init__(self, filename, root="", with_names=False):
+        super(PathSampler, self).__init__()
+
+        self._set_data(filename)
+        self._root = root
+        self._with_names = bool(with_names)
+
     @abc.abstractmethod
     def _set_data(self, filename):
         raise NotImplementedError("Must be implemented in subclasses.")
@@ -64,13 +71,6 @@ class PathSampler(IterableSampler):
     @abc.abstractmethod
     def _get_item(self, item):
         raise NotImplementedError("Must be implemented in subclasses.")
-
-    def __init__(self, filename, root="", with_names=False):
-        super(PathSampler, self).__init__()
-
-        self._set_data(filename)
-        self._root = root
-        self._with_names = bool(with_names)
 
     def __len__(self):
         return len(self.data)
