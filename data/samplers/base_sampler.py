@@ -2,16 +2,21 @@
 # @author   Maksim Penkin
 # """
 
-import abc
+import abc, os
 
 
 class ISampler:
+
+    @property
+    def data(self):
+        return self._data
 
     @property
     def multiplicity(self):
         return self._multiplicity
 
     def __init__(self):
+        self._data = None
         self._multiplicity = 1
 
     @abc.abstractmethod
@@ -43,17 +48,45 @@ class IterableSampler(ISampler):
     def _reset(self):
         self.head = -1
 
-    def __getitem__(self, item):
-        if not isinstance(item, int):
-            raise TypeError("data/samplers/base_sampler.py: class IterableSampler: def __getitem__(...): "
-                            f"error: expected `item` be an integer instance, found: {item} of type {type(item)}.")
-        if (item < 0) or (item >= self.__len__()):
-            raise IndexError("data/samplers/base_sampler.py: class IterableSampler: def __getitem__(...): "
-                             f"error: invalid `item` value (out of range) found: {item}.")
-
     def __next__(self):
         if (self.head < 0) or (self.head >= self.__len__() - 1):
             self._reset()
         self.head += 1
 
         return self[self.head]
+
+
+class PathSampler(IterableSampler):
+
+    @abc.abstractmethod
+    def _set_data(self, filename):
+        raise NotImplementedError("Must be implemented in subclasses.")
+
+    @abc.abstractmethod
+    def _set_multiplicity(self):
+        raise NotImplementedError("Must be implemented in subclasses.")
+
+    @abc.abstractmethod
+    def _get_item(self, item):
+        raise NotImplementedError("Must be implemented in subclasses.")
+
+    def __init__(self, filename, root="", with_names=False):
+        super(PathSampler, self).__init__()
+
+        self._set_data(filename)
+        self._set_multiplicity()
+
+        self._root = root
+        self._with_names = bool(with_names)
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, item):
+        filenames = self._get_item(item)
+
+        sample = tuple(os.path.join(self._root, filename) for filename in filenames)
+        if self._with_names:
+            sample += (os.path.split(filenames[0])[-1], )
+
+        return sample
