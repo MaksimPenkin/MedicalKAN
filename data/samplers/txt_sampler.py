@@ -19,7 +19,7 @@ class TXTSampler(PathSampler):
         self._multiplicity = l1
 
     def _get_item(self, item):
-        raise self.data[item]
+        return self.data[item]
 
     def __init__(self, *args, **kwargs):
         super(TXTSampler, self).__init__(*args, **kwargs)
