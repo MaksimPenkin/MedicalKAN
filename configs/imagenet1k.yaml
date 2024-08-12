@@ -1,5 +1,0 @@
-class_name: imagenet1k
-config:
-  root: "/media/datasets/ILSVRC2012"
-  split: val
-  batch_size: 1
