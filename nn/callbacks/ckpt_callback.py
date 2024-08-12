@@ -38,9 +38,6 @@ class ModelCheckpointCallback(ICallback):
 
         self.save_freq = save_freq
 
-    def set_model(self, model):
-        super(ModelCheckpointCallback, self).set_model(model)
-
     def on_epoch_begin(self, epoch, logs=None):
         self._current_epoch = epoch
 
