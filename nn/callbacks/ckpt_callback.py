@@ -32,7 +32,7 @@ class ModelCheckpointCallback(ICallback):
         super(ModelCheckpointCallback, self).__init__()
 
         save_dir = os.path.split(save_path)[0]
-        if save_dir:  # e.g. os.path.split("name.png") -> '', 'name.png'; os.path.split("./name.png") -> '.', 'name.png'
+        if save_dir:
             create_folder(save_dir)
         self._save_path = save_path
 
