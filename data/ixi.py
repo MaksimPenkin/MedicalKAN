@@ -20,5 +20,4 @@ def ixi(sampler, key=("sketch", "gt"), **kwargs):
     db = ImageDataset(sampler,
                       transform=transforms.Compose([ToTensor()]),
                       key=key)
-
     return DataLoader(db, **kwargs)
