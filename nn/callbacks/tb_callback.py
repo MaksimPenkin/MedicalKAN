@@ -64,10 +64,6 @@ class TensorBoardCallback(ICallback):
             )
         return self._writers["val"]
 
-    def _close_writers(self):
-        for writer in self._writers.values():
-            writer.close()
-
     def on_epoch_end(self, epoch, logs=None):
         self._log_epoch_metrics(epoch, logs)
 
@@ -103,3 +99,7 @@ class TensorBoardCallback(ICallback):
         if (batch + 1) % self.update_freq == 0:
             for name, value in logs.items():
                 self._train_writer.add_scalar("batch/" + name, value, global_step=self.global_step + 1)
+
+    def _close_writers(self):
+        for writer in self._writers.values():
+            writer.close()
