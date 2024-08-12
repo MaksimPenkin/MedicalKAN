@@ -55,7 +55,6 @@ def save_result(x, output, imname, save_path):
     _z1 = maxmin_norm(np.abs(x - output)) * 255.
 
     save_img(output, os.path.join(save_path, "mat", f"{imname}.mat"), key="image")
-
     save_img(_x.astype(np.uint8), os.path.join(save_path, "png", "x", f"{imname}.png"))
     save_img(_output.astype(np.uint8), os.path.join(save_path, "png", "output", f"{imname}.png"))
     save_img(_z1.astype(np.uint8), os.path.join(save_path, "png", "x_output", f"{imname}.png"))
