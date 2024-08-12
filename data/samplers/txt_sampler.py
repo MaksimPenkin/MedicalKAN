@@ -21,5 +21,5 @@ class TXTSampler(PathSampler):
         assert all(len(line) == l1 for line in self.data)
         self._multiplicity = l1
 
-    def _get_item(self, item):
+    def _get_data_item(self, item):
         return self.data[item]

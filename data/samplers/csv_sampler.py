@@ -18,5 +18,5 @@ class CSVSampler(PathSampler):
     def _set_multiplicity(self):
         self._multiplicity = len(self.data.columns.values.tolist())
 
-    def _get_item(self, item):
+    def _get_data_item(self, item):
         return self.data.iloc[item].values.tolist()

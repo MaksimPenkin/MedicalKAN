@@ -68,14 +68,14 @@ class PathSampler(IterableSampler):
         raise NotImplementedError("Must be implemented in subclasses.")
 
     @abc.abstractmethod
-    def _get_item(self, item):
+    def _get_data_item(self, item):
         raise NotImplementedError("Must be implemented in subclasses.")
 
     def __len__(self):
         return len(self.data)
 
     def __getitem__(self, item):
-        filenames = self._get_item(item)
+        filenames = self._get_data_item(item)
 
         sample = tuple(os.path.join(self._root, filename) for filename in filenames)
         if self.with_names:
