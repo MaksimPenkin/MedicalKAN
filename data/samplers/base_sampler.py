@@ -17,7 +17,7 @@ class ISampler:
 
     def __init__(self):
         self._data = None
-        self._multiplicity = 1
+        self._multiplicity = None
 
     @abc.abstractmethod
     def __len__(self):
