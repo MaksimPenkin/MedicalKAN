@@ -6,16 +6,17 @@
 import math
 
 import torch
+import torch.nn.functional as F
 from torch import nn
-from timm.models.layers import to_2tuple, trunc_normal_
 
+from timm.models.layers import to_2tuple, trunc_normal_
 from nn.layers.kan_original.KANLinear import KANLinear
 
 
-class _PatchEmbedding(nn.Module):
+class PatchEmbedding(nn.Module):
 
     def __init__(self, in_ch, embed_ch, patch_size=7, stride=4):
-        super(_PatchEmbedding, self).__init__()
+        super(PatchEmbedding, self).__init__()
 
         patch_size = to_2tuple(patch_size)
         self.emb = nn.Conv2d(in_ch, embed_ch, patch_size,
@@ -103,37 +104,89 @@ class KANBottleneckBlock(nn.Module):
         return identity + x
 
 
-class ConvEncoderBlock(nn.Module):
+class ResBlock(nn.Module):
 
-    def __init__(self, in_ch, out_ch):
-        super(ConvEncoderBlock, self).__init__()
+    def __init__(self, dim):
+        super(ResBlock, self).__init__()
 
-        self.conv = nn.Sequential(
-            nn.Conv2d(in_ch, out_ch, 3, padding=1),
-            nn.BatchNorm2d(out_ch),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(out_ch, out_ch, 3, padding=1),
-            nn.BatchNorm2d(out_ch),
-            nn.ReLU(inplace=True)
-        )
+        self.bn1 = nn.BatchNorm2d(dim)
+        self.relu1 = nn.ReLU()
+        self.conv1 = nn.Conv2d(dim, dim, 3, padding=1)
 
-    def forward(self, x):
-        return self.conv(x)
-
-
-class ConvDecoderBlock(nn.Module):
-
-    def __init__(self, in_ch, out_ch):
-        super(ConvDecoderBlock, self).__init__()
-
-        self.conv = nn.Sequential(
-            nn.Conv2d(in_ch, in_ch, 3, padding=1),
-            nn.BatchNorm2d(in_ch),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(in_ch, out_ch, 3, padding=1),
-            nn.BatchNorm2d(out_ch),
-            nn.ReLU(inplace=True)
-        )
+        self.bn2 = nn.BatchNorm2d(dim)
+        self.relu2 = nn.ReLU()
+        self.conv2 = nn.Conv2d(dim, dim, 3, padding=1)
 
     def forward(self, x):
-        return self.conv(x)
+        identity = x
+
+        x = self.relu1(self.bn1(x))
+        x = self.relu2(self.bn2(x))
+
+        return identity + x
+
+
+class UKAN(nn.Module):
+
+    def __init__(self, filters=8, L=1, kan_filters=None, K=1, version="spline"):
+        super(UKAN, self).__init__()
+
+        filter_list = [filters * (2 ** i) for i in range(L)]
+        kan_filters = kan_filters or filter_list[-1] * 2
+
+        self.emb = nn.Conv2d(1, filters, 3, padding=1)
+        self.encoder = []
+        for i in range(L - 1):
+            in_ch, out_ch = filter_list[i], filter_list[i + 1]
+            self.encoder.append(
+                nn.Sequential(
+                    nn.Conv2d(in_ch, out_ch, 3, stride=2, padding=1),
+                    ResBlock(out_ch))
+            )
+
+        self.bottleneck_emb = PatchEmbedding(filter_list[-1], kan_filters, 3)
+        self.bottleneck = []
+        for i in range(K):
+            self.bottleneck.append(
+                KANBottleneckBlock(kan_filters, version=version)
+            )
+
+        self.decoder = []
+        for i in range(L - 1):
+            in_ch, out_ch = filter_list[i + 1], filter_list[i]
+            self.decoder.append(
+                nn.Sequential(
+                    nn.Conv2d(in_ch, out_ch, 3, padding=1),
+                    ResBlock(out_ch))
+            )
+        self.restore = nn.Conv2d(filter_list[0], 1, 3, padding=1)
+
+    def forward(self, x):
+        # Space -> Feature.
+        x = self.emb(x)
+
+        # Encoder.
+        skips = {
+            "enc-1": x
+        }
+        for idx, layer in enumerate(self.encoder, 1):
+            x = layer(x)
+            skips[f"enc-{idx + 1}"] = x
+
+        # Bottleneck.
+        x, H, W = self.bottleneck_emb(x)
+        _, _, C = x.shape
+        for layer in enumerate(self.bottleneck):
+            x = layer(x, H, W)
+        x = self.norm(x)
+        x = x.reshape(-1, H, W, C).permute(0, 3, 1, 2).contiguous()
+
+        # Decoder.
+        for idx, layer in reversed(list(enumerate(self.decoder))):
+            x = layer(x)
+            x += skips[f"enc-{idx + 1}"]
+
+        # Feature -> Space.
+        x = self.restore(F.relu(x))
+
+        return x
