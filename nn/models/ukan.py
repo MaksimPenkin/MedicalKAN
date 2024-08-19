@@ -115,10 +115,10 @@ class EncoderBlock(nn.Module):
         return self.conv(x)
 
 
-class Bottleneck(nn.Module):
+class BottleneckBlock(nn.Module):
 
     def __init__(self, dim):
-        super(Bottleneck, self).__init__()
+        super(BottleneckBlock, self).__init__()
 
         self.kan = _KANEmbedding(dim)
         self.norm = nn.LayerNorm(dim)
