@@ -35,7 +35,7 @@
 ```
 
 ## Acknowledgements
-- [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/pdf/2404.19756)
-- [Convolutional Kolmogorov–Arnold Networks](https://arxiv.org/pdf/2406.13155v1)
+- [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/pdf/2404.19756): Liu, Ziming, Yixuan Wang, Sachin Vaidya, Fabian Ruehle, James Halverson, Marin Soljačić, Thomas Y. Hou, and Max Tegmark. "Kan: Kolmogorov-arnold networks." arXiv preprint arXiv:2404.19756 (2024).
+- [Convolutional Kolmogorov–Arnold Networks](https://arxiv.org/pdf/2406.13155v1): Bodner, Alexander Dylan, Antonio Santiago Tepsich, Jack Natan Spolski, and Santiago Pourteau. "Convolutional Kolmogorov-Arnold Networks." arXiv preprint arXiv:2406.13155 (2024).
 - [GitHub-pykan](https://github.com/KindXiaoming/pykan)
 - [GitHub-Convolutional-KANs](https://github.com/AntonioTepsich/Convolutional-KANs)
