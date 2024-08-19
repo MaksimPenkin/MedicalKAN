@@ -19,8 +19,8 @@ class _PatchEmbedding(nn.Module):
 
         patch_size = to_2tuple(patch_size)
         self.emb = nn.Conv2d(in_ch, embed_ch, patch_size,
-                              stride=stride,
-                              padding=(patch_size[0] // 2, patch_size[1] // 2))
+                             stride=stride,
+                             padding=(patch_size[0] // 2, patch_size[1] // 2))
 
         self.apply(self._init_weights)
 
