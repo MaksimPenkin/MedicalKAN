@@ -18,9 +18,9 @@ class _PatchEmbedding(nn.Module):
         super(_PatchEmbedding, self).__init__()
 
         patch_size = to_2tuple(patch_size)
-        self.emb = nn.Conv2d(in_ch, embed_ch, patch_size,
-                             stride=stride,
-                             padding=(patch_size[0] // 2, patch_size[1] // 2))
+        self.conv = nn.Conv2d(in_ch, embed_ch, patch_size,
+                              stride=stride,
+                              padding=(patch_size[0] // 2, patch_size[1] // 2))
 
         self.apply(self._init_weights)
 
@@ -40,7 +40,7 @@ class _PatchEmbedding(nn.Module):
                 m.bias.data.zero_()
 
     def forward(self, x):
-        x = self.emb(x)
+        x = self.conv(x)
         _, _, H, W = x.shape
         x = x.flatten(start_dim=2).transpose(1, 2)
 
@@ -102,7 +102,7 @@ class EncoderBlock(nn.Module):
     def __init__(self, in_ch, out_ch):
         super(EncoderBlock, self).__init__()
 
-        self.conv = nn.Sequential(
+        self.layer = nn.Sequential(
             nn.Conv2d(in_ch, out_ch, 3, padding=1),
             nn.BatchNorm2d(out_ch),
             nn.ReLU(inplace=True),
@@ -112,7 +112,7 @@ class EncoderBlock(nn.Module):
         )
 
     def forward(self, x):
-        return self.conv(x)
+        return self.layer(x)
 
 
 class BottleneckBlock(nn.Module):
@@ -120,7 +120,7 @@ class BottleneckBlock(nn.Module):
     def __init__(self, dim):
         super(BottleneckBlock, self).__init__()
 
-        self.kan = _KANEmbedding(dim)
+        self.layer = _KANEmbedding(dim)
         self.norm = nn.LayerNorm(dim)
 
         self.apply(self._init_weights)
@@ -141,7 +141,7 @@ class BottleneckBlock(nn.Module):
                 m.bias.data.zero_()
 
     def forward(self, x, H, W):
-        return x + self.kan(self.norm(x), H, W)
+        return x + self.layer(self.norm(x), H, W)
 
 
 class DecoderBlock(nn.Module):
@@ -149,7 +149,7 @@ class DecoderBlock(nn.Module):
     def __init__(self, in_ch, out_ch):
         super(DecoderBlock, self).__init__()
 
-        self.conv = nn.Sequential(
+        self.layer = nn.Sequential(
             nn.Conv2d(in_ch, in_ch, 3, padding=1),
             nn.BatchNorm2d(in_ch),
             nn.ReLU(inplace=True),
@@ -159,4 +159,4 @@ class DecoderBlock(nn.Module):
         )
 
     def forward(self, x):
-        return self.conv(x)
+        return self.layer(x)
