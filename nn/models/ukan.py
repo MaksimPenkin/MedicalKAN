@@ -5,7 +5,6 @@
 import math
 
 import torch
-import torch.nn.functional as F
 from torch import nn
 from timm.models.layers import to_2tuple, trunc_normal_
 
@@ -21,7 +20,6 @@ class PatchEmbedding(nn.Module):
         self.proj = nn.Conv2d(in_ch, embed_ch, patch_size,
                               stride=stride,
                               padding=(patch_size[0] // 2, patch_size[1] // 2))
-        self.norm = nn.LayerNorm(embed_ch)
 
         self.apply(self._init_weights)
 
@@ -44,7 +42,6 @@ class PatchEmbedding(nn.Module):
         x = self.proj(x)
         _, _, H, W = x.shape
         x = x.flatten(2).transpose(1, 2)
-        x = self.norm(x)
 
         return x, H, W
 
