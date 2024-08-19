@@ -2,34 +2,17 @@
 # @author   https://github.com/CUHK-AIM-Group/U-KAN
 # """
 
-import torch
-from torch import nn
-import torch
-import torchvision
-from torch import nn
-from torch.autograd import Variable
-from torch.utils.data import DataLoader
-from torchvision import transforms
-from torchvision.utils import save_image
-import torch.nn.functional as F
-import os
-import matplotlib.pyplot as plt
-from utils import *
-
-import timm
-from timm.models.layers import DropPath, to_2tuple, trunc_normal_
-import types
 import math
-from abc import ABCMeta, abstractmethod
-# from mmcv.cnn import ConvModule
-from pdb import set_trace as st
 
-from kan import KANLinear, KAN
-from torch.nn import init
+import torch
+from torch import nn
+import torch.nn.functional as F
+
+from nn.layers.kan_original.KANLinear import KANLinear
 
 
 class KANLayer(nn.Module):
-    def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0., no_kan=False):
+    def __init__(self, in_features, hidden_features=None, out_features=None):
         super().__init__()
         out_features = out_features or in_features
         hidden_features = hidden_features or in_features
@@ -44,73 +27,46 @@ class KANLayer(nn.Module):
         grid_eps = 0.02
         grid_range = [-1, 1]
 
-        if not no_kan:
-            self.fc1 = KANLinear(
-                in_features,
-                hidden_features,
-                grid_size=grid_size,
-                spline_order=spline_order,
-                scale_noise=scale_noise,
-                scale_base=scale_base,
-                scale_spline=scale_spline,
-                base_activation=base_activation,
-                grid_eps=grid_eps,
-                grid_range=grid_range,
-            )
-            self.fc2 = KANLinear(
-                hidden_features,
-                out_features,
-                grid_size=grid_size,
-                spline_order=spline_order,
-                scale_noise=scale_noise,
-                scale_base=scale_base,
-                scale_spline=scale_spline,
-                base_activation=base_activation,
-                grid_eps=grid_eps,
-                grid_range=grid_range,
-            )
-            self.fc3 = KANLinear(
-                hidden_features,
-                out_features,
-                grid_size=grid_size,
-                spline_order=spline_order,
-                scale_noise=scale_noise,
-                scale_base=scale_base,
-                scale_spline=scale_spline,
-                base_activation=base_activation,
-                grid_eps=grid_eps,
-                grid_range=grid_range,
-            )
-            # # TODO
-            # self.fc4 = KANLinear(
-            #             hidden_features,
-            #             out_features,
-            #             grid_size=grid_size,
-            #             spline_order=spline_order,
-            #             scale_noise=scale_noise,
-            #             scale_base=scale_base,
-            #             scale_spline=scale_spline,
-            #             base_activation=base_activation,
-            #             grid_eps=grid_eps,
-            #             grid_range=grid_range,
-            #         )
-
-        else:
-            self.fc1 = nn.Linear(in_features, hidden_features)
-            self.fc2 = nn.Linear(hidden_features, out_features)
-            self.fc3 = nn.Linear(hidden_features, out_features)
-
-        # TODO
-        # self.fc1 = nn.Linear(in_features, hidden_features)
+        self.fc1 = KANLinear(
+            in_features,
+            hidden_features,
+            grid_size=grid_size,
+            spline_order=spline_order,
+            scale_noise=scale_noise,
+            scale_base=scale_base,
+            scale_spline=scale_spline,
+            base_activation=base_activation,
+            grid_eps=grid_eps,
+            grid_range=grid_range,
+        )
+        self.fc2 = KANLinear(
+            hidden_features,
+            out_features,
+            grid_size=grid_size,
+            spline_order=spline_order,
+            scale_noise=scale_noise,
+            scale_base=scale_base,
+            scale_spline=scale_spline,
+            base_activation=base_activation,
+            grid_eps=grid_eps,
+            grid_range=grid_range,
+        )
+        self.fc3 = KANLinear(
+            hidden_features,
+            out_features,
+            grid_size=grid_size,
+            spline_order=spline_order,
+            scale_noise=scale_noise,
+            scale_base=scale_base,
+            scale_spline=scale_spline,
+            base_activation=base_activation,
+            grid_eps=grid_eps,
+            grid_range=grid_range,
+        )
 
         self.dwconv_1 = DW_bn_relu(hidden_features)
         self.dwconv_2 = DW_bn_relu(hidden_features)
         self.dwconv_3 = DW_bn_relu(hidden_features)
-
-        # # TODO
-        # self.dwconv_4 = DW_bn_relu(hidden_features)
-
-        self.drop = nn.Dropout(drop)
 
         self.apply(self._init_weights)
 
@@ -143,22 +99,17 @@ class KANLayer(nn.Module):
         x = x.reshape(B, N, C).contiguous()
         x = self.dwconv_3(x, H, W)
 
-        # # TODO
-        # x = x.reshape(B,N,C).contiguous()
-        # x = self.dwconv_4(x, H, W)
-
         return x
 
 
 class KANBlock(nn.Module):
-    def __init__(self, dim, drop=0., drop_path=0., act_layer=nn.GELU, norm_layer=nn.LayerNorm, no_kan=False):
+    def __init__(self, dim, norm_layer=nn.LayerNorm):
         super().__init__()
 
-        self.drop_path = DropPath(drop_path) if drop_path > 0. else nn.Identity()
         self.norm2 = norm_layer(dim)
         mlp_hidden_dim = int(dim)
 
-        self.layer = KANLayer(in_features=dim, hidden_features=mlp_hidden_dim, act_layer=act_layer, drop=drop, no_kan=no_kan)
+        self.layer = KANLayer(in_features=dim, hidden_features=mlp_hidden_dim)
 
         self.apply(self._init_weights)
 
@@ -178,7 +129,7 @@ class KANBlock(nn.Module):
                 m.bias.data.zero_()
 
     def forward(self, x, H, W):
-        x = x + self.drop_path(self.layer(self.norm2(x), H, W))
+        x = x + self.layer(self.norm2(x), H, W)
 
         return x
 
@@ -291,9 +242,8 @@ class D_ConvLayer(nn.Module):
 
 
 class UKAN(nn.Module):
-    def __init__(self, num_classes, input_channels=3, deep_supervision=False, img_size=224, patch_size=16, in_chans=3, embed_dims=[256, 320, 512],
-                 no_kan=False,
-                 drop_rate=0., drop_path_rate=0., norm_layer=nn.LayerNorm, depths=[1, 1, 1], **kwargs):
+    def __init__(self, num_classes, img_size=224, patch_size=16, in_chans=3, embed_dims=[256, 320, 512],
+                  norm_layer=nn.LayerNorm):
         super().__init__()
 
         kan_input_dim = embed_dims[0]
@@ -308,26 +258,24 @@ class UKAN(nn.Module):
         self.dnorm3 = norm_layer(embed_dims[1])
         self.dnorm4 = norm_layer(embed_dims[0])
 
-        dpr = [x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))]
-
         self.block1 = nn.ModuleList([KANBlock(
             dim=embed_dims[1],
-            drop=drop_rate, drop_path=dpr[0], norm_layer=norm_layer
+            norm_layer=norm_layer
         )])
 
         self.block2 = nn.ModuleList([KANBlock(
             dim=embed_dims[2],
-            drop=drop_rate, drop_path=dpr[1], norm_layer=norm_layer
+            norm_layer=norm_layer
         )])
 
         self.dblock1 = nn.ModuleList([KANBlock(
             dim=embed_dims[1],
-            drop=drop_rate, drop_path=dpr[0], norm_layer=norm_layer
+            norm_layer=norm_layer
         )])
 
         self.dblock2 = nn.ModuleList([KANBlock(
             dim=embed_dims[0],
-            drop=drop_rate, drop_path=dpr[1], norm_layer=norm_layer
+            norm_layer=norm_layer
         )])
 
         self.patch_embed3 = PatchEmbed(img_size=img_size // 4, patch_size=3, stride=2, in_chans=embed_dims[0], embed_dim=embed_dims[1])
