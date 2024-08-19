@@ -18,8 +18,7 @@ class PatchEmbedding(nn.Module):
         super(PatchEmbedding, self).__init__()
 
         patch_size = to_2tuple(patch_size)
-        self.proj = nn.Conv2d(in_ch, embed_ch,
-                              kernel_size=patch_size,
+        self.proj = nn.Conv2d(in_ch, embed_ch, patch_size,
                               stride=stride,
                               padding=(patch_size[0] // 2, patch_size[1] // 2))
         self.norm = nn.LayerNorm(embed_ch)
