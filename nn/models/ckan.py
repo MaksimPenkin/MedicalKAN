@@ -11,7 +11,7 @@ class ConvKANv0(nn.Module):
     def __init__(self, n_convs=16, device="cpu"):
         super().__init__()
 
-        self.conv_kan = KAN_Convolutional_Layer(
+        self.feat = KAN_Convolutional_Layer(
             n_convs=n_convs,
             kernel_size=(3, 3),
             padding=(1, 1),
@@ -21,7 +21,7 @@ class ConvKANv0(nn.Module):
         self.restore = torch.nn.Conv2d(n_convs, 1, 3, padding=1)
 
     def forward(self, x):
-        x = self.conv_kan(x)
+        x = self.feat(x)
         x = self.restore(x)
 
         return x

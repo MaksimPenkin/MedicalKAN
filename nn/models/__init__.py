@@ -3,7 +3,7 @@
 # """
 
 import torch
-from nn.models.kan import ConvKANv0
+from nn.models.ckan import ConvKANv0
 from nn.models.resnet import resnet18, resnet50, resnet101
 
 from utils.serialization_utils import create_object
