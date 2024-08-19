@@ -18,51 +18,18 @@ class KANLayer(nn.Module):
         hidden_features = hidden_features or in_features
         self.dim = in_features
 
-        grid_size = 5
-        spline_order = 3
-        scale_noise = 0.1
-        scale_base = 1.0
-        scale_spline = 1.0
-        base_activation = torch.nn.SiLU
-        grid_eps = 0.02
-        grid_range = [-1, 1]
+        kan_kwargs = dict(grid_size=5,
+                          spline_order=3,
+                          scale_noise=0.1,
+                          scale_base=1.0,
+                          scale_spline=1.0,
+                          base_activation=torch.nn.SiLU,
+                          grid_eps=0.02,
+                          grid_range=[-1, 1])
 
-        self.fc1 = KANLinear(
-            in_features,
-            hidden_features,
-            grid_size=grid_size,
-            spline_order=spline_order,
-            scale_noise=scale_noise,
-            scale_base=scale_base,
-            scale_spline=scale_spline,
-            base_activation=base_activation,
-            grid_eps=grid_eps,
-            grid_range=grid_range,
-        )
-        self.fc2 = KANLinear(
-            hidden_features,
-            out_features,
-            grid_size=grid_size,
-            spline_order=spline_order,
-            scale_noise=scale_noise,
-            scale_base=scale_base,
-            scale_spline=scale_spline,
-            base_activation=base_activation,
-            grid_eps=grid_eps,
-            grid_range=grid_range,
-        )
-        self.fc3 = KANLinear(
-            hidden_features,
-            out_features,
-            grid_size=grid_size,
-            spline_order=spline_order,
-            scale_noise=scale_noise,
-            scale_base=scale_base,
-            scale_spline=scale_spline,
-            base_activation=base_activation,
-            grid_eps=grid_eps,
-            grid_range=grid_range,
-        )
+        self.fc1 = KANLinear(in_features, hidden_features, **kan_kwargs)
+        self.fc2 = KANLinear(hidden_features, out_features, **kan_kwargs)
+        self.fc3 = KANLinear(hidden_features, out_features, **kan_kwargs)
 
         self.dwconv_1 = DW_bn_relu(hidden_features)
         self.dwconv_2 = DW_bn_relu(hidden_features)
