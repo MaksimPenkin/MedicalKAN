@@ -33,3 +33,9 @@
 > cd MedicalKAN
 > python train.py --help
 ```
+
+## Acknowledgements
+- [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/pdf/2404.19756)
+- [Convolutional Kolmogorov–Arnold Networks](https://arxiv.org/pdf/2406.13155v1)
+- [GitHub-pykan](https://github.com/KindXiaoming/pykan)
+- [GitHub-Convolutional-KANs](https://github.com/AntonioTepsich/Convolutional-KANs)
