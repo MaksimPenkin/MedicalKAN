@@ -1,8 +1,7 @@
 # """
 # @author   https://github.com/CUHK-AIM-Group/U-KAN
+# @author   Maksim Penkin
 # """
-import sys
-sys.path.append(r"C:\Users\penki\Documents\cmc\research\MedicalKAN")
 
 import math
 
@@ -98,10 +97,28 @@ class _KANEmbedding(nn.Module):
         return x
 
 
-class KANBlock(nn.Module):
+class EncoderBlock(nn.Module):
+
+    def __init__(self, in_ch, out_ch):
+        super(EncoderBlock, self).__init__()
+
+        self.conv = nn.Sequential(
+            nn.Conv2d(in_ch, out_ch, 3, padding=1),
+            nn.BatchNorm2d(out_ch),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(out_ch, out_ch, 3, padding=1),
+            nn.BatchNorm2d(out_ch),
+            nn.ReLU(inplace=True)
+        )
+
+    def forward(self, x):
+        return self.conv(x)
+
+
+class KANBottleneck(nn.Module):
 
     def __init__(self, dim):
-        super(KANBlock, self).__init__()
+        super(KANBottleneck, self).__init__()
 
         self.kan = _KANEmbedding(dim)
         self.norm = nn.LayerNorm(dim)
@@ -127,24 +144,6 @@ class KANBlock(nn.Module):
         return x + self.kan(self.norm(x), H, W)
 
 
-class EncoderBlock(nn.Module):
-
-    def __init__(self, in_ch, out_ch):
-        super(EncoderBlock, self).__init__()
-
-        self.conv = nn.Sequential(
-            nn.Conv2d(in_ch, out_ch, 3, padding=1),
-            nn.BatchNorm2d(out_ch),
-            nn.ReLU(inplace=True),
-            nn.Conv2d(out_ch, out_ch, 3, padding=1),
-            nn.BatchNorm2d(out_ch),
-            nn.ReLU(inplace=True)
-        )
-
-    def forward(self, x):
-        return self.conv(x)
-
-
 class DecoderBlock(nn.Module):
 
     def __init__(self, in_ch, out_ch):
@@ -161,19 +160,3 @@ class DecoderBlock(nn.Module):
 
     def forward(self, x):
         return self.conv(x)
-
-
-# x = torch.rand(1, 3, 256, 256)
-#
-# print(x.shape)
-# l1 = EncoderBlock(3, 16)
-# y = l1(x)
-# print(y.shape)
-#
-# l2 = PatchEmbedding(16, 32, patch_size=3, stride=2)
-# p1, H, W = l2(y)
-# print(p1.shape, H, W)
-#
-# l3 = KANBlock(32)
-# out = l3(p1, H, W)
-# print(out.shape)
