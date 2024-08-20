@@ -91,28 +91,30 @@ class ConvDecoderBlock(nn.Module):
         return x
 
 
-class KANBottleneckBlock(nn.Module):
+class BottleneckBlock(nn.Module):
 
     def __init__(self, dim, version="spline"):
-        super(KANBottleneckBlock, self).__init__()
+        super(BottleneckBlock, self).__init__()
 
         if version == "spline":
-            self.kan = KANLinear(dim, dim,
-                                 grid_size=5,
-                                 spline_order=3,
-                                 scale_noise=0.1,
-                                 scale_base=1.0,
-                                 scale_spline=1.0,
-                                 base_activation=torch.nn.SiLU,
-                                 grid_eps=0.02,
-                                 grid_range=[-1, 1])
+            self.fc = KANLinear(dim, dim,
+                                grid_size=5,
+                                spline_order=3,
+                                scale_noise=0.1,
+                                scale_base=1.0,
+                                scale_spline=1.0,
+                                base_activation=torch.nn.SiLU,
+                                grid_eps=0.02,
+                                grid_range=[-1, 1])
         elif version == "cheby":
-            self.kan = ChebyKANLinear(dim, dim, 3)
+            self.fc = ChebyKANLinear(dim, dim, 3)
         elif version == "linear":
-            self.kan = nn.Sequential(
+            self.fc = nn.Sequential(
                 nn.Linear(dim, dim),
                 nn.ReLU()
             )
+        elif version == "identity":
+            self.fc = nn.Identity()
         else:
             raise NotImplementedError(f"Unrecognized `version` found: {version}.")
 
@@ -140,7 +142,7 @@ class KANBottleneckBlock(nn.Module):
         identity = x
 
         x = x.reshape(B * N, C)
-        x = self.kan(x)
+        x = self.fc(x)
         x = x.reshape(B, N, C).contiguous()
 
         return self.norm(identity + x)
@@ -168,7 +170,7 @@ class StackedResidualKAN(nn.Module):
         self.bottleneck = nn.ModuleList([])
         for i in range(K):
             self.bottleneck.append(
-                KANBottleneckBlock(kan_filters, version=version)
+                BottleneckBlock(kan_filters, version=version)
             )
         self.bottleneck_dec = PatchDecoder(kan_filters, filters, patch_size=5)
 
