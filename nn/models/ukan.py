@@ -40,8 +40,8 @@ class ResBlock(nn.Module):
     def forward(self, x):
         identity = x
 
-        x = self.relu(self.bn1(self.conv1(x)))
-        x = self.relu(self.bn2(self.conv2(x)))
+        x = self.conv1(self.relu(self.bn1(x)))
+        x = self.conv2(self.relu(self.bn2(x)))
 
         return identity + x
 
