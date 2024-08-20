@@ -60,6 +60,36 @@ class PatchDecoder(nn.Module):
         return x
 
 
+class ConvEncoderBlock(nn.Module):
+
+    def __init__(self, in_ch, out_ch):
+        super(ConvEncoderBlock, self).__init__()
+
+        self.proj = conv3x3(in_ch, out_ch)
+        self.feat = ResBlock(out_ch)
+
+    def forward(self, x):
+        x = self.proj(x)
+        x = self.feat(x)
+
+        return x
+
+
+class ConvDecoderBlock(nn.Module):
+
+    def __init__(self, in_ch, out_ch):
+        super(ConvDecoderBlock, self).__init__()
+
+        self.feat = ResBlock(in_ch)
+        self.proj = conv3x3(in_ch, out_ch)
+
+    def forward(self, x, skip):
+        x = self.feat(x + skip)
+        x = self.proj(x)
+
+        return x
+
+
 class KANBottleneckBlock(nn.Module):
 
     def __init__(self, dim, version="spline"):
@@ -108,10 +138,10 @@ class KANBottleneckBlock(nn.Module):
         return self.norm(identity + x)
 
 
-class UKAN(nn.Module):
+class StackedResidualKAN(nn.Module):
 
     def __init__(self, filters=8, L=1, kan_filters=None, K=1, version="spline"):
-        super(UKAN, self).__init__()
+        super(StackedResidualKAN, self).__init__()
         assert L >= 1 and K >= 1
 
         filter_list = [filters, ] + [filters * (2 ** (i + 1)) for i in range(L)]
@@ -122,9 +152,7 @@ class UKAN(nn.Module):
         filters = filter_list[0]
         for i in range(1, L + 1):
             self.encoder.append(
-                nn.Sequential(
-                    conv3x3(filters, filter_list[i]),
-                    ResBlock(filter_list[i]))
+                ConvEncoderBlock(filters, filter_list[i])
             )
             filters = filter_list[i]
 
@@ -139,9 +167,7 @@ class UKAN(nn.Module):
         self.decoder = []
         for i in range(L, 0, -1):
             self.decoder.append(
-                nn.Sequential(
-                    ResBlock(filters),
-                    conv3x3(filters, filter_list[i - 1]))
+                ConvDecoderBlock(filters, filter_list[i - 1])
             )
             filters = filter_list[i - 1]
 
@@ -167,8 +193,7 @@ class UKAN(nn.Module):
 
         # Decoder.
         for j, layer in enumerate(self.decoder):
-            x += skips[f"enc-{i - j}"]
-            x = layer(x)
+            x = layer(x, skips[f"enc-{i - j}"])
 
         # Feature -> Space.
         x = self.restore(F.relu(x))
