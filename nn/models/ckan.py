@@ -7,7 +7,7 @@ from torch import nn
 from nn.layers.kan_convolutional.KANConv import KAN_Convolutional_Layer
 
 
-class ConvKANv0(nn.Module):
+class ConvKAN(nn.Module):
     def __init__(self, n_convs=16, device="cpu"):
         super().__init__()
 

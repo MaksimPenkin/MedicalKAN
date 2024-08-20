@@ -3,7 +3,8 @@
 # """
 
 import torch
-from nn.models.ckan import ConvKANv0
+from nn.models.ckan import ConvKAN
+from nn.models.ukan import StackedResidualKAN
 from nn.models.resnet import resnet18, resnet50, resnet101
 
 from utils.serialization_utils import create_object
@@ -12,7 +13,8 @@ from utils.serialization_utils import create_object
 def get(identifier, checkpoint=None, **kwargs):
     obj = create_object(identifier,
                         module_objects={
-                            "convkanv0": ConvKANv0,
+                            "ckan": ConvKAN,
+                            "srkan": StackedResidualKAN,
                             "resnet18": resnet18,
                             "resnet50": resnet50,
                             "resnet101": resnet101},
