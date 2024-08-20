@@ -115,11 +115,13 @@ class ResBlock(nn.Module):
         self.bn2 = nn.BatchNorm2d(dim)
         self.conv2 = nn.Conv2d(dim, dim, 3, padding=1)
 
+        self.relu = nn.ReLU()
+
     def forward(self, x):
         identity = x
 
-        x = F.relu(self.bn1(x))
-        x = F.relu(self.bn2(x))
+        x = self.relu(self.bn1(self.conv1(x)))
+        x = self.relu(self.bn2(self.conv2(x)))
 
         return identity + x
 
