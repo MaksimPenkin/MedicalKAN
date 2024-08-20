@@ -148,7 +148,7 @@ class StackedResidualKAN(nn.Module):
         kan_filters = kan_filters or filter_list[-1]
 
         self.emb = conv3x3(1, filters)
-        self.encoder = []
+        self.encoder = nn.ModuleList([])
         filters = filter_list[0]
         for i in range(1, L + 1):
             self.encoder.append(
@@ -157,14 +157,14 @@ class StackedResidualKAN(nn.Module):
             filters = filter_list[i]
 
         self.bottleneck_enc = PatchEncoder(filters, kan_filters, patch_size=5)
-        self.bottleneck = []
+        self.bottleneck = nn.ModuleList([])
         for i in range(K):
             self.bottleneck.append(
                 KANBottleneckBlock(kan_filters, version=version)
             )
         self.bottleneck_dec = PatchDecoder(kan_filters, filters, patch_size=5)
 
-        self.decoder = []
+        self.decoder = nn.ModuleList([])
         for i in range(L, 0, -1):
             self.decoder.append(
                 ConvDecoderBlock(filters, filter_list[i - 1])
