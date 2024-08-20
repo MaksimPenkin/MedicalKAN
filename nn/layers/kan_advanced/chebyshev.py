@@ -1,3 +1,7 @@
+# """
+# @author   https://github.com/SynodicMonth/ChebyKAN
+# """
+
 import torch
 import torch.nn as nn
 
