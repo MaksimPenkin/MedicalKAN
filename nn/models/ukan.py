@@ -8,77 +8,60 @@ import math
 import torch
 import torch.nn.functional as F
 from torch import nn
+from timm.models.layers import trunc_normal_
 
-from timm.models.layers import to_2tuple, trunc_normal_
+from nn.models.resnet import ResBlock, conv3x3, conv1x1
 from nn.layers.kan_original.KANLinear import KANLinear
+from nn.transforms.pixel_shuffle import space_to_depth, depth_to_space
 
 
-class Conv3x3(nn.Module):
+class PatchEncoder(nn.Module):
 
-    def __init__(self, in_ch, out_ch, **kwargs):
-        super(Conv3x3, self).__init__()
+    @property
+    def patch_size(self):
+        return self._patch_size
 
-        self.conv = nn.Conv2d(in_ch, out_ch, 3, padding=1, **kwargs)
+    def __init__(self, in_ch, out_ch, patch_size=7):
+        super(PatchEncoder, self).__init__()
 
-    def forward(self, x):
-        return self.conv(x)
+        self._patch_size = patch_size
 
-
-class ResBlock(nn.Module):
-
-    def __init__(self, dim):
-        super(ResBlock, self).__init__()
-
-        self.bn1 = nn.BatchNorm2d(dim)
-        self.conv1 = Conv3x3(dim, dim)
-
-        self.bn2 = nn.BatchNorm2d(dim)
-        self.conv2 = Conv3x3(dim, dim)
-
-        self.relu = nn.ReLU()
-
-    def forward(self, x):
-        identity = x
-
-        x = self.conv1(self.relu(self.bn1(x)))
-        x = self.conv2(self.relu(self.bn2(x)))
-
-        return identity + x
-
-
-class PatchEmbedding(nn.Module):
-
-    def __init__(self, in_ch, embed_ch, patch_size=7, stride=4):
-        super(PatchEmbedding, self).__init__()
-
-        patch_size = to_2tuple(patch_size)
-        self.emb = nn.Conv2d(in_ch, embed_ch, patch_size,
-                             stride=stride,
-                             padding=(patch_size[0] // 2, patch_size[1] // 2))
+        self.proj = conv1x1(in_ch * self.patch_size * self.patch_size, out_ch)
+        self.norm = nn.LayerNorm(out_ch)
 
         self.apply(self._init_weights)
 
-    def _init_weights(self, m):
-        if isinstance(m, nn.Linear):
-            trunc_normal_(m.weight, std=.02)
-            if isinstance(m, nn.Linear) and m.bias is not None:
-                nn.init.constant_(m.bias, 0)
-        elif isinstance(m, nn.LayerNorm):
-            nn.init.constant_(m.bias, 0)
-            nn.init.constant_(m.weight, 1.0)
-        elif isinstance(m, nn.Conv2d):
-            fan_out = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-            fan_out //= m.groups
-            m.weight.data.normal_(0, math.sqrt(2.0 / fan_out))
-            if m.bias is not None:
-                m.bias.data.zero_()
-
     def forward(self, x):
-        x = self.emb(x)
+        x = space_to_depth(x, self.patch_size)
+        x = self.proj(x)
+
         _, _, H, W = x.shape
         x = x.flatten(start_dim=2).transpose(1, 2)
 
-        return x, H, W
+        return self.norm(x), H, W
+
+
+class PatchDecoder(nn.Module):
+
+    @property
+    def patch_size(self):
+        return self._patch_size
+
+    def __init__(self, in_ch, out_ch, patch_size=7):
+        super(PatchDecoder, self).__init__()
+
+        self._patch_size = patch_size
+
+        self.proj = conv1x1(in_ch, out_ch * self.patch_size * self.patch_size)
+
+    def forward(self, x, H, W):
+        B, N, C = x.shape
+        x = x.transpose(1, 2).view(B, C, H, W)
+
+        x = self.proj(x)
+        x = depth_to_space(x, self.patch_size)
+
+        return x
 
 
 class KANBottleneckBlock(nn.Module):
@@ -101,10 +84,6 @@ class KANBottleneckBlock(nn.Module):
 
         self.norm = nn.LayerNorm(dim)
 
-        self.dwconv = Conv3x3(dim, dim, groups=dim)
-        self.bn = nn.BatchNorm2d(dim)
-        self.relu = nn.ReLU()
-
         self.apply(self._init_weights)
 
     def _init_weights(self, m):
@@ -122,78 +101,74 @@ class KANBottleneckBlock(nn.Module):
             if m.bias is not None:
                 m.bias.data.zero_()
 
-    def forward(self, x, H, W):
+    def forward(self, x):
         B, N, C = x.shape
         identity = x
 
         x = x.reshape(B * N, C)
-        x = self.kan(self.norm(x))
+        x = self.kan(x)
         x = x.reshape(B, N, C).contiguous()
 
-        x = x.transpose(1, 2).view(B, C, H, W)
-        x = self.relu(self.bn(self.dwconv(x)))
-        x = x.flatten(start_dim=2).transpose(1, 2)
-
-        return identity + x
+        return self.norm(identity + x)
 
 
 class UKAN(nn.Module):
 
     def __init__(self, filters=8, L=1, kan_filters=None, K=1, version="spline"):
         super(UKAN, self).__init__()
+        assert L >= 1 and K >= 1
 
-        filter_list = [filters * (2 ** i) for i in range(L)]
-        kan_filters = kan_filters or filter_list[-1] * 2
+        filter_list = [filters, ] + [filters * (2 ** (i + 1)) for i in range(L)]
+        kan_filters = kan_filters or filter_list[-1]
 
-        self.emb = Conv3x3(1, filter_list[0])
+        self.emb = conv3x3(1, filters)
         self.encoder = []
-        for i in range(L - 1):
-            in_ch, out_ch = filter_list[i], filter_list[i + 1]
+        filters = filter_list[0]
+        for i in range(1, L + 1):
             self.encoder.append(
                 nn.Sequential(
-                    Conv3x3(in_ch, out_ch, stride=2),
-                    ResBlock(out_ch))
+                    conv3x3(filters, filter_list[i], stride=2),
+                    ResBlock(filter_list[i]))
             )
+            filters = filter_list[i]
 
-        self.bottleneck_emb = PatchEmbedding(filter_list[-1], kan_filters, 3)
+        self.bottleneck_enc = PatchEncoder(filters, kan_filters, patch_size=3)
         self.bottleneck = []
         for i in range(K):
             self.bottleneck.append(
                 KANBottleneckBlock(kan_filters, version=version)
             )
+        self.bottleneck_dec = PatchDecoder(kan_filters, filters, patch_size=3)
 
         self.decoder = []
-        for i in range(L - 1):
-            in_ch, out_ch = filter_list[i + 1], filter_list[i]
+        for i in range(L, 0, -1):
             self.decoder.append(
                 nn.Sequential(
-                    Conv3x3(in_ch, out_ch),
-                    ResBlock(out_ch))
+                    conv3x3(filters, filter_list[i - 1]),
+                    ResBlock(filter_list[i - 1]))
             )
-        self.restore = Conv3x3(filter_list[0], 1)
+            filters = filter_list[i - 1]
+        self.restore = conv3x3(filters, 1)
 
     def forward(self, x):
         # Space -> Feature.
         x = self.emb(x)
 
         # Encoder.
-        skips = {
-            "enc-1": x
-        }
-        for idx, layer in enumerate(self.encoder, 1):
+        skips = {}
+        for idx, layer in enumerate(self.encoder):
             x = layer(x)
             skips[f"enc-{idx + 1}"] = x
 
         # Bottleneck.
-        x, H, W = self.bottleneck_emb(x)
-        _, _, C = x.shape
+        x, H, W = self.bottleneck_enc(x)
         for layer in enumerate(self.bottleneck):
             x = layer(x, H, W)
-        x = self.norm(x)
-        x = x.reshape(-1, H, W, C).permute(0, 3, 1, 2).contiguous()
+        x = self.bottleneck_dec(x, H, W)
 
         # Decoder.
         for idx, layer in reversed(list(enumerate(self.decoder))):
+            x = F.interpolate(x, scale_factor=(2, 2), mode="bilinear")
             x = layer(x)
             x += skips[f"enc-{idx + 1}"]
 
