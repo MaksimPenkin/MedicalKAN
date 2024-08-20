@@ -24,6 +24,28 @@ class Conv3x3(nn.Module):
         return self.conv(x)
 
 
+class ResBlock(nn.Module):
+
+    def __init__(self, dim):
+        super(ResBlock, self).__init__()
+
+        self.bn1 = nn.BatchNorm2d(dim)
+        self.conv1 = Conv3x3(dim, dim)
+
+        self.bn2 = nn.BatchNorm2d(dim)
+        self.conv2 = Conv3x3(dim, dim)
+
+        self.relu = nn.ReLU()
+
+    def forward(self, x):
+        identity = x
+
+        x = self.relu(self.bn1(self.conv1(x)))
+        x = self.relu(self.bn2(self.conv2(x)))
+
+        return identity + x
+
+
 class PatchEmbedding(nn.Module):
 
     def __init__(self, in_ch, embed_ch, patch_size=7, stride=4):
@@ -111,28 +133,6 @@ class KANBottleneckBlock(nn.Module):
         x = x.transpose(1, 2).view(B, C, H, W)
         x = self.relu(self.bn(self.dwconv(x)))
         x = x.flatten(start_dim=2).transpose(1, 2)
-
-        return identity + x
-
-
-class ResBlock(nn.Module):
-
-    def __init__(self, dim):
-        super(ResBlock, self).__init__()
-
-        self.bn1 = nn.BatchNorm2d(dim)
-        self.conv1 = Conv3x3(dim, dim)
-
-        self.bn2 = nn.BatchNorm2d(dim)
-        self.conv2 = Conv3x3(dim, dim)
-
-        self.relu = nn.ReLU()
-
-    def forward(self, x):
-        identity = x
-
-        x = self.relu(self.bn1(self.conv1(x)))
-        x = self.relu(self.bn2(self.conv2(x)))
 
         return identity + x
 
