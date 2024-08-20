@@ -22,6 +22,18 @@ def conv7x7(in_ch, out_ch, **kwargs):
     return nn.Conv2d(in_ch, out_ch, 7, padding=3, **kwargs)
 
 
+def resnet18(weights="IMAGENET1K_V1", progress=True, **kwargs):
+    return models.resnet18(weights=weights, progress=progress, **kwargs)
+
+
+def resnet50(weights="IMAGENET1K_V2", progress=True, **kwargs):
+    return models.resnet50(weights=weights, progress=progress, **kwargs)
+
+
+def resnet101(weights="IMAGENET1K_V2", progress=True, **kwargs):
+    return models.resnet101(weights=weights, progress=progress, **kwargs)
+
+
 class ResBlock(nn.Module):
 
     def __init__(self, dim):
@@ -42,15 +54,3 @@ class ResBlock(nn.Module):
         x = self.conv2(self.relu(self.bn2(x)))
 
         return identity + x
-
-
-def resnet18(weights="IMAGENET1K_V1", progress=True, **kwargs):
-    return models.resnet18(weights=weights, progress=progress, **kwargs)
-
-
-def resnet50(weights="IMAGENET1K_V2", progress=True, **kwargs):
-    return models.resnet50(weights=weights, progress=progress, **kwargs)
-
-
-def resnet101(weights="IMAGENET1K_V2", progress=True, **kwargs):
-    return models.resnet101(weights=weights, progress=progress, **kwargs)
