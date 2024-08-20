@@ -1,4 +1,4 @@
 class_name: tensorboard
 config:
-  log_dir: "../_runs"
+  log_dir: "/home/m.penkin/workspace/logs"
   update_freq: 100
