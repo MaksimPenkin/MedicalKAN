@@ -110,18 +110,16 @@ class ResBlock(nn.Module):
         super(ResBlock, self).__init__()
 
         self.bn1 = nn.BatchNorm2d(dim)
-        self.relu1 = nn.ReLU()
         self.conv1 = nn.Conv2d(dim, dim, 3, padding=1)
 
         self.bn2 = nn.BatchNorm2d(dim)
-        self.relu2 = nn.ReLU()
         self.conv2 = nn.Conv2d(dim, dim, 3, padding=1)
 
     def forward(self, x):
         identity = x
 
-        x = self.relu1(self.bn1(x))
-        x = self.relu2(self.bn2(x))
+        x = F.relu(self.bn1(x))
+        x = F.relu(self.bn2(x))
 
         return identity + x
 
