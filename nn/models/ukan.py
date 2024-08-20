@@ -114,12 +114,11 @@ class BottleneckBlock(nn.Module):
                 nn.ReLU()
             )
         elif version == "identity":
-            self.fc = nn.Identity()
+            self.fc = None
         else:
             raise NotImplementedError(f"Unrecognized `version` found: {version}.")
 
         self.norm = nn.LayerNorm(dim)
-
         self.apply(self._init_weights)
 
     def _init_weights(self, m):
@@ -139,13 +138,17 @@ class BottleneckBlock(nn.Module):
 
     def forward(self, x):
         B, N, C = x.shape
-        identity = x
 
-        x = x.reshape(B * N, C)
-        x = self.fc(x)
-        x = x.reshape(B, N, C).contiguous()
+        if self.fc is not None:
+            identity = x
 
-        return self.norm(identity + x)
+            x = x.reshape(B * N, C)
+            x = self.fc(x)
+            x = x.reshape(B, N, C).contiguous()
+
+            return self.norm(identity + x)
+        else:
+            return x
 
 
 class StackedResidualKAN(nn.Module):
