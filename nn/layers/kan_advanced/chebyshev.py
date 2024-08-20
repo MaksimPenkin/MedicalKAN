@@ -3,9 +3,9 @@ import torch.nn as nn
 
 
 # This is inspired by Kolmogorov-Arnold Networks but using Chebyshev polynomials instead of splines coefficients
-class ChebyKANLayer(nn.Module):
+class ChebyKANLinear(nn.Module):
     def __init__(self, input_dim, output_dim, degree):
-        super(ChebyKANLayer, self).__init__()
+        super(ChebyKANLinear, self).__init__()
         self.inputdim = input_dim
         self.outdim = output_dim
         self.degree = degree

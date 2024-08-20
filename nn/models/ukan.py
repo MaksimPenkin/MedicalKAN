@@ -12,6 +12,7 @@ from timm.models.layers import trunc_normal_
 
 from nn.models.resnet import ResBlock, conv3x3, conv1x1
 from nn.layers.kan_original.KANLinear import KANLinear
+from nn.layers.kan_advanced.chebyshev import ChebyKANLinear
 from nn.transforms.pixel_shuffle import space_to_depth, depth_to_space
 
 
@@ -105,6 +106,8 @@ class KANBottleneckBlock(nn.Module):
                                  base_activation=torch.nn.SiLU,
                                  grid_eps=0.02,
                                  grid_range=[-1, 1])
+        elif version == "cheby":
+            self.kan = ChebyKANLinear(dim, dim, 3)
         else:
             raise NotImplementedError(f"Unrecognized `version` found: {version}.")
 
@@ -140,7 +143,7 @@ class KANBottleneckBlock(nn.Module):
 
 class StackedResidualKAN(nn.Module):
 
-    def __init__(self, filters=8, L=1, kan_filters=None, K=1, version="spline"):
+    def __init__(self, filters=8, L=1, kan_filters=None, K=1, version="cheby"):
         super(StackedResidualKAN, self).__init__()
         assert L >= 1 and K >= 1
 
