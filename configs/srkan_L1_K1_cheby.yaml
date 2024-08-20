@@ -1,0 +1,7 @@
+class_name: srkan
+config:
+  filters: 8
+  L: 1
+  K: 1
+  version: cheby
+
