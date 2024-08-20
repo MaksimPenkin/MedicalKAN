@@ -13,6 +13,17 @@ from timm.models.layers import to_2tuple, trunc_normal_
 from nn.layers.kan_original.KANLinear import KANLinear
 
 
+class Conv3x3(nn.Module):
+
+    def __init__(self, in_ch, out_ch, **kwargs):
+        super(Conv3x3, self).__init__()
+
+        self.conv = nn.Conv2d(in_ch, out_ch, 3, padding=1, **kwargs)
+
+    def forward(self, x):
+        return self.conv(x)
+
+
 class PatchEmbedding(nn.Module):
 
     def __init__(self, in_ch, embed_ch, patch_size=7, stride=4):
@@ -68,7 +79,7 @@ class KANBottleneckBlock(nn.Module):
 
         self.norm = nn.LayerNorm(dim)
 
-        self.dwconv = nn.Conv2d(dim, dim, 3, stride=1, padding=1, groups=dim)
+        self.dwconv = Conv3x3(dim, dim, groups=dim)
         self.bn = nn.BatchNorm2d(dim)
         self.relu = nn.ReLU()
 
@@ -110,10 +121,10 @@ class ResBlock(nn.Module):
         super(ResBlock, self).__init__()
 
         self.bn1 = nn.BatchNorm2d(dim)
-        self.conv1 = nn.Conv2d(dim, dim, 3, padding=1)
+        self.conv1 = Conv3x3(dim, dim)
 
         self.bn2 = nn.BatchNorm2d(dim)
-        self.conv2 = nn.Conv2d(dim, dim, 3, padding=1)
+        self.conv2 = Conv3x3(dim, dim)
 
         self.relu = nn.ReLU()
 
@@ -134,13 +145,13 @@ class UKAN(nn.Module):
         filter_list = [filters * (2 ** i) for i in range(L)]
         kan_filters = kan_filters or filter_list[-1] * 2
 
-        self.emb = nn.Conv2d(1, filters, 3, padding=1)
+        self.emb = Conv3x3(1, filter_list[0])
         self.encoder = []
         for i in range(L - 1):
             in_ch, out_ch = filter_list[i], filter_list[i + 1]
             self.encoder.append(
                 nn.Sequential(
-                    nn.Conv2d(in_ch, out_ch, 3, stride=2, padding=1),
+                    Conv3x3(in_ch, out_ch, stride=2),
                     ResBlock(out_ch))
             )
 
@@ -156,10 +167,10 @@ class UKAN(nn.Module):
             in_ch, out_ch = filter_list[i + 1], filter_list[i]
             self.decoder.append(
                 nn.Sequential(
-                    nn.Conv2d(in_ch, out_ch, 3, padding=1),
+                    Conv3x3(in_ch, out_ch),
                     ResBlock(out_ch))
             )
-        self.restore = nn.Conv2d(filter_list[0], 1, 3, padding=1)
+        self.restore = Conv3x3(filter_list[0], 1)
 
     def forward(self, x):
         # Space -> Feature.
