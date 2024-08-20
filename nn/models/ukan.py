@@ -108,6 +108,11 @@ class KANBottleneckBlock(nn.Module):
                                  grid_range=[-1, 1])
         elif version == "cheby":
             self.kan = ChebyKANLinear(dim, dim, 3)
+        elif version == "linear":
+            self.kan = nn.Sequential(
+                nn.Linear(dim, dim),
+                nn.ReLU()
+            )
         else:
             raise NotImplementedError(f"Unrecognized `version` found: {version}.")
 
@@ -143,7 +148,7 @@ class KANBottleneckBlock(nn.Module):
 
 class StackedResidualKAN(nn.Module):
 
-    def __init__(self, filters=8, L=1, kan_filters=None, K=1, version="cheby"):
+    def __init__(self, filters=8, L=1, kan_filters=None, K=1, version="spline"):
         super(StackedResidualKAN, self).__init__()
         assert L >= 1 and K >= 1
 
