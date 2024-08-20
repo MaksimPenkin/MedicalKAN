@@ -25,11 +25,8 @@ class PatchEncoder(nn.Module):
         super(PatchEncoder, self).__init__()
 
         self._patch_size = patch_size
-
         self.proj = conv1x1(in_ch * self.patch_size * self.patch_size, out_ch)
         self.norm = nn.LayerNorm(out_ch)
-
-        self.apply(self._init_weights)
 
     def forward(self, x):
         x = space_to_depth(x, self.patch_size)
@@ -51,7 +48,6 @@ class PatchDecoder(nn.Module):
         super(PatchDecoder, self).__init__()
 
         self._patch_size = patch_size
-
         self.proj = conv1x1(in_ch, out_ch * self.patch_size * self.patch_size)
 
     def forward(self, x, H, W):
@@ -127,27 +123,28 @@ class UKAN(nn.Module):
         for i in range(1, L + 1):
             self.encoder.append(
                 nn.Sequential(
-                    conv3x3(filters, filter_list[i], stride=2),
+                    conv3x3(filters, filter_list[i]),
                     ResBlock(filter_list[i]))
             )
             filters = filter_list[i]
 
-        self.bottleneck_enc = PatchEncoder(filters, kan_filters, patch_size=3)
+        self.bottleneck_enc = PatchEncoder(filters, kan_filters, patch_size=5)
         self.bottleneck = []
         for i in range(K):
             self.bottleneck.append(
                 KANBottleneckBlock(kan_filters, version=version)
             )
-        self.bottleneck_dec = PatchDecoder(kan_filters, filters, patch_size=3)
+        self.bottleneck_dec = PatchDecoder(kan_filters, filters, patch_size=5)
 
         self.decoder = []
         for i in range(L, 0, -1):
             self.decoder.append(
                 nn.Sequential(
-                    conv3x3(filters, filter_list[i - 1]),
-                    ResBlock(filter_list[i - 1]))
+                    ResBlock(filters),
+                    conv3x3(filters, filter_list[i - 1]))
             )
             filters = filter_list[i - 1]
+
         self.restore = conv3x3(filters, 1)
 
     def forward(self, x):
@@ -156,21 +153,22 @@ class UKAN(nn.Module):
 
         # Encoder.
         skips = {}
-        for idx, layer in enumerate(self.encoder):
+        i = 0
+        for layer in self.encoder:
             x = layer(x)
-            skips[f"enc-{idx + 1}"] = x
+            i += 1
+            skips[f"enc-{i}"] = x
 
         # Bottleneck.
         x, H, W = self.bottleneck_enc(x)
-        for layer in enumerate(self.bottleneck):
-            x = layer(x, H, W)
+        for layer in self.bottleneck:
+            x = layer(x)
         x = self.bottleneck_dec(x, H, W)
 
         # Decoder.
-        for idx, layer in reversed(list(enumerate(self.decoder))):
-            x = F.interpolate(x, scale_factor=(2, 2), mode="bilinear")
+        for j, layer in enumerate(self.decoder):
+            x += skips[f"enc-{i - j}"]
             x = layer(x)
-            x += skips[f"enc-{idx + 1}"]
 
         # Feature -> Space.
         x = self.restore(F.relu(x))
