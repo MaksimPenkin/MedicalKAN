@@ -153,7 +153,7 @@ class BottleneckBlock(nn.Module):
 
 class StackedResidualKAN(nn.Module):
 
-    def __init__(self, filters=8, S=1, kan_filters=None, L=1, **kwargs):
+    def __init__(self, filters=8, S=1, kan_filters=None, L=3, **kwargs):
         super(StackedResidualKAN, self).__init__()
         assert S >= 1 and L >= 1
 
