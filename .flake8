@@ -4,4 +4,7 @@ ignore = E401, W503
 per-file-ignores =
     ./utils/torch_utils.py:E722
 
-exclude = ./nn/layers/kan_convolutional
+exclude =
+    ./nn/layers/kan_advanced
+    ./nn/layers/kan_convolutional
+    ./nn/layers/kan_original
