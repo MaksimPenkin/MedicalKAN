@@ -3,7 +3,8 @@
 # @author   Maksim Penkin
 # """
 
-import math
+import math, sys
+sys.path.append(r"C:\Users\penki\Documents\cmc\research\MedicalKAN")
 
 import torch
 import torch.nn.functional as F
@@ -66,14 +67,14 @@ class ConvEncoderBlock(nn.Module):
     def __init__(self, in_ch, out_ch):
         super(ConvEncoderBlock, self).__init__()
 
+        self.feat = ResBlock(in_ch)
         self.proj = conv3x3(in_ch, out_ch)
-        self.feat = ResBlock(out_ch)
 
     def forward(self, x):
-        x = self.proj(x)
-        x = self.feat(x)
+        feat = self.feat(x)
+        x = self.proj(feat)
 
-        return x
+        return x, feat
 
 
 class ConvDecoderBlock(nn.Module):
@@ -81,14 +82,14 @@ class ConvDecoderBlock(nn.Module):
     def __init__(self, in_ch, out_ch):
         super(ConvDecoderBlock, self).__init__()
 
-        self.feat = ResBlock(in_ch)
         self.proj = conv3x3(in_ch, out_ch)
+        self.feat = ResBlock(out_ch)
 
     def forward(self, x, skip):
-        x = self.feat(x + skip)
         x = self.proj(x)
+        x = self.feat(x)
 
-        return x
+        return x + skip
 
 
 class BottleneckBlock(nn.Module):
@@ -153,36 +154,32 @@ class BottleneckBlock(nn.Module):
 
 class StackedResidualKAN(nn.Module):
 
-    def __init__(self, filters=8, S=1, kan_filters=None, L=3, **kwargs):
+    def __init__(self, filters=8, S=1, L=3, **kwargs):
         super(StackedResidualKAN, self).__init__()
         assert S >= 1 and L >= 1
 
-        filter_list = [filters, ] + [filters * (2 ** (i + 1)) for i in range(S)]
-        kan_filters = kan_filters or filter_list[-1]
-
         self.emb = conv3x3(1, filters)
         self.encoder = nn.ModuleList([])
-        filters = filter_list[0]
-        for i in range(1, S + 1):
+        for i in range(S):
             self.encoder.append(
-                ConvEncoderBlock(filters, filter_list[i])
+                ConvEncoderBlock(filters, filters * 2)
             )
-            filters = filter_list[i]
+            filters = filters * 2
 
-        self.bottleneck_enc = PatchEncoder(filters, kan_filters, patch_size=5)
+        self.bottleneck_enc = PatchEncoder(filters, 16, patch_size=5)
         self.bottleneck = nn.ModuleList([])
         for i in range(L):
             self.bottleneck.append(
-                BottleneckBlock(kan_filters, **kwargs)
+                BottleneckBlock(16, **kwargs)
             )
-        self.bottleneck_dec = PatchDecoder(kan_filters, filters, patch_size=5)
+        self.bottleneck_dec = PatchDecoder(16, filters, patch_size=5)
 
         self.decoder = nn.ModuleList([])
         for i in range(S, 0, -1):
             self.decoder.append(
-                ConvDecoderBlock(filters, filter_list[i - 1])
+                ConvDecoderBlock(filters, filters // 2)
             )
-            filters = filter_list[i - 1]
+            filters = filters // 2
 
         self.restore = conv3x3(filters, 1)
 
@@ -194,9 +191,9 @@ class StackedResidualKAN(nn.Module):
         skips = {}
         i = 0
         for layer in self.encoder:
-            x = layer(x)
+            x, skip = layer(x)
             i += 1
-            skips[f"enc-{i}"] = x
+            skips[f"enc-{i}"] = skip
 
         # Bottleneck.
         x, H, W = self.bottleneck_enc(x)
@@ -212,3 +209,9 @@ class StackedResidualKAN(nn.Module):
         x = self.restore(F.relu(x))
 
         return x
+
+
+inp = torch.rand(4, 1, 145, 145)
+nn = StackedResidualKAN(S=1, L=1)
+y = nn(inp)
+print(y.shape)
