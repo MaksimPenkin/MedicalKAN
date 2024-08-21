@@ -145,7 +145,7 @@ class BottleneckBlock(nn.Module):
 
 class StackedResidualKAN(nn.Module):
 
-    def __init__(self, filters=8, S=1, L=3, **kwargs):
+    def __init__(self, filters=4, S=1, L=3, **kwargs):
         super(StackedResidualKAN, self).__init__()
         assert S >= 1 and L >= 1
 
@@ -157,13 +157,13 @@ class StackedResidualKAN(nn.Module):
             )
             filters = filters * 2
 
-        self.bottleneck_enc = PatchEncoder(filters, 16, patch_size=5)
+        self.bottleneck_enc = PatchEncoder(filters, 64, patch_size=5)
         self.bottleneck = nn.ModuleList([])
         for i in range(L):
             self.bottleneck.append(
-                BottleneckBlock(16, **kwargs)
+                BottleneckBlock(64, **kwargs)
             )
-        self.bottleneck_dec = PatchDecoder(16, filters, patch_size=5)
+        self.bottleneck_dec = PatchDecoder(64, filters, patch_size=5)
 
         self.decoder = nn.ModuleList([])
         for i in range(S, 0, -1):
