@@ -4,3 +4,4 @@ config:
   S: 1
   L: 3
   version: cheby
+  spline_order: 3

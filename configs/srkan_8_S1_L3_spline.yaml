@@ -4,3 +4,5 @@ config:
   S: 1
   L: 3
   version: spline
+  spline_order: 3
+  grid_size: 5
