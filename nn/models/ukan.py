@@ -3,8 +3,7 @@
 # @author   Maksim Penkin
 # """
 
-import math, sys
-sys.path.append(r"C:\Users\penki\Documents\cmc\research\MedicalKAN")
+import math
 
 import torch
 import torch.nn.functional as F
@@ -209,9 +208,3 @@ class StackedResidualKAN(nn.Module):
         x = self.restore(F.relu(x))
 
         return x
-
-
-inp = torch.rand(4, 1, 145, 145)
-nn = StackedResidualKAN(S=1, L=1)
-y = nn(inp)
-print(y.shape)
