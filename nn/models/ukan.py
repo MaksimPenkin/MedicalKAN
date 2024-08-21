@@ -134,16 +134,13 @@ class BottleneckBlock(nn.Module):
     def forward(self, x):
         B, N, C = x.shape
 
-        if self.fc is not None:
-            identity = x
+        identity = x
 
-            x = x.reshape(B * N, C)
-            x = self.fc(x)
-            x = x.reshape(B, N, C).contiguous()
+        x = x.reshape(B * N, C)
+        x = self.fc(x)
+        x = x.reshape(B, N, C).contiguous()
 
-            return self.norm(identity + x)
-        else:
-            return x
+        return self.norm(identity + x)
 
 
 class StackedResidualKAN(nn.Module):
