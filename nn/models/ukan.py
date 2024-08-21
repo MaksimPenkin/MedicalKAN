@@ -93,13 +93,13 @@ class ConvDecoderBlock(nn.Module):
 
 class BottleneckBlock(nn.Module):
 
-    def __init__(self, dim, version="spline"):
+    def __init__(self, dim, version="spline", grid_size=5, spline_order=3):
         super(BottleneckBlock, self).__init__()
 
         if version == "spline":
             self.fc = KANLinear(dim, dim,
-                                grid_size=5,
-                                spline_order=3,
+                                grid_size=grid_size,
+                                spline_order=spline_order,
                                 scale_noise=0.1,
                                 scale_base=1.0,
                                 scale_spline=1.0,
@@ -107,7 +107,7 @@ class BottleneckBlock(nn.Module):
                                 grid_eps=0.02,
                                 grid_range=[-1, 1])
         elif version == "cheby":
-            self.fc = ChebyKANLinear(dim, dim, 3)
+            self.fc = ChebyKANLinear(dim, dim, spline_order)
         elif version == "linear":
             self.fc = nn.Sequential(
                 nn.Linear(dim, dim),
@@ -153,17 +153,17 @@ class BottleneckBlock(nn.Module):
 
 class StackedResidualKAN(nn.Module):
 
-    def __init__(self, filters=8, L=1, kan_filters=None, K=1, version="spline"):
+    def __init__(self, filters=8, S=1, kan_filters=None, L=1, **kwargs):
         super(StackedResidualKAN, self).__init__()
-        assert L >= 1 and K >= 1
+        assert S >= 1 and L >= 1
 
-        filter_list = [filters, ] + [filters * (2 ** (i + 1)) for i in range(L)]
+        filter_list = [filters, ] + [filters * (2 ** (i + 1)) for i in range(S)]
         kan_filters = kan_filters or filter_list[-1]
 
         self.emb = conv3x3(1, filters)
         self.encoder = nn.ModuleList([])
         filters = filter_list[0]
-        for i in range(1, L + 1):
+        for i in range(1, S + 1):
             self.encoder.append(
                 ConvEncoderBlock(filters, filter_list[i])
             )
@@ -171,14 +171,14 @@ class StackedResidualKAN(nn.Module):
 
         self.bottleneck_enc = PatchEncoder(filters, kan_filters, patch_size=5)
         self.bottleneck = nn.ModuleList([])
-        for i in range(K):
+        for i in range(L):
             self.bottleneck.append(
-                BottleneckBlock(kan_filters, version=version)
+                BottleneckBlock(kan_filters, **kwargs)
             )
         self.bottleneck_dec = PatchDecoder(kan_filters, filters, patch_size=5)
 
         self.decoder = nn.ModuleList([])
-        for i in range(L, 0, -1):
+        for i in range(S, 0, -1):
             self.decoder.append(
                 ConvDecoderBlock(filters, filter_list[i - 1])
             )
