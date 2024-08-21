@@ -109,12 +109,7 @@ class BottleneckBlock(nn.Module):
         elif version == "cheby":
             self.fc = ChebyKANLinear(dim, dim, spline_order)
         elif version == "linear":
-            self.fc = nn.Sequential(
-                nn.Linear(dim, dim),
-                nn.ReLU()
-            )
-        elif version == "identity":
-            self.fc = None
+            self.fc = nn.Linear(dim, dim)
         else:
             raise NotImplementedError(f"Unrecognized `version` found: {version}.")
 
