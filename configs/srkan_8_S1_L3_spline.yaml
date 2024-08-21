@@ -1,6 +1,6 @@
 class_name: srkan
 config:
-  filters: 8
+  filters: 4
   S: 1
   L: 3
   version: spline
