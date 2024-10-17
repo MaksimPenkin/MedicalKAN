@@ -1,5 +1,5 @@
 class_name: csv
 config:
-  filename: "/home/m.penkin/workspace/data/lists/IXI_0_1/test_gibbsnoiseLR.csv"
-  root: "/home/m.penkin/workspace/data/IXI_0_1/255"
+  filename: "C:/Users/penki/Documents/cmc/data/lists/IXI_0_1/test_gibbsnoiseLR.csv"
+  root: "C:/Users/penki/Documents/cmc/data/IXI_0_1/255"
   with_names: True
