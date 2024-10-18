@@ -1,5 +1,5 @@
-rrr# """
-# @author   Maksim Penkinnn
+# """
+# @author   Maksim Penkin
 # """
 
 import os
