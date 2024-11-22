@@ -12,8 +12,8 @@ from nn.callbacks.base_callback import ICallback
 class TensorBoardCallback(ICallback):
 
     @property
-    def global_step(self):
-        return self._global_step
+    def log_dir(self):
+        return self._log_dir
 
     @property
     def update_freq(self):
@@ -21,32 +21,31 @@ class TensorBoardCallback(ICallback):
 
     @update_freq.setter
     def update_freq(self, value):
-        if value == "batch":
-            value = 1
-        elif isinstance(value, int):
+        if isinstance(value, int):
             assert value > 0
+        elif value == "batch":
+            value = 1
         elif value != "epoch":
-            raise ValueError("nn/callbacks/tb_callback.py: class TensorBoardCallback: @update_freq.setter: "
-                             f"error: expected `update_freq` to be `epoch`, `batch` or int, found: {value} of type {type(value)}.")
+            raise ValueError(f"Expected `update_freq` to be `epoch`, `batch` or int, found: {value} of type {type(value)}.")
         self._update_freq = value
 
-    def __init__(self, log_dir=None, update_freq="epoch"):
+    @property
+    def global_step(self):
+        return self._global_step
+
+    def __init__(self, log_dir, update_freq="epoch", global_step=0):
         super(TensorBoardCallback, self).__init__()
 
-        log_dir = os.path.join(log_dir or "runs", datetime.now().strftime("%b%d_%H-%M-%S") + "_" + socket.gethostname())
-        self.log_dir = os.path.join(log_dir, "logs")
+        assert isinstance(global_step, int) and global_step >= 0
+        self._global_step = global_step
+
+        log_dir = os.path.join(log_dir,
+                               datetime.now().strftime("%b%d_%H-%M-%S") + "_" + socket.gethostname() if self.global_step == 0 else "",
+                               "logs")
+        self._log_dir = log_dir
+        self._writers = {}
 
         self.update_freq = update_freq
-
-        # Lazily initialized in order to avoid creating event files when not needed.
-        self._writers = {}
-        self._global_step = 0
-
-    def set_model(self, model):
-        super(TensorBoardCallback, self).set_model(model)
-
-        self._writers = {}
-        self._global_step = 0
 
     @property
     def _train_writer(self):
@@ -63,6 +62,10 @@ class TensorBoardCallback(ICallback):
                 log_dir=os.path.join(self.log_dir, "val")
             )
         return self._writers["val"]
+
+    def _close_writers(self):
+        for writer in self._writers.values():
+            writer.close()
 
     def on_epoch_end(self, epoch, logs=None):
         self._log_epoch_metrics(epoch, logs)
@@ -99,7 +102,3 @@ class TensorBoardCallback(ICallback):
         if (batch + 1) % self.update_freq == 0:
             for name, value in logs.items():
                 self._train_writer.add_scalar("batch/" + name, value, global_step=self.global_step + 1)
-
-    def _close_writers(self):
-        for writer in self._writers.values():
-            writer.close()

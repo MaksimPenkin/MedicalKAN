@@ -24,15 +24,14 @@ class ModelCheckpointCallback(ICallback):
         if isinstance(value, int):
             assert value > 0
         elif value != "epoch":
-            raise ValueError("nn/callbacks/ckpt_callback.py: class ModelCheckpointCallback: @save_freq.setter: "
-                             f"error: expected `save_freq` to be `epoch` or int, found: {value} of type {type(value)}.")
+            raise ValueError(f"Expected `save_freq` to be `epoch` or int, found: {value} of type {type(value)}.")
         self._save_freq = value
 
     def __init__(self, save_path, save_freq="epoch"):
         super(ModelCheckpointCallback, self).__init__()
 
         save_dir = os.path.split(save_path)[0]
-        if save_dir:
+        if save_dir:  # e.g. os.path.split("name.png") -> '', 'name.png'; os.path.split("./name.png") -> '.', 'name.png'
             create_folder(save_dir)
         self._save_path = save_path
 
