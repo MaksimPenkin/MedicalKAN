@@ -16,26 +16,25 @@ def maxmin_norm(img):
     return (img - m0) / (m1 - m0)
 
 
-def check3dimage(img):
+def _as_hwc(img):
     img = np.asarray(img)
+
     if img.ndim == 2:
         img = img[..., np.newaxis]
-    elif img.ndim != 3:
-        raise ValueError("utils/io_utils.py: def check3dimage(...): "
-                         f"error: expected 2 or 3 dimensional image, found shape: {img.shape}.")
+    elif img.ndim == 3:
+        if img.shape[-1] not in [1, 3]:
+            raise ValueError(f"Expected 1-channel or 3-channel 3 dimensional image, found shape: {img.shape}.")
+    else:
+        raise ValueError(f"Expected 2 or 3 dimensional image, found shape: {img.shape}.")
+
     return img
 
 
 def decode_png(read_path):
     img = cv2.imread(read_path, -1)
-    img = check3dimage(img)
-    if img.shape[-1] == 3:
+    img = _as_hwc(img)
+    if (img.ndim == 3) and (img.shape[-1] == 3):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    elif img.shape[-1] == 4:
-        img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGBA)
-    elif img.shape[-1] != 1:
-        raise ValueError("utils/io_utils.py: def decode_png(...): "
-                         f"error: expected 1-(GRAY), 3-(RGB) or 4-(RGBA) channel 3 dimensional image, found shape: {img.shape}.")
     return img
 
 
@@ -52,14 +51,9 @@ def decode_mat(read_path, key):
 
 
 def encode_png(img, save_path):
-    img = check3dimage(img)
-    if img.shape[-1] == 3:
+    img = _as_hwc(img)
+    if (img.ndim == 3) and (img.shape[-1] == 3):
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-    elif img.shape[-1] == 4:
-        img = cv2.cvtColor(img, cv2.COLOR_RGBA2BGRA)
-    elif img.shape[-1] != 1:
-        raise ValueError("utils/io_utils.py: def encode_png(...): "
-                         f"error: expected 1-(GRAY), 3-(RGB) or 4-(RGBA) channel 3 dimensional image, found shape: {img.shape}.")
     cv2.imwrite(save_path, img)
 
 
@@ -74,8 +68,7 @@ def encode_mat(img, save_path, key):
 def read_img(read_path, dtype=None, shape=None, key=None, normalize=None):
     # Setup.
     if not os.path.exists(read_path):
-        raise ValueError("utils/io_utils.py: def read_img(...): "
-                         f"error: `read_path` does not exist: {read_path}.")
+        raise ValueError(f"Source path does not exist: {read_path}.")
     ext = os.path.splitext(read_path)[-1].lower()
 
     # Read.
@@ -86,8 +79,7 @@ def read_img(read_path, dtype=None, shape=None, key=None, normalize=None):
     elif ext in [".mat"]:
         img = decode_mat(read_path, key)
     else:
-        raise ValueError("utils/io_utils.py: def read_img(...): "
-                         f"error: unrecognized filename extension found: {read_path}. "
+        raise ValueError(f"Unrecognized filename extension found: {read_path}. "
                          "Only `.png`, `.jpeg`, `.jpg`, `.raw`, `.bin` or `.mat` are supported.")
 
     # Process.
@@ -105,7 +97,7 @@ def read_img(read_path, dtype=None, shape=None, key=None, normalize=None):
 def save_img(img, save_path, key=None):
     # Setup.
     save_dir = os.path.split(save_path)[0]
-    if save_dir:
+    if save_dir:  # e.g. os.path.split("name.png") -> '', 'name.png'; os.path.split("./name.png") -> '.', 'name.png'
         create_folder(save_dir, exist_ok=True)
     ext = os.path.splitext(save_path)[-1].lower()
 
@@ -117,6 +109,5 @@ def save_img(img, save_path, key=None):
     elif ext in [".mat"]:
         encode_mat(img, save_path, key)
     else:
-        raise ValueError("utils/io_utils.py: def save_img(...): "
-                         f"error: unrecognized filename extension found: {save_path}. "
+        raise ValueError(f"Unrecognized filename extension found: {save_path}. "
                          "Only `.png`, `.jpeg`, `.jpg`, `.raw`, `.bin` or `.mat` are supported.")

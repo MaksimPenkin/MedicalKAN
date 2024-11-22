@@ -5,14 +5,13 @@
 import os, shutil
 
 
-def delete_file(filename):
-    if os.path.isfile(filename) or os.path.islink(filename):
-        os.unlink(filename)
-    elif os.path.isdir(filename):
-        shutil.rmtree(filename)
+def delete_file(fp):
+    if os.path.isfile(fp) or os.path.islink(fp):
+        os.unlink(fp)
+    elif os.path.isdir(fp):
+        shutil.rmtree(fp)
     else:
-        raise ValueError("utils/os_utils.py: def delete_file(...): "
-                         f"error: failed to delete: {filename}.")
+        raise ValueError(f"Failed to delete: {fp}.")
 
 
 def reset_folder(folder):
@@ -27,8 +26,7 @@ def create_folder(folder, exist_ok=False, force=False):
         if force:
             reset_folder(folder)
         else:
-            raise FileExistsError("utils/os_utils.py: def create_folder(...): "
-                                  f"error: cannot create folder, that already exists: {folder}. "
+            raise FileExistsError(f"Cannot create folder, that already exists: {folder}. "
                                   "In order to reset the folder, set force=True.")
 
 

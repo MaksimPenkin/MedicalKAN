@@ -1,5 +1,5 @@
 # """
-# @author   Maksim Penkin <mapenkin@sberbank.ru>
+# @author   Maksim Penkin
 # """
 
 MNIST_MEAN = (0.1307, )
