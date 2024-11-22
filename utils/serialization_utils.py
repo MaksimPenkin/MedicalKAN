@@ -20,8 +20,7 @@ def load_config(filename):
         with open(filename, "r") as f:
             config = yaml.safe_load(f)
     else:
-        raise ValueError("utils/serialization_utils.py: def load_config(...): "
-                         f"error: expected `.json` or `.yaml` file, found: {filename}.")
+        raise ValueError(f"Expected `.json` or `.yaml` file, found: {filename}.")
 
     return config
 
