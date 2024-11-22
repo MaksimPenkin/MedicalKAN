@@ -1,8 +1,12 @@
 # """
-# @author   Maksim Penkin
+# @author   Maksim Penkin <mapenkin@sberbank.ru>
 # """
 
+import json, time
 from tqdm import tqdm
+from datetime import datetime
+
+import numpy as np
 import torch
 
 
@@ -32,12 +36,13 @@ TORCH_DTYPES = {
 
 def torch_device():
     if torch.cuda.is_available():
-        return {"cuda": True,
-                "device_count": torch.cuda.device_count(),
-                "device_current": torch.cuda.current_device(),
-                "device_name": torch.cuda.get_device_name(0)}
+        return json.dumps({
+            "cuda": True,
+            "device_count": torch.cuda.device_count(),
+            "device_current": torch.cuda.current_device(),
+            "device_name": torch.cuda.get_device_name(0)}, indent=4)
     else:
-        return {"cuda": False}
+        return json.dumps({"cuda": False}, indent=4)
 
 
 def torch_dtype(dtype):
@@ -48,8 +53,7 @@ def torch_dtype(dtype):
     elif isinstance(dtype, str):
         return TORCH_DTYPES[dtype]
     else:
-        raise TypeError("utils/torch_utils.py: def torch_dtype(...): "
-                        f"error: expected `dtype` to be None, torch.dtype or str, found: {dtype} of type {type(dtype)}.")
+        raise TypeError(f"Expected `dtype` to be None, torch.dtype or str, found: {dtype} of type {type(dtype)}.")
 
 
 def torch_random(size, dtype=None, device="cpu"):
@@ -63,40 +67,19 @@ def torch_random(size, dtype=None, device="cpu"):
         return torch.rand(size, dtype=dtype, device=device)
 
 
-def move_data_device(data, device="cpu"):
-    if isinstance(data, torch.Tensor):
-        return data.to(device)
-
-    if isinstance(data, dict):
-        d = {k: move_data_device(v, device=device) for k, v in data.items()}
-    elif isinstance(data, (list, tuple)):
-        d = [move_data_device(v, device=device) for v in data]
+def torch_load(model, ckpt, **kwargs):
+    checkpoint = torch.load(ckpt, map_location="cpu")
+    if "state_dict" in checkpoint:
+        checkpoint = checkpoint["state_dict"]
+        state_dict = {name[6:]: checkpoint[name] for name in checkpoint}
     else:
-        raise TypeError("utils/torch_utils.py: def move_data_device(...): "
-                        f"error: expected `data` to be dict, list or tuple, or torch.Tensor, found: {data} of type {type(data)}.")
+        state_dict = checkpoint
 
-    return d
+    model.load_state_dict(state_dict, **kwargs)
+    return model
 
 
-def forward_wrapper(model, data):
-    # 1. Device identification.
-    try:
-        device = next(model.parameters()).device
-    except:
-        device = "cpu"
-
-    # 2. Data transfer to the device.
-    data = move_data_device(data, device=device)
-
-    # 3. Forward.
-    if isinstance(data, dict):
-        output = model(**data)
-    elif isinstance(data, (list, tuple)):
-        output = model(*data)
-    else:
-        output = model(data)
-
-    return output
+######################################################################################################################################################
 
 
 def _pythonify_logs(logs):
@@ -113,27 +96,129 @@ def _split_loss_logs(value):
         return value, {"loss": value.item()}
 
 
-def _eval_step(model, x, y, criterion):
+######################################################################################################################################################
+
+
+def _to_device(obj, device="cpu"):
+    if isinstance(obj, torch.Tensor) or isinstance(obj, torch.nn.Module):
+        return obj.to(device)
+
+    if isinstance(obj, dict):
+        return {k: _to_device(v, device=device) for k, v in obj.items()}
+    elif isinstance(obj, (list, tuple)):
+        return [_to_device(v, device=device) for v in obj]
+    else:
+        raise TypeError(f"Expected `obj` to be dict, list or tuple, torch.Tensor or torch.nn.Module, found: {obj} of type {type(obj)}.")
+
+
+######################################################################################################################################################
+
+
+def _model_step(model, x):
+    if isinstance(x, dict):
+        try:
+            y_pred = model(**x)
+        except:
+            y_pred = model(x)
+    elif isinstance(x, (list, tuple)):
+        try:
+            y_pred = model(*x)
+        except:
+            y_pred = model(x)
+    else:
+        y_pred = model(x)
+
+    return y_pred
+
+
+def _criterion_step(criterion, y_pred, y):
+    if isinstance(y, dict):
+        try:
+            value = criterion(y_pred, **y)
+        except:
+            value = criterion(y_pred, y)
+    elif isinstance(y, (list, tuple)):
+        try:
+            value = criterion(y_pred, *y)
+        except:
+            value = criterion(y_pred, y)
+    else:
+        value = criterion(y_pred, y)
+
+    return _split_loss_logs(value)
+
+
+######################################################################################################################################################
+
+
+def _eval_step(model, x, y, criterion, device="cpu"):
+    x = _to_device(x, device=device)
+    y = _to_device(y, device=device)
+
     with torch.no_grad():
-        output = forward_wrapper(model, x)
-        _, logs = _split_loss_logs(criterion(output, y))
+        y_pred = _model_step(model, x)
+        _, logs = _criterion_step(criterion, y_pred, y)
     return {"val_" + k: v for k, v in logs.items()}
 
 
-def _train_step(model, x, y, criterion, optimizer):
+def _train_step(model, x, y, criterion, optimizer, device="cpu"):
+    x = _to_device(x, device=device)
+    y = _to_device(y, device=device)
+
     optimizer.zero_grad()
-    output = forward_wrapper(model, x)
-    loss, logs = _split_loss_logs(criterion(output, y))
+    y_pred = _model_step(model, x)
+    loss, logs = _criterion_step(criterion, y_pred, y)
     loss.backward()
     optimizer.step()
     return logs
 
 
-def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, epochs=1, val_dataloader=None,
-               limit_batches=1.0, device="cpu"):
-    from nn import losses, optimizers
-    from nn.callbacks.base_callback import CompositeCallback
-    from metrics.base_metric import CompositeMetric
+def _inference_step(model, x, device="cpu"):
+    x = _to_device(x, device=device)
+
+    with torch.no_grad():
+        y_pred = _model_step(model, x)
+    return y_pred
+
+
+######################################################################################################################################################
+
+
+def eval_func(model, dataloader, criterion, callbacks=None, limit_batches=1.0, device="cpu"):
+    from tools.optimization import losses
+    from tools.optimization.callbacks import CompositeCallback
+    from tools.optimization.metrics import CompositeMetric
+
+    steps = int(limit_batches * len(dataloader))
+
+    criterion = losses.get(criterion)
+    if not isinstance(callbacks, CompositeCallback):
+        callbacks = CompositeCallback(callbacks=callbacks, model=model)
+
+    tracker = CompositeMetric()
+
+    model.to(device)
+    model.eval()
+    callbacks.on_test_begin()
+    eval_logs = {}
+    for idx, (x, y) in enumerate(tqdm(dataloader, total=steps)):
+        if idx >= steps:
+            break
+        # x, y = (blob["left_image"], blob["sparse_disparity"]), blob["disparity"]
+        callbacks.on_test_batch_begin(idx)
+        logs = _eval_step(model, x, y, criterion, device=device)
+        callbacks.on_test_batch_end(idx, logs=logs)
+        tracker.update_state(logs, n=x.size(0))  # TODO: add seamless batch_size value extraction.
+    eval_logs = tracker.result()
+    callbacks.on_test_end(logs=eval_logs)
+
+    return eval_logs
+
+
+def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, epochs=1, val_dataloader=None, limit_batches=1.0, device="cpu"):
+    from tools.optimization import losses, optimizers
+    from tools.optimization.callbacks import CompositeCallback
+    from tools.optimization.metrics import CompositeMetric
 
     steps = int(limit_batches * len(dataloader))
     val_steps = len(val_dataloader) if val_dataloader is not None else None
@@ -156,9 +241,9 @@ def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, e
         for idx, (x, y) in enumerate(tqdm(dataloader, total=steps, leave=False)):
             if idx >= steps:
                 break
-            y = move_data_device(y, device=device)
+            # x, y = (blob["left_image"], blob["sparse_disparity"]), blob["disparity"]
             callbacks.on_train_batch_begin(idx)
-            logs = _train_step(model, x, y, criterion, optimizer)
+            logs = _train_step(model, x, y, criterion, optimizer, device=device)
             callbacks.on_train_batch_end(idx, logs=logs)
             train_tracker.update_state(logs, n=x.size(0))  # TODO: add seamless batch_size value extraction.
         epoch_logs = train_tracker.result()
@@ -170,9 +255,9 @@ def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, e
             for idx, (x, y) in enumerate(tqdm(val_dataloader, total=val_steps, leave=False)):
                 if idx >= val_steps:
                     break
-                y = move_data_device(y, device=device)
+                # x, y = (blob["left_image"], blob["sparse_disparity"]), blob["disparity"]
                 callbacks.on_test_batch_begin(idx)
-                logs = _eval_step(model, x, y, criterion)
+                logs = _eval_step(model, x, y, criterion, device=device)
                 callbacks.on_test_batch_end(idx, logs=logs)
                 val_tracker.update_state(logs, n=x.size(0))  # TODO: add seamless batch_size value extraction.
             val_logs = val_tracker.result()
@@ -183,15 +268,29 @@ def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, e
     callbacks.on_train_end(logs=epoch_logs)
 
 
+def inference_func(model, dataloader, limit_batches=1.0, device="cpu"):
+    steps = int(limit_batches * len(dataloader))
+    model.to(device)
+    model.eval()
+
+    try:
+        for idx, (x, y) in enumerate(tqdm(dataloader, total=steps)):
+            if idx >= steps:
+                break
+            _ = _inference_step(model, x, device=device)
+    except:
+        for idx, x in enumerate(tqdm(dataloader, total=steps)):
+            if idx >= steps:
+                break
+            _ = _inference_step(model, x, device=device)
+
+
 def latency_func(model, shapes, dtypes=None, warmup=10, iteration=100, device="cpu"):
-    import numpy as np
-    import time
-    from datetime import datetime
-    from data.dummy import random_uniform
+    from tools.optimization.datasets.dummy import random_uniform
 
     model.to(device)
     model.eval()
-    example_inputs = move_data_device(next(iter(random_uniform(shapes, dtypes=dtypes))), device=device)
+    example_inputs = _to_device(next(iter(random_uniform(shapes, dtypes=dtypes))), device=device)
 
     print(f"{datetime.now()}: Warm up...")
     with torch.no_grad():
