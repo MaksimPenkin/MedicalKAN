@@ -18,23 +18,20 @@ def maxmin_norm(img):
 
 def _as_hwc(img):
     img = np.asarray(img)
-
     if img.ndim == 2:
         img = img[..., np.newaxis]
-    elif img.ndim == 3:
-        if img.shape[-1] not in [1, 3]:
-            raise ValueError(f"Expected 1-channel or 3-channel 3 dimensional image, found shape: {img.shape}.")
-    else:
-        raise ValueError(f"Expected 2 or 3 dimensional image, found shape: {img.shape}.")
-
+    elif img.ndim != 3:
+        raise ValueError(f"Expected 2 or 3 dimensional image, found ndim: {img.ndim}.")
     return img
 
 
 def decode_png(read_path):
     img = cv2.imread(read_path, -1)
     img = _as_hwc(img)
-    if (img.ndim == 3) and (img.shape[-1] == 3):
+    if img.shape[-1] == 3:
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    elif img.shape[-1] == 4:
+        img = cv2.cvtColor(img, cv2.COLOR_BGRA2RGBA)
     return img
 
 
@@ -52,8 +49,10 @@ def decode_mat(read_path, key):
 
 def encode_png(img, save_path):
     img = _as_hwc(img)
-    if (img.ndim == 3) and (img.shape[-1] == 3):
+    if img.shape[-1] == 3:
         img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+    elif img.shape[-1] == 4:
+        img = cv2.cvtColor(img, cv2.COLOR_RGBA2BGRA)
     cv2.imwrite(save_path, img)
 
 
