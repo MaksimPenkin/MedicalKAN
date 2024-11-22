@@ -1,8 +1,8 @@
 # """
-# @author   Maksim Penkin <mapenkin@sberbank.ru>
+# @author   Maksim Penkin
 # """
 
-import json, time
+import time
 from tqdm import tqdm
 from datetime import datetime
 
@@ -36,13 +36,13 @@ TORCH_DTYPES = {
 
 def torch_device():
     if torch.cuda.is_available():
-        return json.dumps({
+        return {
             "cuda": True,
             "device_count": torch.cuda.device_count(),
             "device_current": torch.cuda.current_device(),
-            "device_name": torch.cuda.get_device_name(0)}, indent=4)
+            "device_name": torch.cuda.get_device_name(0)}
     else:
-        return json.dumps({"cuda": False}, indent=4)
+        return {"cuda": False}
 
 
 def torch_dtype(dtype):
@@ -185,9 +185,9 @@ def _inference_step(model, x, device="cpu"):
 
 
 def eval_func(model, dataloader, criterion, callbacks=None, limit_batches=1.0, device="cpu"):
-    from tools.optimization import losses
-    from tools.optimization.callbacks import CompositeCallback
-    from tools.optimization.metrics import CompositeMetric
+    from nn import losses
+    from nn.callbacks import CompositeCallback
+    from metrics import CompositeMetric
 
     steps = int(limit_batches * len(dataloader))
 
@@ -204,7 +204,6 @@ def eval_func(model, dataloader, criterion, callbacks=None, limit_batches=1.0, d
     for idx, (x, y) in enumerate(tqdm(dataloader, total=steps)):
         if idx >= steps:
             break
-        # x, y = (blob["left_image"], blob["sparse_disparity"]), blob["disparity"]
         callbacks.on_test_batch_begin(idx)
         logs = _eval_step(model, x, y, criterion, device=device)
         callbacks.on_test_batch_end(idx, logs=logs)
@@ -216,9 +215,9 @@ def eval_func(model, dataloader, criterion, callbacks=None, limit_batches=1.0, d
 
 
 def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, epochs=1, val_dataloader=None, limit_batches=1.0, device="cpu"):
-    from tools.optimization import losses, optimizers
-    from tools.optimization.callbacks import CompositeCallback
-    from tools.optimization.metrics import CompositeMetric
+    from nn import losses, optimizers
+    from nn.callbacks import CompositeCallback
+    from metrics import CompositeMetric
 
     steps = int(limit_batches * len(dataloader))
     val_steps = len(val_dataloader) if val_dataloader is not None else None
@@ -241,7 +240,6 @@ def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, e
         for idx, (x, y) in enumerate(tqdm(dataloader, total=steps, leave=False)):
             if idx >= steps:
                 break
-            # x, y = (blob["left_image"], blob["sparse_disparity"]), blob["disparity"]
             callbacks.on_train_batch_begin(idx)
             logs = _train_step(model, x, y, criterion, optimizer, device=device)
             callbacks.on_train_batch_end(idx, logs=logs)
@@ -255,7 +253,6 @@ def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, e
             for idx, (x, y) in enumerate(tqdm(val_dataloader, total=val_steps, leave=False)):
                 if idx >= val_steps:
                     break
-                # x, y = (blob["left_image"], blob["sparse_disparity"]), blob["disparity"]
                 callbacks.on_test_batch_begin(idx)
                 logs = _eval_step(model, x, y, criterion, device=device)
                 callbacks.on_test_batch_end(idx, logs=logs)
@@ -286,7 +283,7 @@ def inference_func(model, dataloader, limit_batches=1.0, device="cpu"):
 
 
 def latency_func(model, shapes, dtypes=None, warmup=10, iteration=100, device="cpu"):
-    from tools.optimization.datasets.dummy import random_uniform
+    from data.dummy import random_uniform
 
     model.to(device)
     model.eval()
