@@ -40,9 +40,12 @@ def torch_device():
             "cuda": True,
             "device_count": torch.cuda.device_count(),
             "device_current": torch.cuda.current_device(),
-            "device_name": torch.cuda.get_device_name(0)}
+            "device_name": torch.cuda.get_device_name(0)
+        }
     else:
-        return {"cuda": False}
+        return {
+            "cuda": False
+        }
 
 
 def torch_dtype(dtype):
@@ -56,15 +59,17 @@ def torch_dtype(dtype):
         raise TypeError(f"Expected `dtype` to be None, torch.dtype or str, found: {dtype} of type {type(dtype)}.")
 
 
-def torch_random(size, dtype=None, device="cpu"):
+def torch_random(size, low=0, high=None, dtype=None, device="cpu"):
     dtype = torch_dtype(dtype)
 
     if dtype == torch.bool:
         return torch.randint(0, 2, size, dtype=dtype, device=device)  # The `high` value is hard-coded.
     elif dtype in [torch.uint8, torch.int8, torch.int16, torch.short, torch.int32, torch.int, torch.int64, torch.long]:
-        return torch.randint(0, 10, size, dtype=dtype, device=device)  # The `high` value is hard-coded.
+        return torch.randint(low, high, size, dtype=dtype, device=device)  # The `high` value is hard-coded.
     else:
-        return torch.rand(size, dtype=dtype, device=device)
+        high = high or 1
+        assert low < high, f"random_ expects `from` to be less than `to`, but found: {low} >= {high}."
+        return (low - high) * torch.rand(size, dtype=dtype, device=device) + high
 
 
 def torch_load(model, ckpt, **kwargs):
