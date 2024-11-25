@@ -14,20 +14,19 @@ def delete_file(filename):
         raise ValueError(f"Failed to delete: {filename}.")
 
 
-def reset_folder(folder):
-    for filename in os.listdir(folder):
-        delete_file(os.path.join(folder, filename))
+def reset_dir(directory):
+    for filename in os.listdir(directory):
+        delete_file(os.path.join(directory, filename))
 
 
-def create_folder(folder, exist_ok=False, force=False):
+def make_dir(directory, exist_ok=False, force=False):
     try:
-        os.makedirs(folder, exist_ok=exist_ok)
+        os.makedirs(directory, exist_ok=exist_ok)
     except FileExistsError:
         if force:
-            reset_folder(folder)
+            reset_dir(directory)
         else:
-            raise FileExistsError(f"Cannot create folder, that already exists: {folder}. "
-                                  "In order to reset the folder, set force=True.")
+            raise FileExistsError(f"Cannot create directory, that already exists: {directory}.")
 
 
 def copy(source, destination):

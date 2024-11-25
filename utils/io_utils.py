@@ -8,7 +8,7 @@ import numpy as np
 import cv2
 from scipy.io import loadmat, savemat
 
-from utils.os_utils import create_folder
+from utils.os_utils import make_dir
 
 
 def maxmin_norm(img):
@@ -97,7 +97,7 @@ def save_img(img, save_path, key=None):
     # Setup.
     save_dir = os.path.split(save_path)[0]
     if save_dir:  # e.g. os.path.split("name.png") -> '', 'name.png'; os.path.split("./name.png") -> '.', 'name.png'
-        create_folder(save_dir, exist_ok=True)
+        make_dir(save_dir, exist_ok=True)
     ext = os.path.splitext(save_path)[-1].lower()
 
     # Save.

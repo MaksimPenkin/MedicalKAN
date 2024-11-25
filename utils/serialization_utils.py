@@ -6,10 +6,6 @@ import os, json, yaml
 from importlib import import_module
 
 
-def dynamic_import_module(cls_module, cls_name):
-    return getattr(import_module(cls_module), cls_name)
-
-
 def load_config(filename):
     ext = os.path.splitext(filename)[-1].lower()
 
@@ -74,7 +70,7 @@ def create_object_from_config(config, module_objects=None):
     if not cls_module:
         cls = module_objects[cls_name]  # If module name is not provided by the config, try to find the target class in table.
     else:
-        cls = dynamic_import_module(cls_module, cls_name)  # Otherwise, dynamically import the target class.
+        cls = getattr(import_module(cls_module), cls_name)  # Otherwise, dynamically import the target class.
 
     return cls(**cls_config)  # Construct and return target object.
 
