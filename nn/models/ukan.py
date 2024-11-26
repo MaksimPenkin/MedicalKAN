@@ -13,7 +13,7 @@ from timm.models.layers import trunc_normal_
 from nn.models.resnet import ResBlock, conv3x3, conv1x1
 from nn.layers.kan_original.KANLinear import KANLinear
 from nn.layers.kan_advanced.chebyshev import ChebyKANLinear
-from nn.transforms.pixel_shuffle import space_to_depth, depth_to_space
+from nn.transforms.functional import space_to_depth, depth_to_space
 
 
 class PatchEncoder(nn.Module):
