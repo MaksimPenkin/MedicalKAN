@@ -2,17 +2,13 @@
 # @author   Maksim Penkin
 # """
 
-import abc, os
+import abc
 
 
 class ISampler:
 
-    @property
-    def data(self):
-        return self._data
-
     def __init__(self):
-        self._data = None
+        pass
 
     @abc.abstractmethod
     def __len__(self):
@@ -48,37 +44,3 @@ class IterableSampler(ISampler):
         self.head += 1
         # Return the current element.
         return self[self.head]
-
-
-class PathSampler(IterableSampler):
-
-    @property
-    def with_names(self):
-        return self._with_names
-
-    def __init__(self, filename, root="", with_names=False):
-        super(PathSampler, self).__init__()
-
-        self._set_data(filename)
-        self._root = root
-        self._with_names = bool(with_names)
-
-    @abc.abstractmethod
-    def _set_data(self, filename):
-        raise NotImplementedError("Must be implemented in subclasses.")
-
-    @abc.abstractmethod
-    def _get_data_item(self, item):
-        raise NotImplementedError("Must be implemented in subclasses.")
-
-    def __len__(self):
-        return len(self.data)
-
-    def __getitem__(self, item):
-        filenames = self._get_data_item(item)
-
-        sample = tuple(os.path.join(self._root, filename) for filename in filenames)
-        if self.with_names:
-            sample += (os.path.split(filenames[0])[-1], )
-
-        return sample
