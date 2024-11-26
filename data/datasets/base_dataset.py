@@ -2,33 +2,35 @@
 # @author   Maksim Penkin
 # """
 
-from data import samplers, transforms
+from data import samplers
+from data import transforms as augmentations
 
 from torch.utils.data import Dataset
 
 
-class SampleDataset(Dataset):
+class CustomDataset(Dataset):
 
-    @property
-    def sampler(self):
-        return self._sampler
+    def __init__(self, root, transforms=None):
+        self.root = root
 
-    @property
-    def transform(self):
-        return self._transform
-
-    def __init__(self, sampler, transform=None):
-        self._sampler = samplers.get(sampler)
-        if transform is not None:
-            self._transform = transforms.CompositeTransform([transforms.get(t) for t in transform])
+        if transforms is not None:
+            self.transforms = augmentations.CompositeTransform([augmentations.get(t) for t in transforms])
         else:
-            self._transform = None
+            self.transforms = None
+
+    def __len__(self):
+        raise NotImplementedError("Must be implemented in subclasses.")
+
+    def __getitem__(self, idx):
+        raise NotImplementedError("Must be implemented in subclasses.")
+
+
+class SamplerDataset(CustomDataset):
+
+    def __init__(self, sampler, *args, **kwargs):
+        super(SamplerDataset, self).__init__(*args, **kwargs)
+
+        self.sampler = samplers.get(sampler)
 
     def __len__(self):
         return len(self.sampler)
-
-    def __getitem__(self, idx):
-        sample = self.sampler[idx]
-        if self.transform:
-            sample = self.transform(*sample)
-        return sample

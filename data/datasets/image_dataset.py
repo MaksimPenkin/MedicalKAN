@@ -2,26 +2,34 @@
 # @author   Maksim Penkin
 # """
 
-from data.samplers.path_sampler import PathSampler
+import os
+from itertools import zip_longest
 from utils.io_utils import read_img
 
-from data.datasets.base_dataset import SampleDataset
+from data.datasets.base_dataset import SamplerDataset
 
 
-class ImageDataset(SampleDataset):
+class ImageDataset(SamplerDataset):
 
-    def __init__(self, sampler, transform=None, **kwargs):
-        super(ImageDataset, self).__init__(sampler, transform=transform)
+    def __init__(self, *args, load_params=None, return_filename=False, **kwargs):
+        super(ImageDataset, self).__init__(*args, **kwargs)
 
-        assert isinstance(self.sampler, PathSampler), f"Error: expected `sampler` PathSampler, found: {self.sampler}."
-        self._kwargs = kwargs
+        self.load_func = read_img  # Hard-coded loader.
+        self.load_params = load_params if load_params is not None else []
+        self.return_filename = bool(return_filename)
 
     def __getitem__(self, idx):
-        paths = self.sampler[idx]
-        t = len(paths) - self.sampler.with_names
+        filenames = self.sampler[idx]
 
-        sample = tuple(read_img(paths[i], **{k: v[i] for k, v in self._kwargs.items()}) for i in range(t))
-        if self.transform:
-            sample = self.transform(*sample)
+        sample = tuple(
+            self.load_func(os.path.join(self.root, filename), **kwargs)
+            for filename, kwargs in zip_longest(filenames, self.load_params, fillvalue={})
+        )
 
-        return *sample, *paths[t:]
+        if self.transforms:
+            sample = self.transforms(*sample)
+
+        if self.return_filename:
+            return *sample, os.path.split(filenames[0])[-1]
+        else:
+            return sample
