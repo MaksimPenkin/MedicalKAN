@@ -11,7 +11,8 @@ from utils.serialization_utils import create_object
 def get(identifier, **kwargs):
     obj = create_object(identifier,
                         module_objects={
-                            "ToTensor": ToTensor},
+                            "ToTensor": ToTensor,
+                            "CompositeTransform": CompositeTransform},
                         **kwargs)
 
     if isinstance(obj, ITransform):
