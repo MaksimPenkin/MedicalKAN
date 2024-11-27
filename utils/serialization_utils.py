@@ -87,3 +87,18 @@ def create_object(identifier, module_objects=None, **kwargs):
         obj = create_object_from_config(config, module_objects=module_objects)
 
     return obj
+
+
+def create_func(identifier):
+    if identifier is None:
+        return None
+
+    if isinstance(identifier, str):
+        func_module, func_name = '.'.join(identifier.split('.')[:-1]), identifier.split('.')[-1]
+        func = getattr(import_module(func_module), func_name)
+    elif callable(identifier):
+        func = identifier
+    else:
+        raise TypeError(f"Expected `identifier` to be None, str or callable, found: {identifier} of type {type(identifier)}.")
+
+    return func
