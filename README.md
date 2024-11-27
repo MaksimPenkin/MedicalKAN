@@ -7,7 +7,6 @@
 
 ## Workspace
 ```
-
 ├── ckpts
 ├── runs
 └── MedicalKAN
@@ -26,12 +25,11 @@
 ```
 
 ## Quick-start
-
 ```
 > cd ~
 > git clone https://github.com/MaksimPenkin/MedicalKAN.git
 > cd MedicalKAN
-> python train.py --help
+> python3 train.py --help
 ```
 
 ## Acknowledgements
