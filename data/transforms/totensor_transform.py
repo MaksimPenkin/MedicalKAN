@@ -2,7 +2,7 @@
 # @author   Maksim Penkin
 # """
 
-import torchvision.transforms.functional as F
+import data.transforms.functional as F
 
 from data.transforms.base_transform import ITransform
 
