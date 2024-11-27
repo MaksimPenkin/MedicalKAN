@@ -1,5 +1,18 @@
-class_name: csv
+class_name: IXIRingingDataset
 config:
-  filename: "C:/Users/penki/Documents/cmc/data/lists/IXI_0_1/test_gibbsnoiseLR.csv"
-  root: "C:/Users/penki/Documents/cmc/data/IXI_0_1/255"
-  with_names: True
+  root: "/media/datasets/IXI_0_1/255"
+  transforms:
+  - ToTensor
+
+  sampler:
+    class_name: CSVSampler
+    config:
+      filename: "../../data/data_lists/IXI_0_1/test_gibbsnoiseLR.csv"
+
+  load_func: utils.io_utils.read_img
+  load_params:
+  - key: "sketch"
+    shape: [145, 145]
+    dtype: float32
+
+  return_filenames: 1

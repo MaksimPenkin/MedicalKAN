@@ -1,4 +1,19 @@
-class_name: csv
+class_name: IXIRingingDataset
 config:
-  filename: "/home/m.penkin/workspace/data/lists/IXI_0_1/train_gtLR_gibbsnoiseLR.csv"
-  root: "/home/m.penkin/workspace/data/IXI_0_1/255"
+  root: "/media/datasets/IXI_0_1/255"
+  transforms:
+  - ToTensor
+
+  sampler:
+    class_name: CSVSampler
+    config:
+      filename: "../../data/data_lists/IXI_0_1/train_gtLR_gibbsnoiseLR.csv"
+
+  load_func: utils.io_utils.read_img
+  load_params:
+  - key: "sketch"
+    shape: [145, 145]
+    dtype: float32
+  - key: "gt"
+    shape: [255, 255]
+    dtype: float32
