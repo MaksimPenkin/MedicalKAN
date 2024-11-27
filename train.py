@@ -7,7 +7,8 @@ import argparse
 from argparse import RawTextHelpFormatter
 
 from nn import models, callbacks
-from data.ixi import ixi
+from data import datasets
+from torch.utils.data import DataLoader
 
 from utils.torch_utils import train_func
 from utils.serialization_utils import load_config
@@ -50,11 +51,10 @@ def main(args):
         os.environ["CUDA_VISIBLE_DEVICES"] = str(args.use_gpu)
 
     # Dataset.
-    dataloader = ixi(args.db,
-                     key=("sketch", "image"),
-                     batch_size=args.batch_size,
-                     shuffle=True,
-                     pin_memory=True)
+    dataloader = DataLoader(datasets.get(args.db),
+                            batch_size=args.batch_size,
+                            shuffle=True,
+                            pin_memory=True)
 
     # Model.
     model = models.get(args.nn, checkpoint=args.ckpt)

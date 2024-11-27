@@ -4,7 +4,7 @@
 
 import os
 import torch
-from utils.os_utils import create_folder
+from utils.os_utils import make_dir
 
 from nn.callbacks.base_callback import ICallback
 
@@ -32,7 +32,7 @@ class ModelCheckpointCallback(ICallback):
 
         save_dir = os.path.split(save_path)[0]
         if save_dir:  # e.g. os.path.split("name.png") -> '', 'name.png'; os.path.split("./name.png") -> '.', 'name.png'
-            create_folder(save_dir)
+            make_dir(save_dir)
         self._save_path = save_path
 
         self.save_freq = save_freq

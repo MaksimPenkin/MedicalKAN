@@ -11,10 +11,11 @@ import numpy as np
 import torch
 
 from nn import models
-from data.ixi import ixi
+from data import datasets
+from torch.utils.data import DataLoader
 
 from utils.io_utils import maxmin_norm, save_img
-from utils.os_utils import create_folder
+from utils.os_utils import make_dir
 
 
 def parse_args():
@@ -41,14 +42,14 @@ def parse_args():
 
 def save_result(x, output, imname, save_path):
     imname = os.path.splitext(imname)[0]
-    create_folder(save_path, exist_ok=True)
+    make_dir(save_path, exist_ok=True)
 
-    create_folder(os.path.join(save_path, "mat"), exist_ok=True)
-    create_folder(os.path.join(save_path, "png"), exist_ok=True)
+    make_dir(os.path.join(save_path, "mat"), exist_ok=True)
+    make_dir(os.path.join(save_path, "png"), exist_ok=True)
 
-    create_folder(os.path.join(save_path, "png", "x"), exist_ok=True)
-    create_folder(os.path.join(save_path, "png", "output"), exist_ok=True)
-    create_folder(os.path.join(save_path, "png", "x_output"), exist_ok=True)
+    make_dir(os.path.join(save_path, "png", "x"), exist_ok=True)
+    make_dir(os.path.join(save_path, "png", "output"), exist_ok=True)
+    make_dir(os.path.join(save_path, "png", "x_output"), exist_ok=True)
 
     _x = np.clip(x, 0., 1.) * 255.
     _output = np.clip(output, 0., 1.) * 255.
@@ -66,11 +67,10 @@ def main(args):
         os.environ["CUDA_VISIBLE_DEVICES"] = str(args.use_gpu)
 
     # Dataset.
-    dataloader = ixi(args.db,
-                     key=("sketch", "image"),
-                     batch_size=1,
-                     shuffle=False,
-                     pin_memory=True)
+    dataloader = DataLoader(datasets.get(args.db),
+                            batch_size=1,
+                            shuffle=False,
+                            pin_memory=True)
 
     # Model.
     model = models.get(args.nn, checkpoint=args.ckpt)
