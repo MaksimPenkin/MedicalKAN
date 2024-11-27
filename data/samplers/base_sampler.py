@@ -15,7 +15,7 @@ class ISampler:
         raise NotImplementedError("Must be implemented in subclasses.")
 
     @abc.abstractmethod
-    def __getitem__(self, item):
+    def __getitem__(self, index):
         raise NotImplementedError("Must be implemented in subclasses.")
 
     @abc.abstractmethod

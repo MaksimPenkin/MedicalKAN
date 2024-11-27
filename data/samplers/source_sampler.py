@@ -32,8 +32,8 @@ class TXTSampler(SourceSampler):
         lines = (line.rstrip() for line in lines)
         self._source = [line.split(" ") for line in lines if line]
 
-    def __getitem__(self, item):
-        return self.source[item]
+    def __getitem__(self, index):
+        return self.source[index]
 
 
 class CSVSampler(SourceSampler):
@@ -43,5 +43,5 @@ class CSVSampler(SourceSampler):
 
         self._source = pd.read_csv(filename)
 
-    def __getitem__(self, item):
-        return self.source.iloc[item].values.tolist()
+    def __getitem__(self, index):
+        return self.source.iloc[index].values.tolist()
