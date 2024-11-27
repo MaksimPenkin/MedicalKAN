@@ -25,5 +25,5 @@ class UniformSampler(IterableSampler):
     def __len__(self):
         return self._n
 
-    def __getitem__(self, idx):
+    def __getitem__(self, item):
         return tuple(torch_random(**kwargs) for kwargs in self.random_vector)
