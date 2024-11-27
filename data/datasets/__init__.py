@@ -3,7 +3,7 @@
 # """
 
 from torch.utils.data import Dataset
-from data.datasets.image_dataset import ImageDataset
+from data.datasets.file_dataset import FileDataset
 from data.datasets.ixi_dataset import IXIRingingDataset
 
 from utils.serialization_utils import create_object
@@ -12,7 +12,7 @@ from utils.serialization_utils import create_object
 def get(identifier, **kwargs):
     obj = create_object(identifier,
                         module_objects={
-                            "ImageDataset": ImageDataset,
+                            "FileDataset": FileDataset,
                             "IXIRingingDataset": IXIRingingDataset},
                         **kwargs)
 
