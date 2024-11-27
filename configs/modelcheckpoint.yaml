@@ -1,4 +1,4 @@
 class_name: modelcheckpoint
 config:
-  save_path: "/home/m.penkin/workspace/ckpts/DEMO/model_e{epoch:02d}_b{batch:02d}.pt"
+  save_path: "../ckpts/DEMO/model_e{epoch:02d}_b{batch:02d}.pt"
   save_freq: 100

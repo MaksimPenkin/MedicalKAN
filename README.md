@@ -8,7 +8,7 @@
 ## Workspace
 ```
 ├── ckpts
-├── runs
+├── logs
 └── MedicalKAN
     ├── configs
     │   └── *.yaml
