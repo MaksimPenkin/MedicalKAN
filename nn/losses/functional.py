@@ -5,12 +5,12 @@
 import torch.nn.functional as F
 
 
-def accuracy(output, target, topk=(1,)):
-    batch_size = target.size(0)  # output.shape: [B, num_classes]; target.shape: [B].
+def accuracy(y_pred, y, topk=(1,)):
+    batch_size = y.size(0)  # y_pred.shape: [B, num_classes]; y.shape: [B].
 
-    _, pred = output.topk(max(topk), dim=1, largest=True, sorted=True)  # A namedtuple of (values, indices) is returned. indices.shape: [B, maxk].
+    _, pred = y_pred.topk(max(topk), dim=1, largest=True, sorted=True)  # A namedtuple of (values, indices) is returned. indices.shape: [B, maxk].
     pred = pred.t()
-    correct = pred.eq(target.view(1, -1).expand_as(pred))  # Expand (explicit broadcast) target downward to fit pred shape.
+    correct = pred.eq(y.view(1, -1).expand_as(pred))  # Expand (explicit broadcast) y downward to fit y_pred shape.
 
     res = []
     for k in topk:
@@ -19,9 +19,9 @@ def accuracy(output, target, topk=(1,)):
     return res
 
 
-def mae(output, target):
-    return F.l1_loss(output, target)
+def mae(y_pred, y):
+    return F.l1_loss(y_pred, y)
 
 
-def mse(output, target):
-    return F.mse_loss(output, target)
+def mse(y_pred, y):
+    return F.mse_loss(y_pred, y)
