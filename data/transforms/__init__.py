@@ -30,7 +30,7 @@ class CompositeTransform(ITransform):
         else:
             self.transforms = []
 
-    def __call__(self, *args):
+    def __call__(self, sample):
         for t in self.transforms:
-            args = t(*args)
-        return args
+            sample = t(sample)
+        return sample
