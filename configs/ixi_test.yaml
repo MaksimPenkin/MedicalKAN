@@ -1,4 +1,4 @@
-class_name: IXIRingingDataset
+class_name: FileDataset
 config:
   root: "/media/datasets/IXI_0_1/255"
   transforms:

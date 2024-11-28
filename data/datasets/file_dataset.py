@@ -5,7 +5,7 @@
 import os
 from utils.serialization_utils import create_func
 
-from data.datasets.base_dataset import SamplerDataset
+from data.datasets.sampler_dataset import SamplerDataset
 
 
 class FileDataset(SamplerDataset):
