@@ -3,7 +3,6 @@
 # """
 
 from data.samplers.base_sampler import ISampler
-from data.samplers.random_sampler import UniformSampler
 from data.samplers.source_sampler import TXTSampler, CSVSampler
 
 from utils.serialization_utils import create_object
@@ -12,7 +11,6 @@ from utils.serialization_utils import create_object
 def get(identifier, **kwargs):
     obj = create_object(identifier,
                         module_objects={
-                            "UniformSampler": UniformSampler,
                             "TXTSampler": TXTSampler,
                             "CSVSampler": CSVSampler},
                         **kwargs)
