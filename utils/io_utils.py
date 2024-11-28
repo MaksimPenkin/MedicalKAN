@@ -71,11 +71,11 @@ def read_img(read_path, dtype=None, shape=None, key=None, normalize=None):
     ext = os.path.splitext(read_path)[-1].lower()
 
     # Read.
-    if ext in [".png", ".jpeg", ".jpg"]:
+    if ext in (".png", ".jpeg", ".jpg"):
         img = decode_png(read_path)
-    elif ext in [".raw", ".bin"]:
+    elif ext in (".raw", ".bin"):
         img = decode_raw(read_path, dtype, shape)
-    elif ext in [".mat"]:
+    elif ext in (".mat", ):
         img = decode_mat(read_path, key)
     else:
         raise ValueError(f"Unrecognized filename extension found: {read_path}. "
@@ -101,11 +101,11 @@ def save_img(img, save_path, key=None):
     ext = os.path.splitext(save_path)[-1].lower()
 
     # Save.
-    if ext in [".png", ".jpeg", ".jpg"]:
+    if ext in (".png", ".jpeg", ".jpg"):
         encode_png(img, save_path)
-    elif ext in [".raw", ".bin"]:
+    elif ext in (".raw", ".bin"):
         encode_raw(img, save_path)
-    elif ext in [".mat"]:
+    elif ext in (".mat", ):
         encode_mat(img, save_path, key)
     else:
         raise ValueError(f"Unrecognized filename extension found: {save_path}. "

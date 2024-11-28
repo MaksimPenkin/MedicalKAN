@@ -38,6 +38,6 @@ def copy(source, destination):
 
 def confirm():
     answer = ""
-    while answer not in ["y", "n"]:
+    while answer not in ("y", "n"):
         answer = input("Are you sure? [Y/N]: ").lower()
     return answer == "y"

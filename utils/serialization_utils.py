@@ -9,14 +9,14 @@ from importlib import import_module
 def load_config(filename):
     ext = os.path.splitext(filename)[-1].lower()
 
-    if ext == ".json":
+    if ext in (".json", ):
         with open(filename, "r") as f:
             config = json.load(f)
-    elif ext == ".yaml":
+    elif ext in (".yaml", ".yml"):
         with open(filename, "r") as f:
             config = yaml.safe_load(f)
     else:
-        raise ValueError(f"Expected `.json` or `.yaml` file, found: {filename}.")
+        raise ValueError(f"Expected `.json`, `.yaml` or `.yml` file, found: {filename}.")
 
     return config
 
