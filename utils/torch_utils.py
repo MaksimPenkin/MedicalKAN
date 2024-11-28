@@ -2,11 +2,7 @@
 # @author   Maksim Penkin
 # """
 
-import time
 from tqdm import tqdm
-from datetime import datetime
-
-import numpy as np
 import torch
 
 
@@ -285,37 +281,3 @@ def inference_func(model, dataloader, limit_batches=1.0, device="cpu"):
             if idx >= steps:
                 break
             _ = _inference_step(model, x, device=device)
-
-
-def latency_func(model, shapes, dtypes=None, warmup=10, iteration=100, device="cpu"):
-    from data.dummy import random_uniform
-
-    model.to(device)
-    model.eval()
-    example_inputs = _to_device(next(iter(random_uniform(shapes, dtypes=dtypes))), device=device)
-
-    print(f"{datetime.now()}: Warm up...")
-    with torch.no_grad():
-        for i in range(warmup):
-            _ = model(*example_inputs)
-    torch.cuda.synchronize()
-
-    print(f"{datetime.now()}: Start timing...")
-    timings = []
-    with torch.no_grad():
-        for i in range(iteration):
-            start_time = time.time()
-            _ = model(*example_inputs)
-            torch.cuda.synchronize()
-            end_time = time.time()
-            timings.append((end_time - start_time) * 1000)
-
-    print(f"{datetime.now()}: "
-          "Latency:\n"
-          f"    min = {np.amin(timings):.5f} ms\n"
-          f"    max = {np.amax(timings):.5f} ms\n"
-          f"    mean = {np.mean(timings):.5f} ms\n"
-          f"    median = {np.median(timings):.5f} ms\n"
-          f"    percentile(90 %) = {np.percentile(timings, 90):.5f} ms\n"
-          f"    percentile(95 %) = {np.percentile(timings, 95):.5f} ms\n"
-          f"    percentile(99 %) = {np.percentile(timings, 99):.5f} ms")

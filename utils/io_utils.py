@@ -83,10 +83,10 @@ def read_img(read_path, dtype=None, shape=None, key=None, normalize=None):
 
     # Process.
     if dtype is not None:
-        assert img.dtype == np.dtype(dtype), f"Error: `dtype` mismatch: `{img.dtype}` != `{dtype}`."
+        assert img.dtype == np.dtype(dtype), f"`dtype` mismatch: `{img.dtype}` != `{dtype}`."
     if shape is not None:
         if all(shape):  # Do not assert, if shape is only partly known, e.g. [None, None, 3].
-            assert img.shape == tuple(shape), f"Error: `shape` mismatch: `{img.shape}` != `{shape}`."
+            assert img.shape == tuple(shape), f"`shape` mismatch: `{img.shape}` != `{shape}`."
     if normalize is not None:
         img = img / float(normalize)
 
