@@ -2,7 +2,7 @@
 # @author   Maksim Penkin
 # """
 
-from data import transforms as augmentations
+from data.transforms import CompositeTransform
 
 from torch.utils.data import Dataset
 
@@ -19,11 +19,7 @@ class CustomDataset(Dataset):
 
     def __init__(self, root, transforms=None):
         self._root = root
-
-        if transforms is not None:
-            self._transforms = augmentations.CompositeTransform([augmentations.get(t) for t in transforms])
-        else:
-            self._transforms = None
+        self._transforms = CompositeTransform(transforms) if transforms is not None else None
 
     def __len__(self):
         raise NotImplementedError("Must be implemented in subclasses.")
