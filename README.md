@@ -20,8 +20,7 @@
     ├── .flake8
     ├── .gitignore
     ├── README.md
-    ├── train.py
-    └── test.py
+    └── train.py
 ```
 
 ## Quick-start
