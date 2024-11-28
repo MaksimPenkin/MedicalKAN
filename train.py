@@ -70,7 +70,19 @@ def main(args):
 
 
 if __name__ == "__main__":
+    from datetime import datetime
     from utils.torch_utils import torch_device
 
     print(torch_device())
-    main(parse_args())
+    print("\nCommand-line arguments:")
+    cmd_args = parse_args()
+    for k, v in vars(cmd_args).items():
+        print(f"\t{k:20}: {v}")
+
+    start_time = datetime.now()
+    print(f"\n{start_time}: Script `{os.path.basename(__file__)}` has started.")
+    main(cmd_args)
+    end_time = datetime.now()
+    print(f"\n{end_time}: Script `{os.path.basename(__file__)}` has stopped.\n"
+          f"Elapsed time: {end_time - start_time} (hours : minutes : seconds : microseconds).")
+
