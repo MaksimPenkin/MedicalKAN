@@ -18,6 +18,6 @@ class ITransform:
         if isinstance(sample, dict):
             return {k: self._fn(v) for k, v in sample.items()}
         elif isinstance(sample, (list, tuple)):
-            return [self._fn(x) for x in sample]
+            return [self._fn(v) for v in sample]
         else:
             return self._fn(sample)
