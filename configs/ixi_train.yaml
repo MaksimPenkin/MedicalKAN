@@ -7,13 +7,13 @@ config:
   sampler:
     class_name: CSVSampler
     config:
-      filename: "../../data/data_lists/IXI_0_1/train_gtLR_gibbsnoiseLR.csv"
+      filename: "../../data/data_lists/IXI_0_1/train_pmLR_gibbsnoiseLR.csv"
 
   load_func: utils.io_utils.read_img
   load_params:
   - key: "sketch"
     shape: [145, 145]
     dtype: float32
-  - key: "gt"
-    shape: [255, 255]
+  - key: "image"
+    shape: [145, 145]
     dtype: float32

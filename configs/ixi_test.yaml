@@ -14,5 +14,3 @@ config:
   - key: "sketch"
     shape: [145, 145]
     dtype: float32
-
-  return_filenames: 1

@@ -46,3 +46,9 @@ class SamplerDataset(CustomDataset):
 
     def __len__(self):
         return len(self.sampler)
+
+    def __getitem__(self, index):
+        sample = self.sampler[index]
+        if self.transforms:
+            sample = self.transforms(sample)
+        return sample
