@@ -1,4 +1,4 @@
 class_name: TensorBoardCallback
 config:
-  log_dir: "../logs"
+  log_dir: "../runs"
   update_freq: 100
