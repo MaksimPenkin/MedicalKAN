@@ -11,11 +11,6 @@ from scipy.io import loadmat, savemat
 from utils.os_utils import make_dir
 
 
-def maxmin_norm(img):
-    m0, m1 = np.amin(img), np.amax(img)
-    return (img - m0) / (m1 - m0)
-
-
 def _as_hwc(img):
     img = np.asarray(img)
     if img.ndim == 2:
