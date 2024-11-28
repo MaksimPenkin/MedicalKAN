@@ -58,9 +58,9 @@ def torch_dtype(dtype):
 def torch_random(size, low=0, high=None, dtype=None, device="cpu"):
     dtype = torch_dtype(dtype)
 
-    if dtype == torch.bool:
+    if dtype in (torch.bool, ):
         return torch.randint(0, 2, size, dtype=dtype, device=device)  # The `high` value is hard-coded.
-    elif dtype in [torch.uint8, torch.int8, torch.int16, torch.short, torch.int32, torch.int, torch.int64, torch.long]:
+    elif dtype in (torch.uint8, torch.int8, torch.int16, torch.short, torch.int32, torch.int, torch.int64, torch.long):
         return torch.randint(low, high, size, dtype=dtype, device=device)  # The `high` value is hard-coded.
     else:
         high = high or 1
