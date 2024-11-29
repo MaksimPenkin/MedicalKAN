@@ -14,6 +14,6 @@ config:
   - key: "sketch"
     shape: [145, 145]
     dtype: float32
-  - key: "image"
-    shape: [145, 145]
+  - key: "gt"
+    shape: [255, 255]
     dtype: float32
