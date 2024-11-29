@@ -1,4 +1,4 @@
 class_name: ModelCheckpointCallback
 config:
-  save_path: "../ckpts/spline_s3_g1/model_e{epoch:02d}.pt"
+  save_path: "../ckpts/spline_s3_g5/model_e{epoch:02d}.pt"
   save_freq: "epoch"
