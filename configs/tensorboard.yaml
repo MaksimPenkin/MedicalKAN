@@ -1,4 +1,4 @@
 class_name: TensorBoardCallback
 config:
-  log_dir: "../runs"
+  log_dir: "../runs/spline_s3_g1"
   update_freq: 100
