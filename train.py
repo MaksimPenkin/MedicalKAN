@@ -6,6 +6,7 @@ import os
 import argparse
 from argparse import RawTextHelpFormatter
 
+import torch
 from nn import models, callbacks
 from data import datasets
 from torch.utils.data import DataLoader
@@ -19,6 +20,8 @@ def parse_args():
 
     parser.add_argument("--use_gpu", type=int, default=0,
                         help="gpu index to be used.", metavar="")
+    parser.add_argument("--seed", type=int,
+                        help="manual seed to be used.", metavar="")
 
     parser.add_argument("--nn", type=str,
                         required=True,
@@ -51,6 +54,9 @@ def main(args):
     device = "cuda" if args.use_gpu >= 0 else "cpu"
     if device == "cuda":
         os.environ["CUDA_VISIBLE_DEVICES"] = str(args.use_gpu)
+
+    if args.seed is not None:
+        torch.manual_seed(args.seed)
 
     # Dataset.
     dataloader = DataLoader(datasets.get(args.db),
