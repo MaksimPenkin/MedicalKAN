@@ -1,0 +1,19 @@
+class_name: FileDataset
+config:
+  root: "/media/datasets/IXI_0_1/255"
+  transforms:
+  - ToTensor
+
+  sampler:
+    class_name: CSVSampler
+    config:
+      filename: "../../data/data_lists/IXI_0_1/val.csv"
+
+  load_func: utils.io_utils.read_img
+  load_params:
+  - key: "sketch"
+    shape: [145, 145]
+    dtype: float32
+  - key: "gt"
+    shape: [255, 255]
+    dtype: float32
