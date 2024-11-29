@@ -29,6 +29,8 @@ def parse_args():
     parser.add_argument("--db", type=str,
                         required=True,
                         help="path to the dataset configuration file or identifier.", metavar="")
+    parser.add_argument("--val_db", type=str,
+                        help="path to the validation dataset configuration file or identifier.", metavar="")
 
     parser.add_argument("--loss", type=str, default="mse",
                         help="path to the loss configuration file or identifier.", metavar="")
@@ -56,6 +58,14 @@ def main(args):
                             shuffle=True,
                             pin_memory=True)
 
+    if args.val_db is not None:
+        val_dataloader = DataLoader(datasets.get(args.val_db),
+                                    batch_size=args.batch_size,
+                                    shuffle=False,
+                                    pin_memory=True)
+    else:
+        val_dataloader = None
+
     # Model.
     model = models.get(args.nn, checkpoint=args.ckpt)
 
@@ -65,7 +75,7 @@ def main(args):
                optimizer=args.optimizer,
                callbacks=[callbacks.get(load_config(callback)) for callback in args.callbacks],
                epochs=args.epochs,
-               val_dataloader=None,
+               val_dataloader=val_dataloader,
                device=device)
 
 
