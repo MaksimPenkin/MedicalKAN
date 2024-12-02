@@ -7,12 +7,11 @@ import argparse
 from argparse import RawTextHelpFormatter
 
 import torch
-from nn import models, callbacks
+from nn import models
 from data import datasets
 from torch.utils.data import DataLoader
 
 from utils.torch_utils import train_func
-from utils.serialization_utils import load_config
 
 
 def parse_args():
@@ -79,7 +78,7 @@ def main(args):
     train_func(model, dataloader,
                criterion=args.loss,
                optimizer=args.optimizer,
-               callbacks=[callbacks.get(load_config(callback)) for callback in args.callbacks],
+               callbacks=args.callbacks,
                epochs=args.epochs,
                val_dataloader=val_dataloader,
                device=device)
