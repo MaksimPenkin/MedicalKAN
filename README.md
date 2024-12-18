@@ -38,3 +38,4 @@
 - [GitHub-pykan](https://github.com/KindXiaoming/pykan)
 - [GitHub-Convolutional-KANs](https://github.com/AntonioTepsich/Convolutional-KANs)
 - [GitHub-Chebyshev-KANs](https://github.com/SynodicMonth/ChebyKAN)
+- [GitHub-X-KANeRF](https://github.com/lif314/X-KANeRF)

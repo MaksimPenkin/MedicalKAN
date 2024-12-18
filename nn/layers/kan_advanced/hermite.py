@@ -1,8 +1,12 @@
+# """
+# @author   https://github.com/Boris-73-TA/OrthogPolyKANs
+# @author   https://github.com/lif314/X-KANeRF/blob/main/xKANeRF/xKAN/hermite_kan.py
+# """
+
 import torch
 import torch.nn as nn
 from typing import List
 
-# code modified from https://github.com/Boris-73-TA/OrthogPolyKANs
 
 class HermiteKANLayer(nn.Module):
     def __init__(self, input_dim, output_dim, degree):
@@ -13,7 +17,7 @@ class HermiteKANLayer(nn.Module):
 
         # Initialize Hermite polynomial coefficients
         self.hermite_coeffs = nn.Parameter(torch.empty(input_dim, output_dim, degree + 1))
-        nn.init.normal_(self.hermite_coeffs, mean=0.0, std=1/(input_dim * (degree + 1)))
+        nn.init.normal_(self.hermite_coeffs, mean=0.0, std=1 / (input_dim * (degree + 1)))
 
     def forward(self, x):
         x = torch.reshape(x, (-1, self.input_dim))
@@ -28,6 +32,7 @@ class HermiteKANLayer(nn.Module):
         y = y.view(-1, self.out_dim)
         return y
 
+
 # To avoid gradient vanishing caused by tanh
 class HermiteKANLayerWithNorm(nn.Module):
     def __init__(self, input_dim, output_dim, degree):
@@ -39,7 +44,8 @@ class HermiteKANLayerWithNorm(nn.Module):
         x = self.layer(x)
         x = self.layer_norm(x)
         return x
-    
+
+
 class Hermite_KAN(nn.Module):
     def __init__(
         self,
