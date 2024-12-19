@@ -7,7 +7,7 @@ config:
   sampler:
     class_name: CSVSampler
     config:
-      filename: "../../data/data_lists/IXI_0_1/train_gtLR_gibbsnoiseLR.csv"
+      filename: "../../../data/data_lists/IXI_0_1/train_gtLR_gibbsnoiseLR.csv"
 
   load_func: utils.io_utils.read_img
   load_params:
