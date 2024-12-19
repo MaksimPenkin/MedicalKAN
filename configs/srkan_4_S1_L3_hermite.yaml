@@ -3,5 +3,5 @@ config:
   filters: 4
   S: 1
   L: 3
-  version: hermite_poly
-  degree: 3
+  version: hermite_func
+  degree: 5
