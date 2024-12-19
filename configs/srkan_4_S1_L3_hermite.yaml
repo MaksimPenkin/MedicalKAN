@@ -1,0 +1,7 @@
+class_name: srkan
+config:
+  filters: 4
+  S: 1
+  L: 3
+  version: hermite_poly
+  degree: 5
