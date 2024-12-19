@@ -4,4 +4,4 @@ config:
   S: 1
   L: 3
   version: hermite_poly
-  degree: 5
+  degree: 3

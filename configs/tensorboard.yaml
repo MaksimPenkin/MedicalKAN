@@ -1,4 +1,4 @@
 class_name: TensorBoardCallback
 config:
-  log_dir: "../runs/spline_s3_g5"
+  log_dir: "../runs/hermite_poly_d3"
   update_freq: 100
