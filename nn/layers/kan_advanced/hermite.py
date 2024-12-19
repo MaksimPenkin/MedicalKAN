@@ -3,7 +3,7 @@
 # @author   https://github.com/lif314/X-KANeRF/blob/main/xKANeRF/xKAN/hermite_kan.py
 # """
 
-import numpy as np
+import math
 import torch
 import torch.nn as nn
 from typing import List
@@ -48,9 +48,9 @@ class HermiteFuncKANLayer(nn.Module):
         x = torch.reshape(x, (-1, self.input_dim))
         hermite = torch.ones(x.shape[0], self.input_dim, self.degree + 1, device=x.device)
         if self.degree > 0:
-            hermite[:, :, 1] = np.sqrt(2) * np.pi ** (-1 / 4) * x * np.exp(-(x ** 2) / 2)
+            hermite[:, :, 1] = math.sqrt(2) * math.pi ** (-1 / 4) * x * torch.exp(-(x ** 2) / 2)
         for i in range(2, self.degree + 1):
-            hermite[:, :, i] = np.sqrt(2 / i) * x * hermite[:, :, i - 1].clone() - np.sqrt((i - 1) / i) * hermite[:, :, i - 2].clone()
+            hermite[:, :, i] = math.sqrt(2 / i) * x * hermite[:, :, i - 1].clone() - math.sqrt((i - 1) / i) * hermite[:, :, i - 2].clone()
         y = torch.einsum('bid,iod->bo', hermite, self.hermite_coeffs)
         y = y.view(-1, self.out_dim)
         return y
