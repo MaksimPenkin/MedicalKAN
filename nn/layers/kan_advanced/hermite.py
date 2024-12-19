@@ -3,6 +3,7 @@
 # @author   https://github.com/lif314/X-KANeRF/blob/main/xKANeRF/xKAN/hermite_kan.py
 # """
 
+import numpy as np
 import torch
 import torch.nn as nn
 from typing import List
@@ -40,12 +41,19 @@ class HermiteFuncKANLayer(nn.Module):
         self.out_dim = output_dim
         self.degree = degree
 
-        # Initialize Hermite polynomial coefficients
         self.hermite_coeffs = nn.Parameter(torch.empty(input_dim, output_dim, degree + 1))
         nn.init.normal_(self.hermite_coeffs, mean=0.0, std=1 / (input_dim * (degree + 1)))
 
     def forward(self, x):
-        raise NotImplementedError
+        x = torch.reshape(x, (-1, self.input_dim))
+        hermite = torch.ones(x.shape[0], self.input_dim, self.degree + 1, device=x.device)
+        if self.degree > 0:
+            hermite[:, :, 1] = np.sqrt(2) * np.pi ** (-1 / 4) * x * np.exp(-(x ** 2) / 2)
+        for i in range(2, self.degree + 1):
+            hermite[:, :, i] = np.sqrt(2 / i) * x * hermite[:, :, i - 1].clone() - np.sqrt((i - 1) / i) * hermite[:, :, i - 2].clone()
+        y = torch.einsum('bid,iod->bo', hermite, self.hermite_coeffs)
+        y = y.view(-1, self.out_dim)
+        return y
 
 
 # To avoid gradient vanishing caused by tanh

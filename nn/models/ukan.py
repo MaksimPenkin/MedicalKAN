@@ -13,7 +13,7 @@ from timm.models.layers import trunc_normal_
 from nn.models.resnet import ResBlock, conv3x3, conv1x1
 from nn.layers.kan_original.KANLinear import KANLinear
 from nn.layers.kan_advanced.chebyshev import ChebyKANLinear
-from nn.layers.kan_advanced.hermite import HermiteKANLayer
+from nn.layers.kan_advanced.hermite import HermiteKANLayer, HermiteFuncKANLayer
 from nn.transforms.functional import space_to_depth, depth_to_space
 
 
@@ -103,6 +103,8 @@ class BottleneckBlock(nn.Module):
             self.fc = ChebyKANLinear(dim, dim, **kwargs)
         elif version == "hermite_poly":
             self.fc = HermiteKANLayer(dim, dim, **kwargs)
+        elif version == "hermite_func":
+            self.fc = HermiteFuncKANLayer(dim, dim, **kwargs)
         elif version == "linear":
             self.fc = nn.Linear(dim, dim)
         else:
