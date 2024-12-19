@@ -94,23 +94,15 @@ class ConvDecoderBlock(nn.Module):
 
 class BottleneckBlock(nn.Module):
 
-    def __init__(self, dim, version="spline", grid_size=5, spline_order=3):
+    def __init__(self, dim, version="spline", **kwargs):
         super(BottleneckBlock, self).__init__()
 
         if version == "spline":
-            self.fc = KANLinear(dim, dim,
-                                grid_size=grid_size,
-                                spline_order=spline_order,
-                                scale_noise=0.1,
-                                scale_base=1.0,
-                                scale_spline=1.0,
-                                base_activation=torch.nn.SiLU,
-                                grid_eps=0.02,
-                                grid_range=[-1, 1])
+            self.fc = KANLinear(dim, dim, **kwargs)
         elif version == "cheby":
-            self.fc = ChebyKANLinear(dim, dim, spline_order)
+            self.fc = ChebyKANLinear(dim, dim, **kwargs)
         elif version == "hermite_poly":
-            self.fc = HermiteKANLayer(dim, dim, spline_order)
+            self.fc = HermiteKANLayer(dim, dim, **kwargs)
         elif version == "linear":
             self.fc = nn.Linear(dim, dim)
         else:
