@@ -33,6 +33,21 @@ class HermiteKANLayer(nn.Module):
         return y
 
 
+class HermiteFuncKANLayer(nn.Module):
+    def __init__(self, input_dim, output_dim, degree):
+        super(HermiteFuncKANLayer, self).__init__()
+        self.input_dim = input_dim
+        self.out_dim = output_dim
+        self.degree = degree
+
+        # Initialize Hermite polynomial coefficients
+        self.hermite_coeffs = nn.Parameter(torch.empty(input_dim, output_dim, degree + 1))
+        nn.init.normal_(self.hermite_coeffs, mean=0.0, std=1 / (input_dim * (degree + 1)))
+
+    def forward(self, x):
+        raise NotImplementedError
+
+
 # To avoid gradient vanishing caused by tanh
 class HermiteKANLayerWithNorm(nn.Module):
     def __init__(self, input_dim, output_dim, degree):
