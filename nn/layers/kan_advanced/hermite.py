@@ -6,7 +6,6 @@
 import math
 import torch
 import torch.nn as nn
-from typing import List
 
 
 class HermiteKANLayer(nn.Module):
@@ -58,39 +57,3 @@ class HermiteFuncKANLayer(nn.Module):
         y = torch.einsum('bid,iod->bo', hermite, self.hermite_coeffs)
         y = y.view(-1, self.out_dim)
         return y
-
-
-# To avoid gradient vanishing caused by tanh
-class HermiteKANLayerWithNorm(nn.Module):
-    def __init__(self, input_dim, output_dim, degree):
-        super(HermiteKANLayerWithNorm, self).__init__()
-        self.layer = HermiteKANLayer(input_dim=input_dim, output_dim=output_dim, degree=degree)
-        self.layer_norm = nn.LayerNorm(output_dim) # To avoid gradient vanishing caused by tanh
-
-    def forward(self, x):
-        x = self.layer(x)
-        x = self.layer_norm(x)
-        return x
-
-
-class Hermite_KAN(nn.Module):
-    def __init__(
-        self,
-        layers_hidden: List[int],
-        degree: int = 4,
-        grid_size: int = 8, # placeholder
-        spline_order=0. # placehold
-    ) -> None:
-        super().__init__()
-        self.layers = nn.ModuleList([
-            HermiteKANLayerWithNorm(
-                input_dim=in_dim,
-                output_dim=out_dim,
-                degree=degree,
-            ) for in_dim, out_dim in zip(layers_hidden[:-1], layers_hidden[1:])
-        ])
-
-    def forward(self, x):
-        for layer in self.layers:
-            x = layer(x)
-        return x
