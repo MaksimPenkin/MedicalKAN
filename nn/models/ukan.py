@@ -28,16 +28,12 @@ class PatchEncoder(nn.Module):
 
         self._patch_size = patch_size
         self.proj = conv1x1(in_ch * self.patch_size * self.patch_size, out_ch)
-        self.norm = nn.LayerNorm(out_ch)
 
     def forward(self, x):
         x = space_to_depth(x, self.patch_size)
         x = self.proj(x)
 
-        _, _, H, W = x.shape
-        x = x.flatten(start_dim=2).transpose(1, 2)
-
-        return self.norm(x), H, W
+        return x
 
 
 class PatchDecoder(nn.Module):
@@ -52,10 +48,7 @@ class PatchDecoder(nn.Module):
         self._patch_size = patch_size
         self.proj = conv1x1(in_ch, out_ch * self.patch_size * self.patch_size)
 
-    def forward(self, x, H, W):
-        B, N, C = x.shape
-        x = x.transpose(1, 2).view(B, C, H, W)
-
+    def forward(self, x):
         x = self.proj(x)
         x = depth_to_space(x, self.patch_size)
 
@@ -129,15 +122,14 @@ class BottleneckBlock(nn.Module):
                 m.bias.data.zero_()
 
     def forward(self, x):
-        B, N, C = x.shape
-
+        B, C, H, W = x.shape
         identity = x
 
-        x = x.reshape(B * N, C)
-        x = self.fc(x)
-        x = x.reshape(B, N, C).contiguous()
+        x = x.flatten(start_dim=2).transpose(1, 2)
+        x = self.fc(self.norm(x)).view(B, H * W, C).contiguous()
+        x = x.transpose(1, 2).view(B, C, H, W)
 
-        return self.norm(identity + x)
+        return x + identity
 
 
 class StackedResidualKAN(nn.Module):
@@ -184,10 +176,10 @@ class StackedResidualKAN(nn.Module):
             skips[f"enc-{i}"] = skip
 
         # Bottleneck.
-        x, H, W = self.bottleneck_enc(x)
+        x = self.bottleneck_enc(x)
         for layer in self.bottleneck:
             x = layer(x)
-        x = self.bottleneck_dec(x, H, W)
+        x = self.bottleneck_dec(x)
 
         # Decoder.
         for j, layer in enumerate(self.decoder):
