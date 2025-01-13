@@ -8,9 +8,9 @@ import torch
 import torch.nn as nn
 
 
-class HermiteKANLayer(nn.Module):
+class HermiteKANLinear(nn.Module):
     def __init__(self, input_dim, output_dim, degree):
-        super(HermiteKANLayer, self).__init__()
+        super(HermiteKANLinear, self).__init__()
         self.input_dim = input_dim
         self.out_dim = output_dim
         self.degree = degree
@@ -33,9 +33,9 @@ class HermiteKANLayer(nn.Module):
         return y
 
 
-class HermiteFuncKANLayer(nn.Module):
+class HermiteFuncKANLinear(nn.Module):
     def __init__(self, input_dim, output_dim, degree, eps=1):
-        super(HermiteFuncKANLayer, self).__init__()
+        super(HermiteFuncKANLinear, self).__init__()
         self.input_dim = input_dim
         self.out_dim = output_dim
         self.degree = degree
