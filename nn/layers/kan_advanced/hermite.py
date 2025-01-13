@@ -29,7 +29,7 @@ class HermiteKANLinear(nn.Module):
         for i in range(2, self.degree + 1):
             hermite[:, :, i] = 2 * x * hermite[:, :, i - 1].clone() - 2 * (i - 1) * hermite[:, :, i - 2].clone()
         y = torch.einsum('bid,iod->bo', hermite, self.hermite_coeffs)
-        y = y.view(-1, self.output_dim)
+        y = y.view(-1, self.outdim)
         return y
 
 
@@ -55,5 +55,5 @@ class HermiteFuncKANLinear(nn.Module):
         for i in range(2, self.degree + 1):
             hermite[:, :, i] = math.sqrt(2 / i) * x * hermite[:, :, i - 1].clone() - math.sqrt((i - 1) / i) * hermite[:, :, i - 2].clone()
         y = torch.einsum('bid,iod->bo', hermite, self.hermite_coeffs)
-        y = y.view(-1, self.output_dim)
+        y = y.view(-1, self.outdim)
         return y
