@@ -13,7 +13,8 @@ from timm.models.layers import trunc_normal_
 from nn.models.resnet import ResBlock, conv3x3, conv1x1
 from nn.layers.kan_original.KANLinear import KANLinear
 from nn.layers.kan_advanced.chebyshev import ChebyKANLinear
-from nn.layers.kan_advanced.hermite import HermiteKANLayer, HermiteFuncKANLayer
+from nn.layers.kan_advanced.hermite import HermiteKANLinear, HermiteFuncKANLinear
+from nn.layers.kan_advanced.attention import AttentionKANLinear
 from nn.transforms.functional import space_to_depth, depth_to_space
 
 
@@ -95,11 +96,13 @@ class BottleneckBlock(nn.Module):
         elif version == "cheby":
             self.fc = ChebyKANLinear(dim, dim, **kwargs)
         elif version == "hermite_poly":
-            self.fc = HermiteKANLayer(dim, dim, **kwargs)
+            self.fc = HermiteKANLinear(dim, dim, **kwargs)
         elif version == "hermite_func":
-            self.fc = HermiteFuncKANLayer(dim, dim, **kwargs)
+            self.fc = HermiteFuncKANLinear(dim, dim, **kwargs)
         elif version == "linear":
             self.fc = nn.Linear(dim, dim)
+        elif version == "mha":
+            self.fc = AttentionKANLinear(dim, dim, **kwargs)
         else:
             raise NotImplementedError(f"Unrecognized `version` found: {version}.")
 
