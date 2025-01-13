@@ -26,7 +26,7 @@ class AttentionKANLinear(nn.Module):
         self.proj = nn.Linear(output_dim * len(self.subspaces), output_dim)
 
     def forward(self, x):
-        x = torch.reshape(x, (-1, self.input_dim))
+        x = torch.reshape(x, (-1, self.inputdim))
 
         x = torch.cat([layer(x) for layer in self.subspaces], dim=-1)
         x, _ = self.mha(x, x, x)
