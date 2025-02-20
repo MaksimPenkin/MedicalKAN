@@ -18,18 +18,26 @@ class AttentionKANLinear(nn.Module):
         self.degree = degree
 
         self.subspaces = nn.ModuleList([
-            KANLinear(input_dim, output_dim, spline_order=degree),
-            ChebyKANLinear(input_dim, output_dim, degree),
-            HermiteFuncKANLinear(input_dim, output_dim, degree)
+            # KANLinear(input_dim, output_dim, spline_order=degree),
+            ChebyKANLinear(input_dim, output_dim, degree, einsum=False),
+            HermiteFuncKANLinear(input_dim, output_dim, degree, einsum=False)
         ])
-        self.mha = nn.MultiheadAttention(output_dim * len(self.subspaces), num_heads=1, batch_first=True)
-        self.proj = nn.Linear(output_dim * len(self.subspaces), output_dim)
+        # self.mha = nn.MultiheadAttention(output_dim * len(self.subspaces), num_heads=1, batch_first=True)
+        # self.proj = nn.Linear(output_dim * len(self.subspaces), output_dim)
+
+        self.mha = nn.MultiheadAttention(output_dim, num_heads=1, batch_first=True)
+        self.proj = nn.Parameter(torch.empty(output_dim, output_dim, (degree + 1) * len(self.subspaces)))
+        nn.init.normal_(self.proj, mean=0.0, std=1 / (input_dim * (degree + 1) * len(self.subspaces)))
 
     def forward(self, x):
         x = torch.reshape(x, (-1, self.inputdim))
 
-        x = torch.cat([layer(x) for layer in self.subspaces], dim=-1)
-        x, _ = self.mha(x, x, x)
-        x = self.proj(x)
+        # x = torch.cat([layer(x) for layer in self.subspaces], dim=-1)
+        # x, _ = self.mha(x, x, x)
+        # x = self.proj(x)
 
-        return x.view(-1, self.outdim)
+        x = torch.cat([layer(x) for layer in self.subspaces], dim=-1).permute(0, 2, 1)
+        x = self.mha(x, x, x)[0].permute(0, 2, 1)
+        x = torch.einsum('bid,iod->bo', x, self.proj)
+
+        return x
