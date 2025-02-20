@@ -1,0 +1,5 @@
+class_name: Trainer
+config:
+  model: !include "./models/srkan_4_S1_L3_mha.yaml"
+  db: !include "./data/dataloader.yaml"
+  val_db: !include "./data/val_dataloader.yaml"
