@@ -2,21 +2,58 @@
 # @author   Maksim Penkin
 # """
 
-import os, json, yaml
+import os, re, yaml, functools
+from pathlib import Path
 from importlib import import_module
 
 
-def load_config(filename):
-    ext = os.path.splitext(filename)[-1].lower()
+class ConfigLoaderMeta(type):
 
-    if ext in (".json", ):
-        with open(filename, "r") as f:
-            config = json.load(f)
-    elif ext in (".yaml", ".yml"):
-        with open(filename, "r") as f:
-            config = yaml.safe_load(f)
-    else:
-        raise ValueError(f"Expected `.json`, `.yaml` or `.yml` file, found: {filename}.")
+    def __new__(metacls, name, bases, namespace):
+        cls = super().__new__(metacls, name, bases, namespace)
+        # 1. Add !include tag processing.
+        cls.add_constructor('!include', cls.construct_include)
+        # 2.1 Add !path tag processing.
+        cls.add_constructor('!path', cls.construct_path)
+        # 2.2 Add !path tag matcher.
+        cls._path_matcher = re.compile(r'\$\{([^}^{]+)\}')  # re.compile('.*?\${(\w+)}.*?')
+        cls.add_implicit_resolver('!path', cls._path_matcher, None)  # Note: An implicit resolver can only match plain scalars, not quoted.
+
+        return cls
+
+
+class ConfigLoader(yaml.Loader, metaclass=ConfigLoaderMeta):
+
+    def __init__(self, stream):
+        try:
+            self._root = Path(stream.name).parent
+        except AttributeError:
+            self._root = Path()
+
+        super().__init__(stream)
+
+    def construct_include(self, node):
+        filename = self._root / self.construct_scalar(node)
+        ext = filename.suffix.lower()
+
+        with open(filename, 'r') as f:
+            if ext in (".yaml", ".yml", ".json"):  # YAML can load JSON.
+                return yaml.load(f, ConfigLoader)
+            else:
+                return '\n'.join(l for l in (line.strip() for line in f.read().splitlines()) if l)
+
+    def construct_path(self, node):
+        # match():   Determine if the RE matches at the beginning of the string.
+        # group():   Return the string matched by the RE.
+        # findall(): Find all substrings where the RE matches, and returns them as a list.
+
+        return re.sub(self._path_matcher, lambda m: os.environ.get(m.group()[2:-1]), self.construct_scalar(node))
+
+
+def load_config(filename):
+    load = functools.partial(yaml.load, Loader=ConfigLoader)
+    with open(filename, 'r') as f:
+        config = load(f)
 
     return config
 
@@ -35,6 +72,8 @@ def create_config(identifier, **kwargs):
     if identifier is None:
         return None
 
+    if isinstance(identifier, os.PathLike):
+        identifier = os.fspath(identifier)
     if isinstance(identifier, str):
         if os.path.isfile(identifier):
             config = load_config(identifier)
@@ -93,6 +132,8 @@ def create_func(identifier):
     if identifier is None:
         return None
 
+    if isinstance(identifier, os.PathLike):
+        identifier = os.fspath(identifier)
     if isinstance(identifier, str):
         func_module, func_name = '.'.join(identifier.split('.')[:-1]), identifier.split('.')[-1]
         func = getattr(import_module(func_module), func_name)

@@ -2,7 +2,11 @@
 # @author   Maksim Penkin
 # """
 
+import time
 from tqdm import tqdm
+from datetime import datetime
+
+import numpy as np
 import torch
 
 
@@ -112,19 +116,19 @@ def _to_device(obj, device="cpu"):
         raise TypeError(f"Expected `obj` to be dict, list or tuple, torch.Tensor or torch.nn.Module, found: {obj} of type {type(obj)}.")
 
 
-def _model_step(model, x):
+def _model_step(model, x, **kwargs):
     if isinstance(x, dict):
         try:
-            y_pred = model(**x)
+            y_pred = model(**x, **kwargs)
         except:
-            y_pred = model(x)
+            y_pred = model(x, **kwargs)
     elif isinstance(x, (list, tuple)):
         try:
-            y_pred = model(*x)
+            y_pred = model(*x, **kwargs)
         except:
-            y_pred = model(x)
+            y_pred = model(x, **kwargs)
     else:
-        y_pred = model(x)
+        y_pred = model(x, **kwargs)
 
     return y_pred
 
@@ -149,33 +153,33 @@ def _criterion_step(criterion, y_pred, y):
 ######################################################################################################################################################
 
 
-def eval_step(model, x, y, criterion, device="cpu"):
+def _eval_step(model, x, y, criterion, device="cpu"):
     x = _to_device(x, device=device)
     y = _to_device(y, device=device)
 
     with torch.no_grad():
-        y_pred = _model_step(model, x)
+        y_pred = _model_step(model, x, test_mode=True)
         _, logs = _criterion_step(criterion, y_pred, y)
     return {"val_" + k: v for k, v in logs.items()}
 
 
-def train_step(model, x, y, criterion, optimizer, device="cpu"):
+def _train_step(model, x, y, criterion, optimizer, teachers=None, device="cpu"):
     x = _to_device(x, device=device)
     y = _to_device(y, device=device)
 
     optimizer.zero_grad()
-    y_pred = _model_step(model, x)
+    y_pred = _model_step(model, x, test_mode=False)
     loss, logs = _criterion_step(criterion, y_pred, y)
     loss.backward()
     optimizer.step()
     return logs
 
 
-def inference_step(model, x, device="cpu"):
+def _inference_step(model, x, device="cpu"):
     x = _to_device(x, device=device)
 
     with torch.no_grad():
-        y_pred = _model_step(model, x)
+        y_pred = _model_step(model, x, test_mode=True)
     return y_pred
 
 
@@ -203,7 +207,7 @@ def eval_func(model, dataloader, criterion, callbacks=None, limit_batches=1.0, d
         if idx >= steps:
             break
         callbacks.on_test_batch_begin(idx)
-        logs = eval_step(model, x, y, criterion, device=device)
+        logs = _eval_step(model, x, y, criterion, device=device)
         callbacks.on_test_batch_end(idx, logs=logs)
         tracker.update_state(logs, n=x.size(0))  # TODO: add seamless batch_size value extraction.
     eval_logs = tracker.result()
@@ -212,7 +216,8 @@ def eval_func(model, dataloader, criterion, callbacks=None, limit_batches=1.0, d
     return eval_logs
 
 
-def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, epochs=1, val_dataloader=None, limit_batches=1.0, device="cpu"):
+def train_func(model, dataloader, criterion,
+               optimizer="adam", callbacks=None, epochs=1, val_dataloader=None, limit_batches=1.0, device="cpu"):
     from nn import losses, optimizers
     from nn.callbacks import CompositeCallback
     from metrics import CompositeMetric
@@ -239,7 +244,7 @@ def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, e
             if idx >= steps:
                 break
             callbacks.on_train_batch_begin(idx)
-            logs = train_step(model, x, y, criterion, optimizer, device=device)
+            logs = _train_step(model, x, y, criterion, optimizer, device=device)
             callbacks.on_train_batch_end(idx, logs=logs)
             train_tracker.update_state(logs, n=x.size(0))  # TODO: add seamless batch_size value extraction.
         epoch_logs = train_tracker.result()
@@ -252,7 +257,7 @@ def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, e
                 if idx >= val_steps:
                     break
                 callbacks.on_test_batch_begin(idx)
-                logs = eval_step(model, x, y, criterion, device=device)
+                logs = _eval_step(model, x, y, criterion, device=device)
                 callbacks.on_test_batch_end(idx, logs=logs)
                 val_tracker.update_state(logs, n=x.size(0))  # TODO: add seamless batch_size value extraction.
             val_logs = val_tracker.result()
@@ -272,9 +277,9 @@ def inference_func(model, dataloader, limit_batches=1.0, device="cpu"):
         for idx, (x, y) in enumerate(tqdm(dataloader, total=steps)):
             if idx >= steps:
                 break
-            _ = inference_step(model, x, device=device)
+            _ = _inference_step(model, x, device=device)
     except:
         for idx, x in enumerate(tqdm(dataloader, total=steps)):
             if idx >= steps:
                 break
-            _ = inference_step(model, x, device=device)
+            _ = _inference_step(model, x, device=device)

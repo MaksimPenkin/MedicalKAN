@@ -2,7 +2,7 @@
 # @author   Maksim Penkin
 # """
 
-import os
+from pathlib import Path
 
 import numpy as np
 import cv2
@@ -61,9 +61,10 @@ def encode_mat(img, save_path, key):
 
 def read_img(read_path, dtype=None, shape=None, key=None, normalize=None):
     # Setup.
-    if not os.path.exists(read_path):
+    read_path = Path(read_path)
+    if not read_path.exists():
         raise ValueError(f"Source path does not exist: {read_path}.")
-    ext = os.path.splitext(read_path)[-1].lower()
+    ext = read_path.suffix.lower()
 
     # Read.
     if ext in (".png", ".jpeg", ".jpg"):
@@ -90,10 +91,9 @@ def read_img(read_path, dtype=None, shape=None, key=None, normalize=None):
 
 def save_img(img, save_path, key=None):
     # Setup.
-    save_dir = os.path.split(save_path)[0]
-    if save_dir:  # e.g. os.path.split("name.png") -> '', 'name.png'; os.path.split("./name.png") -> '.', 'name.png'
-        make_dir(save_dir, exist_ok=True)
-    ext = os.path.splitext(save_path)[-1].lower()
+    save_path = Path(save_path)
+    make_dir(save_path.parent, exist_ok=True)
+    ext = save_path.suffix.lower()
 
     # Save.
     if ext in (".png", ".jpeg", ".jpg"):
