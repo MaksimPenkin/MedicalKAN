@@ -3,6 +3,7 @@
 # """
 
 import os
+from pathlib import Path
 import torch
 from utils.os_utils import make_dir
 
@@ -30,11 +31,10 @@ class ModelCheckpointCallback(ICallback):
     def __init__(self, save_path, save_freq="epoch"):
         super(ModelCheckpointCallback, self).__init__()
 
-        save_dir = os.path.split(save_path)[0]
-        if save_dir:  # e.g. os.path.split("name.png") -> '', 'name.png'; os.path.split("./name.png") -> '.', 'name.png'
-            make_dir(save_dir)
-        self._save_path = save_path
+        save_path = Path(save_path)
+        make_dir(save_path.parent)
 
+        self._save_path = save_path
         self.save_freq = save_freq
 
     def on_epoch_begin(self, epoch, logs=None):
@@ -55,6 +55,6 @@ class ModelCheckpointCallback(ICallback):
         with torch.no_grad():
             # `filepath` may contain placeholders such as `epoch` and `batch`.
             if batch is None:
-                torch.save(self.model.state_dict(), self.save_path.format(epoch=epoch + 1))
+                torch.save(self.model.state_dict(), os.fspath(self.save_path).format(epoch=epoch + 1))
             else:
-                torch.save(self.model.state_dict(), self.save_path.format(epoch=epoch + 1, batch=batch + 1))
+                torch.save(self.model.state_dict(), os.fspath(self.save_path).format(epoch=epoch + 1, batch=batch + 1))

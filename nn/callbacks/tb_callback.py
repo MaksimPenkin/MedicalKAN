@@ -3,6 +3,7 @@
 # """
 
 import os, socket
+from pathlib import Path
 from datetime import datetime
 from torch.utils.tensorboard import SummaryWriter
 
@@ -39,10 +40,9 @@ class TensorBoardCallback(ICallback):
         assert isinstance(global_step, int) and global_step >= 0
         self._global_step = global_step
 
-        log_dir = os.path.join(log_dir,
-                               datetime.now().strftime("%b%d_%H-%M-%S") + "_" + socket.gethostname() if self.global_step == 0 else "",
-                               "logs")
-        self._log_dir = log_dir
+        self._log_dir = Path(log_dir).joinpath(
+            datetime.now().strftime("%b%d_%H-%M-%S") + "_" + socket.gethostname() if self.global_step == 0 else "",
+            "logs")
         self._writers = {}
 
         self.update_freq = update_freq
@@ -51,7 +51,7 @@ class TensorBoardCallback(ICallback):
     def _train_writer(self):
         if "train" not in self._writers:
             self._writers["train"] = SummaryWriter(
-                log_dir=os.path.join(self.log_dir, "train")
+                log_dir=os.fspath(self.log_dir / "train")
             )
         return self._writers["train"]
 
@@ -59,7 +59,7 @@ class TensorBoardCallback(ICallback):
     def _val_writer(self):
         if "val" not in self._writers:
             self._writers["val"] = SummaryWriter(
-                log_dir=os.path.join(self.log_dir, "val")
+                log_dir=os.fspath(self.log_dir / "val")
             )
         return self._writers["val"]
 
