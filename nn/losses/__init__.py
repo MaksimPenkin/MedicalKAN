@@ -12,8 +12,7 @@ def get(identifier, **kwargs):
     obj = create_object(identifier,
                         module_objects={
                             "ce": CrossEntropyLoss,
-                            "mse": MSELoss,
-                            "CompositeLoss": CompositeLoss},
+                            "mse": MSELoss},
                         **kwargs)
 
     if callable(obj):
