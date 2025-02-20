@@ -21,8 +21,6 @@ def get(identifier, checkpoint=None, **kwargs):
                             "resnet101": resnet101},
                         **kwargs)
 
-    if isinstance(obj, torch.nn.Module):
-        if checkpoint:
-            obj = torch_load(obj, checkpoint, strict=True)
-        return obj
-    raise ValueError(f"Could not interpret model instance: {obj}.")
+    if checkpoint:
+        obj = torch_load(obj, checkpoint, strict=True)
+    return obj
