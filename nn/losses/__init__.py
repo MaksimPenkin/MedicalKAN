@@ -11,8 +11,9 @@ from utils.serialization_utils import create_object
 def get(identifier, **kwargs):
     obj = create_object(identifier,
                         module_objects={
-                            "ce": CrossEntropyLoss,
-                            "mse": MSELoss},
+                            "CrossEntropyLoss": CrossEntropyLoss,
+                            "MSELoss": MSELoss,
+                            "CompositeLoss": CompositeLoss},
                         **kwargs)
 
     if callable(obj):
