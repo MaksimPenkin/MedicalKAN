@@ -1,4 +1,4 @@
 class_name: TensorBoardCallback
 config:
-  log_dir: "../runs/mha_d5"
+  log_dir: ${WORKBENCH}/runs/demo
   update_freq: 100

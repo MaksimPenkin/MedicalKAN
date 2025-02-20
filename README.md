@@ -8,6 +8,7 @@
 ## Workspace
 ```
 ├── ckpts
+├── data_lists
 ├── runs
 └── MedicalKAN
     ├── configs
@@ -28,6 +29,7 @@
 > cd ~
 > git clone https://github.com/MaksimPenkin/MedicalKAN.git
 > cd MedicalKAN
+> export WORKBENCH=/home/mpenkin/Documents/cmc/Deringing/work
 > python3 train.py --help
 ```
 

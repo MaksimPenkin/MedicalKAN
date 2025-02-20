@@ -7,7 +7,7 @@ config:
   sampler:
     class_name: CSVSampler
     config:
-      filename: "../../../data/data_lists/IXI_0_1/test.csv"
+      filename: ${WORKBENCH}/data_lists/IXI_0_1/test.csv
 
   load_func: utils.io_utils.read_img
   load_params:

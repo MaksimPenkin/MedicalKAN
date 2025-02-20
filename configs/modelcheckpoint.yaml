@@ -1,4 +1,4 @@
 class_name: ModelCheckpointCallback
 config:
-  save_path: "../ckpts/mha_d5/model_e{epoch:02d}.pt"
+  save_path: ${WORKBENCH}/ckpts/demo/model_e{epoch:02d}.pt
   save_freq: "epoch"
