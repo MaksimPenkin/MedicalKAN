@@ -1,0 +1,6 @@
+class_name: from_dataset
+config:
+  dataset: !include "./data/datasets/ixi_val.yaml"
+  batch_size: 1
+  shuffle: false
+  pin_memory: true
