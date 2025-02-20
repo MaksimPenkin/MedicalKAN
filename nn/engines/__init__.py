@@ -2,7 +2,7 @@
 # @author   Maksim Penkin
 # """
 
-from nn.base_engine import IEngine
+from nn.engines.base_engine import IEngine
 
 from utils.serialization_utils import create_object
 
