@@ -2,11 +2,8 @@
 # @author   Maksim Penkin
 # """
 
-import time
 from tqdm import tqdm
-from datetime import datetime
 
-import numpy as np
 import torch
 
 
@@ -158,17 +155,17 @@ def _eval_step(model, x, y, criterion, device="cpu"):
     y = _to_device(y, device=device)
 
     with torch.no_grad():
-        y_pred = _model_step(model, x, test_mode=True)
+        y_pred = _model_step(model, x)
         _, logs = _criterion_step(criterion, y_pred, y)
     return {"val_" + k: v for k, v in logs.items()}
 
 
-def _train_step(model, x, y, criterion, optimizer, teachers=None, device="cpu"):
+def _train_step(model, x, y, criterion, optimizer, device="cpu"):
     x = _to_device(x, device=device)
     y = _to_device(y, device=device)
 
     optimizer.zero_grad()
-    y_pred = _model_step(model, x, test_mode=False)
+    y_pred = _model_step(model, x)
     loss, logs = _criterion_step(criterion, y_pred, y)
     loss.backward()
     optimizer.step()
@@ -179,7 +176,7 @@ def _inference_step(model, x, device="cpu"):
     x = _to_device(x, device=device)
 
     with torch.no_grad():
-        y_pred = _model_step(model, x, test_mode=True)
+        y_pred = _model_step(model, x)
     return y_pred
 
 
@@ -216,8 +213,7 @@ def eval_func(model, dataloader, criterion, callbacks=None, limit_batches=1.0, d
     return eval_logs
 
 
-def train_func(model, dataloader, criterion,
-               optimizer="adam", callbacks=None, epochs=1, val_dataloader=None, limit_batches=1.0, device="cpu"):
+def train_func(model, dataloader, criterion, optimizer="adam", callbacks=None, epochs=1, val_dataloader=None, limit_batches=1.0, device="cpu"):
     from nn import losses, optimizers
     from nn.callbacks import CompositeCallback
     from metrics import CompositeMetric
