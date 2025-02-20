@@ -35,9 +35,9 @@ class AttentionKANLinear(nn.Module):
         # x = torch.cat([layer(x) for layer in self.subspaces], dim=-1)
         # x, _ = self.mha(x, x, x)
         # x = self.proj(x)
+        # return x.view(-1, self.outdim)
 
         x = torch.cat([layer(x) for layer in self.subspaces], dim=-1).permute(0, 2, 1)
         x = self.mha(x, x, x)[0].permute(0, 2, 1)
         x = torch.einsum('bid,iod->bo', x, self.coeffs)
-
         return x
