@@ -34,11 +34,12 @@ class ChebyKANLinear(nn.Module):
         x *= self.arange
         # Apply cos
         x = x.cos()
+
         if self.einsum:
         # Compute the Chebyshev interpolation
             y = torch.einsum(
                 "bid,iod->bo", x, self.cheby_coeffs
             )  # shape = (batch_size, outdim)
-            y = y.view(-1, self.outdim)
+            return y.view(-1, self.outdim)
         else:
             return x
