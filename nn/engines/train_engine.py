@@ -48,7 +48,7 @@ class Trainer(IEngine):
 
         self._criterion = losses.get(criterion)
         self._optimizer = optimizers.get(optimizer, params=self.model.parameters())
-        self._callbacks = CompositeCallback(callbacks=callbacks, model=self.model)
+        self._callbacks = CompositeCallback(callbacks=callbacks, model=self.model) if not isinstance(callbacks, CompositeCallback) else callbacks
 
     @staticmethod
     def unpack_x_y(blob, device="cpu"):
