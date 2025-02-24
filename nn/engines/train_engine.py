@@ -37,7 +37,7 @@ class Trainer(IEngine):
     def callbacks(self):
         return self._callbacks
 
-    def __init__(self, dataloader, criterion, optimizer="adam", callbacks=None, val_dataloader=None, *args, **kwargs):
+    def __init__(self, dataloader, criterion, *args, optimizer="adam", callbacks=None, val_dataloader=None, **kwargs):
         super(Trainer, self).__init__(*args, **kwargs)
 
         self._train_dataloader = data.get(dataloader)
