@@ -7,9 +7,6 @@ import abc
 
 class ISampler:
 
-    def __init__(self):
-        pass
-
     @abc.abstractmethod
     def __len__(self):
         raise NotImplementedError("Must be implemented in subclasses.")
