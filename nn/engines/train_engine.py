@@ -79,6 +79,7 @@ class Trainer(IEngine):
         loss, logs = self.compute_loss(y_pred, y)
         loss.backward()
         self.optimizer.step()
+
         return logs
 
     def eval_step(self, blob, device="cpu"):
@@ -87,6 +88,7 @@ class Trainer(IEngine):
         with torch.no_grad():
             y_pred = self.model_step(x)
             _, logs = self.compute_loss(y_pred, y)
+
         return {"val_" + k: v for k, v in logs.items()}
 
     def fit(self, epochs=1, limit_batches=1.0, device="cpu"):
