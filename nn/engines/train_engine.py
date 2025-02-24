@@ -111,7 +111,7 @@ class Trainer(IEngine):
                 self.callbacks.on_train_batch_begin(idx)
                 logs = self.train_step(blob, device=device)
                 self.callbacks.on_train_batch_end(idx, logs=logs)
-                train_tracker.update_state(logs, n=blob.size(0))  # TODO: add seamless batch_size value extraction.
+                train_tracker.update_state(logs, n=blob[0].size(0))  # TODO: add seamless batch_size value extraction.
             epoch_logs = train_tracker.result()
 
             if self.val_dataloader is not None:
@@ -124,7 +124,7 @@ class Trainer(IEngine):
                     self.callbacks.on_test_batch_begin(idx)
                     logs = self.eval_step(blob, device=device)
                     self.callbacks.on_test_batch_end(idx, logs=logs)
-                    val_tracker.update_state(logs, n=blob.size(0))  # TODO: add seamless batch_size value extraction.
+                    val_tracker.update_state(logs, n=blob[0].size(0))  # TODO: add seamless batch_size value extraction.
                 val_logs = val_tracker.result()
                 self.callbacks.on_test_end(logs=val_logs)
                 epoch_logs.update(val_logs)
