@@ -1,5 +1,10 @@
 class_name: Trainer
 config:
   model: !include "./models/srkan_4_S1_L3_mha.yaml"
-  db: !include "./data/dataloader.yaml"
-  val_db: !include "./data/val_dataloader.yaml"
+  dataloader: !include "./data/dataloader.yaml"
+  criterion: "MSELoss"
+  optimizer: !include "./adam.yaml"
+  callbacks:
+  - !include "./modelcheckpoint.yaml"
+  - !include "./tensorboard.yaml"
+  val_dataloader: !include "./data/val_dataloader.yaml"

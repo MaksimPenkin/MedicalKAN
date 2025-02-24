@@ -20,18 +20,10 @@ def get_args():
 
     parser.add_argument("--engine", type=str, required=True,
                         help="engine specification.", metavar="")
-
-    parser.add_argument("--loss", type=str, default="mse",
-                        help="loss specification.", metavar="")
-    parser.add_argument("--optimizer", type=str, default="adam",
-                        help="optimizer specification.", metavar="")
-    parser.add_argument("--callbacks", nargs="+", type=str, default=[],
-                        help="list of the callbacks to be applied.", metavar="")
-
-    parser.add_argument("--batch_size", type=int, default=8,
-                        help="batch size.", metavar="")
     parser.add_argument("--epochs", type=int, default=1,
                         help="how many times to iterate over the dataset (default: 1).", metavar="")
+    parser.add_argument("--limit_batches", type=float, default=1.0,
+                        help="how much of the dataset to use (default: 1.0).", metavar="")
 
     return parser.parse_args()
 
@@ -48,11 +40,7 @@ def main(args):
     engine = engines.get(args.engine)
 
     # 2. Invoke engine.
-    engine.train(criterion=args.loss,
-                 optimizer=args.optimizer,
-                 callbacks=args.callbacks,
-                 epochs=args.epochs,
-                 device=args.device)
+    engine.fit(epochs=args.epochs, limit_batches=args.limit_batches, device=device)
 
 
 if __name__ == "__main__":
