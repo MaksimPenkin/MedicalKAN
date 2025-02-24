@@ -4,10 +4,10 @@
 
 from data import samplers
 
-from data.datasets.base_dataset import CustomDataset
+from data.datasets.base_dataset import IDataset
 
 
-class SamplerDataset(CustomDataset):
+class SamplerDataset(IDataset):
 
     @property
     def sampler(self):

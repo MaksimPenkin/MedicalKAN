@@ -7,18 +7,13 @@ from data.transforms import CompositeTransform
 from torch.utils.data import Dataset
 
 
-class CustomDataset(Dataset):
-
-    @property
-    def root(self):
-        return self._root
+class IDataset(Dataset):
 
     @property
     def transforms(self):
         return self._transforms
 
-    def __init__(self, root, transforms=None):
-        self._root = root
+    def __init__(self, transforms=None):
         self._transforms = CompositeTransform(transforms) if transforms is not None else None
 
     def __len__(self):
