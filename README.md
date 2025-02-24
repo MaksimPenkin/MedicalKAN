@@ -29,7 +29,7 @@
 > cd ~
 > git clone https://github.com/MaksimPenkin/MedicalKAN.git
 > cd MedicalKAN
-> export WORKBENCH=/home/mpenkin/Documents/cmc/Deringing
+> export WORKBENCH=<...>
 > python3 train.py --help
 ```
 
