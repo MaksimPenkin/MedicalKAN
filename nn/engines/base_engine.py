@@ -15,6 +15,22 @@ class IEngine:
     def __init__(self, model, checkpoint=None):
         self._model = models.get(model, checkpoint=checkpoint)
 
+    def model_step(self, x, **kwargs):
+        if isinstance(x, dict):
+            try:
+                y_pred = self.model(**x, **kwargs)
+            except:
+                y_pred = self.model(x, **kwargs)
+        elif isinstance(x, (list, tuple)):
+            try:
+                y_pred = self.model(*x, **kwargs)
+            except:
+                y_pred = self.model(x, **kwargs)
+        else:
+            y_pred = self.model(x, **kwargs)
+
+        return y_pred
+
     @staticmethod
     def _to_ckpt(model, save_path=None):
         model.to("cpu")
