@@ -22,8 +22,8 @@ class Trainer(IEngine):
         return self._train_dataloader
 
     @property
-    def eval_dataloader(self):
-        return self._eval_dataloader
+    def val_dataloader(self):
+        return self._val_dataloader
 
     @property
     def criterion(self):
@@ -42,9 +42,9 @@ class Trainer(IEngine):
 
         self._train_dataloader = data.get(dataloader)
         if val_dataloader is not None:
-            self._eval_dataloader = data.get(val_dataloader)
+            self._val_dataloader = data.get(val_dataloader)
         else:
-            self._eval_dataloader = None
+            self._val_dataloader = None
 
         self._criterion = losses.get(criterion)
         self._optimizer = optimizers.get(optimizer, params=self.model.parameters())
@@ -93,10 +93,10 @@ class Trainer(IEngine):
 
     def fit(self, epochs=1, limit_batches=1.0, device="cpu"):
         steps = int(limit_batches * len(self.train_dataloader))
-        val_steps = len(self.eval_dataloader) if self.eval_dataloader is not None else None
+        val_steps = len(self.val_dataloader) if self.val_dataloader is not None else None
 
         train_tracker = CompositeMetric()
-        val_tracker = CompositeMetric() if self.eval_dataloader is not None else None
+        val_tracker = CompositeMetric() if self.val_dataloader is not None else None
 
         self.model.to(device)
         self.callbacks.on_train_begin()
@@ -114,11 +114,11 @@ class Trainer(IEngine):
                 train_tracker.update_state(logs, n=blob.size(0))  # TODO: add seamless batch_size value extraction.
             epoch_logs = train_tracker.result()
 
-            if self.eval_dataloader is not None:
+            if self.val_dataloader is not None:
                 val_tracker.reset_state()
                 self.model.eval()
                 self.callbacks.on_test_begin()
-                for idx, blob in enumerate(tqdm(self.eval_dataloader, total=val_steps, leave=False)):
+                for idx, blob in enumerate(tqdm(self.val_dataloader, total=val_steps, leave=False)):
                     if idx >= val_steps:
                         break
                     self.callbacks.on_test_batch_begin(idx)
