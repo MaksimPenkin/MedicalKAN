@@ -3,9 +3,9 @@
 # """
 
 from itertools import zip_longest
-from torch.utils.data import Dataset
-
 from utils.torch_utils import torch_dtype, torch_random
+
+from torch.utils.data import Dataset
 
 
 class RandomUniformDataset(Dataset):
