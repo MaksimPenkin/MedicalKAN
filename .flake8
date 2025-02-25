@@ -2,9 +2,8 @@
 max-line-length = 150
 ignore = E401, W503
 per-file-ignores =
-    ./utils/torch_utils.py:E722
-
+    ./nn/engines/base_engine.py:E722
+    ./nn/engines/train_engine.py:E722
 exclude =
-    ./nn/layers/kan_advanced
-    ./nn/layers/kan_convolutional
-    ./nn/layers/kan_original
+    ./nn/models
+    ./nn/layers

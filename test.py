@@ -54,7 +54,7 @@ def main(args):
         if idx >= steps:
             break
         x = x.to(device)
-        y_pred = model(x)
+        _ = model(x)
 
         # y = y.detach().cpu().numpy()[0, 0]
         # y_pred = y_pred.detach().cpu().numpy()[0, 0]
