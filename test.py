@@ -11,6 +11,9 @@ import torch
 import data
 from nn import models
 
+# import numpy as np
+# from skimage.metrics import peak_signal_noise_ratio
+
 
 def get_args():
     parser = argparse.ArgumentParser(description="Command-line arguments", usage="%(prog)s [-h]", formatter_class=RawTextHelpFormatter)
@@ -39,7 +42,7 @@ def main(args):
         torch.manual_seed(args.seed)
 
     # 1. Define model.
-    model = models.get(args.engine, checkpoint=args.ckpt)
+    model = models.get(args.nn, checkpoint=args.ckpt)
     model.to(device).eval()
 
     # 2. Define dataloader.
@@ -50,7 +53,14 @@ def main(args):
     for idx, (x, y) in enumerate(tqdm(db, total=steps)):
         if idx >= steps:
             break
+        x = x.to(device)
         y_pred = model(x)
+
+        # y = y.detach().cpu().numpy()[0, 0]
+        # y_pred = y_pred.detach().cpu().numpy()[0, 0]
+        #
+        # y = (np.clip(y, 0., 1.) * 255).astype(np.uint8).astype(np.float32) / 255.
+        # y_pred = (np.clip(y_pred, 0., 1.) * 255).astype(np.uint8).astype(np.float32) / 255.
 
 
 if __name__ == "__main__":
