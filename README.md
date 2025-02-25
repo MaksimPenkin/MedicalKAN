@@ -31,6 +31,20 @@
 > cd MedicalKAN
 > export WORKBENCH=<...>
 > python3 train.py --help
+{'cuda': True, 'device_count': 1, 'device_current': 0, 'device_name': 'NVIDIA GeForce RTX 4080 Laptop GPU'}
+
+Command-line arguments:
+usage: train.py [-h]
+
+Command-line arguments
+
+options:
+  -h, --help        show this help message and exit
+  --use_gpu         gpu index to be used.
+  --seed            manual seed to be used.
+  --engine          engine specification.
+  --epochs          how many times to iterate over the dataset (default: 1).
+  --limit_batches   how much of the dataset to use (default: 1.0).
 ```
 
 ## Acknowledgements
@@ -41,3 +55,14 @@
 - [GitHub-Convolutional-KANs](https://github.com/AntonioTepsich/Convolutional-KANs)
 - [GitHub-Chebyshev-KANs](https://github.com/SynodicMonth/ChebyKAN)
 - [GitHub-X-KANeRF](https://github.com/lif314/X-KANeRF)
+
+## Citation
+```python
+@inproceedings{penkin2024kolmogorov,
+  title={Kolmogorov-Arnold Networks as Deep Feature Extractors for MRI Reconstruction},
+  author={Penkin, Maksim and Krylov, Andrey},
+  booktitle={Proceedings of the 2024 9th International Conference on Biomedical Imaging, Signal Processing},
+  pages={92--97},
+  year={2024}
+}
+```
