@@ -2,7 +2,7 @@
 # @author   Maksim Penkin
 # """
 
-from metrics.base_metric import IMetric
+from .base_metric import IMetric
 
 
 class MeanMetric(IMetric):

@@ -2,8 +2,8 @@
 # @author   Maksim Penkin
 # """
 
-from metrics.base_metric import IMetric
-from metrics.mean_metric import MeanMetric
+from .base_metric import IMetric
+from .mean_metric import MeanMetric
 
 from utils.serialization_utils import create_object
 
