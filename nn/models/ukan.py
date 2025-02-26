@@ -15,7 +15,17 @@ from nn.layers.kan_original.KANLinear import KANLinear
 from nn.layers.kan_advanced.chebyshev import ChebyKANLinear
 from nn.layers.kan_advanced.hermite import HermiteKANLinear, HermiteFuncKANLinear
 from nn.layers.kan_advanced.attention import AttentionKANLinear
-from nn.transforms.functional import space_to_depth, depth_to_space
+
+
+def space_to_depth(x, block_size):
+    n, c, h, w = x.size()
+    unfolded_x = torch.nn.functional.unfold(x, block_size, stride=block_size)
+    return unfolded_x.view(n, c * block_size ** 2, h // block_size, w // block_size)
+
+
+def depth_to_space(x, block_size):
+    n, c, h, w = x.size()
+    return F.pixel_shuffle(x, block_size)
 
 
 class PatchEncoder(nn.Module):
