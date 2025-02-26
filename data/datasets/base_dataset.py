@@ -2,7 +2,7 @@
 # @author   Maksim Penkin
 # """
 
-from data import transforms
+from .. import transforms
 
 from torch.utils.data import Dataset
 

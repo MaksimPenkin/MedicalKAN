@@ -2,8 +2,8 @@
 # @author   Maksim Penkin
 # """
 
-from data.samplers.base_sampler import ISampler
-from data.samplers.source_sampler import TXTSampler, CSVSampler
+from .base_sampler import ISampler
+from .source_sampler import TXTSampler, CSVSampler
 
 from utils.serialization_utils import create_object
 

@@ -3,11 +3,11 @@
 # """
 
 from torch.utils.data import DataLoader
-from data.mnist import mnist
-from data.cifar import cifar10, cifar100
-from data.imagenet import imagenet1k
-from data.dummy import random_uniform
-from data.from_dataset import from_dataset
+from .mnist import mnist
+from .cifar import cifar10, cifar100
+from .imagenet import imagenet1k
+from .dummy import random_uniform
+from .from_dataset import from_dataset
 
 from utils.serialization_utils import create_object
 

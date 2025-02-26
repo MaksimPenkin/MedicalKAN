@@ -4,7 +4,7 @@
 
 import pandas as pd
 
-from data.samplers.base_sampler import IterableSampler
+from .base_sampler import IterableSampler
 
 
 class SourceSampler(IterableSampler):

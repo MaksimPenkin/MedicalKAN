@@ -2,7 +2,7 @@
 # @author   Maksim Penkin
 # """
 
-from data import datasets
+from . import datasets
 from torch.utils.data import DataLoader
 
 

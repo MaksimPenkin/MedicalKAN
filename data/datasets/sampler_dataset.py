@@ -4,7 +4,7 @@
 
 from data import samplers
 
-from data.datasets.base_dataset import IDataset
+from .base_dataset import IDataset
 
 
 class SamplerDataset(IDataset):

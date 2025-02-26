@@ -2,9 +2,9 @@
 # @author   Maksim Penkin
 # """
 
-import data.transforms.functional as F
+import torchvision.transforms.functional as F
 
-from data.transforms.base_transform import ITransform
+from .base_transform import ITransform
 
 
 class ToTensor(ITransform):

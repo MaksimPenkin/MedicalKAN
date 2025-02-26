@@ -2,7 +2,7 @@
 # @author   Maksim Penkin
 # """
 
-from data.datasets.random_dataset import RandomUniformDataset
+from .datasets.random_dataset import RandomUniformDataset
 from torch.utils.data import DataLoader
 
 

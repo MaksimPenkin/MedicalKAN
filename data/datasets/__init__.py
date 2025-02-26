@@ -3,9 +3,9 @@
 # """
 
 from torch.utils.data import Dataset
-from data.datasets.sampler_dataset import SamplerDataset
-from data.datasets.file_dataset import FileDataset
-from data.datasets.random_dataset import RandomUniformDataset
+from .sampler_dataset import SamplerDataset
+from .file_dataset import FileDataset
+from .random_dataset import RandomUniformDataset
 
 from utils.serialization_utils import create_object
 
