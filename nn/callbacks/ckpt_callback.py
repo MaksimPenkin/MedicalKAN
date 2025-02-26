@@ -7,7 +7,7 @@ from pathlib import Path
 import torch
 from utils.os_utils import make_dir
 
-from nn.callbacks.base_callback import ICallback
+from .base_callback import ICallback
 
 
 class ModelCheckpointCallback(ICallback):

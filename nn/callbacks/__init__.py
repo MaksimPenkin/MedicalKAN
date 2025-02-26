@@ -2,9 +2,9 @@
 # @author   Maksim Penkin
 # """
 
-from nn.callbacks.base_callback import ICallback
-from nn.callbacks.ckpt_callback import ModelCheckpointCallback
-from nn.callbacks.tb_callback import TensorBoardCallback
+from .base_callback import ICallback
+from .ckpt_callback import ModelCheckpointCallback
+from .tb_callback import TensorBoardCallback
 
 from utils.serialization_utils import create_object
 

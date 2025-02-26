@@ -7,7 +7,7 @@ from pathlib import Path
 from datetime import datetime
 from torch.utils.tensorboard import SummaryWriter
 
-from nn.callbacks.base_callback import ICallback
+from .base_callback import ICallback
 
 
 class TensorBoardCallback(ICallback):
