@@ -6,10 +6,11 @@ import torch
 from tqdm import tqdm
 
 import data
-from nn import losses, optimizers
-from nn.callbacks import CompositeCallback
 from metrics import CompositeMetric
 from utils.torch_utils import split_loss_logs, to_device
+
+from .. import losses, optimizers
+from ..callbacks import CompositeCallback
 
 from .base_engine import IEngine
 

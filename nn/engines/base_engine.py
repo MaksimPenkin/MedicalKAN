@@ -3,7 +3,7 @@
 # """
 
 import torch
-from nn import models
+from .. import models
 
 
 class IEngine:
