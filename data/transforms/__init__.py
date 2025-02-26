@@ -22,8 +22,6 @@ def get(identifier, **kwargs):
 class CompositeTransform:
 
     def __init__(self, transforms=None):
-        super(CompositeTransform, self).__init__()
-
         if transforms:
             self.transforms = [get(t) for t in transforms]
         else:
