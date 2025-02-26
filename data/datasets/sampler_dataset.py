@@ -2,7 +2,7 @@
 # @author   Maksim Penkin
 # """
 
-from data import samplers
+from .. import samplers
 
 from .base_dataset import IDataset
 
