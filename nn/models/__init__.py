@@ -2,9 +2,9 @@
 # @author   Maksim Penkin
 # """
 
-from nn.models.ckan.ckan import ConvKAN
-from nn.models.ukan.ukan import StackedResidualKAN
-from nn.models.resnet.resnet import resnet18, resnet50, resnet101
+from .ckan.ckan import ConvKAN
+from .ukan.ukan import StackedResidualKAN
+from .resnet.resnet import resnet18, resnet50, resnet101
 from utils.torch_utils import torch_load
 
 from utils.serialization_utils import create_object
