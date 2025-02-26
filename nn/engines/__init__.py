@@ -2,8 +2,8 @@
 # @author   Maksim Penkin
 # """
 
-from nn.engines.base_engine import IEngine
-from nn.engines.train_engine import Trainer
+from .base_engine import IEngine
+from .train_engine import Trainer
 
 from utils.serialization_utils import create_object
 

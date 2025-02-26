@@ -9,10 +9,9 @@ import data
 from nn import losses, optimizers
 from nn.callbacks import CompositeCallback
 from metrics import CompositeMetric
-
 from utils.torch_utils import split_loss_logs, to_device
 
-from nn.engines.base_engine import IEngine
+from .base_engine import IEngine
 
 
 class Trainer(IEngine):
