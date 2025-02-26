@@ -1,8 +1,7 @@
 class_name: FileDataset
 config:
   root: "/media/datasets/IXI_0_1/255"
-  transforms:
-  - ToTensor
+  transform: !include "./ixi_transform.yaml"
 
   sampler:
     class_name: CSVSampler
