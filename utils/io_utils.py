@@ -8,7 +8,7 @@ import numpy as np
 import cv2
 from scipy.io import loadmat, savemat
 
-from utils.os_utils import make_dir
+from .os_utils import make_dir
 
 
 def _as_hwc(img):
