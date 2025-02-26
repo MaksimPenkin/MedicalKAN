@@ -1,13 +1,13 @@
 class_name: FileDataset
 config:
-  root: "/media/datasets/IXI_0_1/255"
-  transform: !include "./transform.yaml"
-
   sampler:
     class_name: CSVSampler
     config:
       filename: ${WORKBENCH}/data_lists/IXI_0_1/train_gtLR_gibbsnoiseLR.csv
 
+  transform: !include "./transform.yaml"
+
+  root: "/media/datasets/IXI_0_1/255"
   load_func: utils.io_utils.read_img
   load_params:
   - key: "sketch"
