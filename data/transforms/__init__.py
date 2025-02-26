@@ -2,7 +2,6 @@
 # @author   Maksim Penkin
 # """
 
-from data.transforms.base_transform import ITransform
 from data.transforms.totensor_transform import ToTensor
 
 from utils.serialization_utils import create_object
@@ -15,12 +14,12 @@ def get(identifier, **kwargs):
                             "CompositeTransform": CompositeTransform},
                         **kwargs)
 
-    if isinstance(obj, ITransform):
+    if callable(obj):
         return obj
     raise ValueError(f"Could not interpret transform instance: {obj}.")
 
 
-class CompositeTransform(ITransform):
+class CompositeTransform:
 
     def __init__(self, transforms=None):
         super(CompositeTransform, self).__init__()

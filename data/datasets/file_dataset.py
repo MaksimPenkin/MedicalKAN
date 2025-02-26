@@ -33,6 +33,6 @@ class FileDataset(SamplerDataset):
 
     def __getitem__(self, index):
         sample = self._load(self.sampler[index])
-        if self.transforms:
-            sample = self.transforms(sample)
+        if self.transform:
+            sample = self.transform(sample)
         return sample

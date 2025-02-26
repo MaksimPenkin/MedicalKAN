@@ -2,7 +2,7 @@
 # @author   Maksim Penkin
 # """
 
-from data.transforms import CompositeTransform
+from data import transforms
 
 from torch.utils.data import Dataset
 
@@ -10,11 +10,14 @@ from torch.utils.data import Dataset
 class IDataset(Dataset):
 
     @property
-    def transforms(self):
-        return self._transforms
+    def transform(self):
+        return self._transform
 
-    def __init__(self, transforms=None):
-        self._transforms = CompositeTransform(transforms) if transforms is not None else None
+    def __init__(self, transform=None):
+        # The transforms must be designed to fit the dataset.
+        # As such, the dataset must output a sample compatible with the library transform functions,
+        # or transforms must be defined for the particular sample case.
+        self._transform = transforms.get(transform) if transform is not None else None
 
     def __len__(self):
         raise NotImplementedError("Must be implemented in subclasses.")
