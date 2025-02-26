@@ -6,4 +6,3 @@ per-file-ignores =
     ./nn/engines/train_engine.py:E722
 exclude =
     ./nn/models
-    ./nn/layers
