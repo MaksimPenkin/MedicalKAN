@@ -4,7 +4,7 @@
 
 import torch
 from torch import nn
-from nn.layers.kan_convolutional.KANConv import KAN_Convolutional_Layer
+from .conv2d import KAN_Convolutional_Layer
 
 
 class ConvKAN(nn.Module):
