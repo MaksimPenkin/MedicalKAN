@@ -1,6 +1,6 @@
 class_name: from_dataset
 config:
-  dataset: !include "./datasets/ixi_train.yaml"
+  dataset: !include "./datasets/ixi/train.yaml"
   batch_size: 16
   shuffle: true
   pin_memory: true
