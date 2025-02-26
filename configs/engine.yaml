@@ -1,6 +1,6 @@
 class_name: Trainer
 config:
-  model: !include "./models/srkan_4_S1_L3_mha.yaml"
+  model: !include "./models/ukan/srkan_4_S1_L3_mha.yaml"
   dataloader: !include "./data/dataloader.yaml"
   criterion: "MSELoss"
   optimizer: !include "./adam.yaml"
