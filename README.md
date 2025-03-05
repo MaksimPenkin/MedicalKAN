@@ -6,7 +6,9 @@
 
 # Medical Image Processing using Kolmogorov-Arnold Networks
 
-## Workspace
+![alt text](./example.png)
+
+## 📌 Workspace
 ```
 ├── ckpts
 ├── data_lists
@@ -25,7 +27,7 @@
     └── train.py
 ```
 
-## Quick-start
+## 📌 Quick-start
 ```
 > cd ~
 > git clone https://github.com/MaksimPenkin/MedicalKAN.git
@@ -49,13 +51,15 @@ options:
 ```
 
 ## Acknowledgements
-- [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/pdf/2404.19756): Liu, Ziming, Yixuan Wang, Sachin Vaidya, Fabian Ruehle, James Halverson, Marin Soljačić, Thomas Y. Hou, and Max Tegmark. "Kan: Kolmogorov-arnold networks." arXiv preprint arXiv:2404.19756 (2024).
-- [Convolutional Kolmogorov–Arnold Networks](https://arxiv.org/pdf/2406.13155v1): Bodner, Alexander Dylan, Antonio Santiago Tepsich, Jack Natan Spolski, and Santiago Pourteau. "Convolutional Kolmogorov-Arnold Networks." arXiv preprint arXiv:2406.13155 (2024).
-- [Chebyshev Polynomial-Based Kolmogorov-Arnold Networks](https://arxiv.org/html/2405.07200v1): SS, Sidharth. "Chebyshev polynomial-based kolmogorov-arnold networks: An efficient architecture for nonlinear function approximation." arXiv preprint arXiv:2405.07200 (2024).
-- [GitHub-pykan](https://github.com/KindXiaoming/pykan)
-- [GitHub-Convolutional-KANs](https://github.com/AntonioTepsich/Convolutional-KANs)
-- [GitHub-Chebyshev-KANs](https://github.com/SynodicMonth/ChebyKAN)
-- [GitHub-X-KANeRF](https://github.com/lif314/X-KANeRF)
+Big thank you for the awesome works!
+
+| arXiv                                                                                        | GitHub                                                                            |
+|----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
+| [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/pdf/2404.19756)                          | [GitHub-pykan](https://github.com/KindXiaoming/pykan)                             |
+| [Convolutional Kolmogorov–Arnold Networks](https://arxiv.org/pdf/2406.13155v1)               | [GitHub-Convolutional-KANs](https://github.com/AntonioTepsich/Convolutional-KANs) |
+| [Chebyshev Polynomial-Based Kolmogorov-Arnold Networks](https://arxiv.org/html/2405.07200v1) | [GitHub-Chebyshev-KANs](https://github.com/SynodicMonth/ChebyKAN)                 |
+|                                                                                              | [GitHub-X-KANeRF](https://github.com/lif314/X-KANeRF)                                                                        |
+
 
 ## Citation
 ```python
