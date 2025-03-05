@@ -1,5 +1,6 @@
-[![Static Badge](https://badgen.net/static/python/3.11/blue)](https://www.python.org/downloads/release/python-31111/)
+[![python](https://img.shields.io/badge/-Python_3.11-blue?logo=python&logoColor=white)](https://www.python.org/downloads/release/python-31111/)
 [![pytorch](https://img.shields.io/badge/PyTorch_2.6.0-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/locally/)
+[![lightning](https://img.shields.io/badge/-Lightning_2.0+-792ee5?logo=pytorchlightning&logoColor=white)](https://pytorchlightning.ai/)
 [![Static Badge](https://badgen.net/static/flake8/passed/green)](https://flake8.pycqa.org/en/latest/)
 
 
