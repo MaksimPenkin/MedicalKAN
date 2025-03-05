@@ -1,5 +1,5 @@
 [![Static Badge](https://badgen.net/static/python/3.11/blue)](https://www.python.org/downloads/release/python-31111/)
-[![Static Badge](https://badgen.net/static/pytorch/2.6.0/blue)](https://pytorch.org/get-started/locally/)
+[![pytorch](https://img.shields.io/badge/PyTorch_2.6.0-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/locally/)
 [![Static Badge](https://badgen.net/static/flake8/passed/green)](https://flake8.pycqa.org/en/latest/)
 
 
