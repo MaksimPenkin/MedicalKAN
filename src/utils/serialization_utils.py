@@ -40,7 +40,7 @@ class ConfigLoader(yaml.Loader, metaclass=ConfigLoaderMeta):
             if ext in (".yaml", ".yml", ".json"):  # YAML can load JSON.
                 return yaml.load(f, ConfigLoader)
             else:
-                return '\n'.join(l for l in (line.strip() for line in f.read().splitlines()) if l)
+                return '\n'.join(ln for ln in (line.strip() for line in f.read().splitlines()) if ln)
 
     def construct_path(self, node):
         # match():   Determine if the RE matches at the beginning of the string.
