@@ -1,3 +1,4 @@
-class_name: adam
+module: torch.optim
+class_name: Adam
 config:
   lr: 0.001
