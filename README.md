@@ -19,9 +19,10 @@
         │   └── *.yaml
         ├── requirements
         ├── src
-        │   ├── data 
-        │   ├── metrics
+        │   ├── data
+        │   ├── models
         │   ├── nn
+        │   ├── trainers
         │   └── utils
         ├── .flake8
         ├── .gitignore

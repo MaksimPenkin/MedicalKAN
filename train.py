@@ -7,8 +7,7 @@ import argparse
 from argparse import RawTextHelpFormatter
 
 import lightning
-from src import data
-from src.nn import trainers, models
+from src import trainers, models, data
 from src.utils.serialization_utils import load_config
 
 

@@ -5,7 +5,7 @@
 from lightning import LightningModule
 
 from . import nets
-from .. import losses, optimizers
+from ..nn import losses, optimizers
 from src.utils.torch_utils import split_loss_logs
 
 
