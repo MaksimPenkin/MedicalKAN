@@ -1,7 +1,7 @@
 class_name: CommonLitModel
 config:
   model:
-    module: src.nn.models.nets.ukan.ukan
+    module: src.models.nets.ukan.ukan
     class_name: StackedResidualKAN
     config:
       filters: 4
