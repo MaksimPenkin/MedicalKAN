@@ -23,10 +23,10 @@ class Compose:
         else:
             self.transforms = []
 
-    def __call__(self, sample):
+    def __call__(self, img):
         for t in self.transforms:
-            sample = t(sample)
-        return sample
+            img = t(img)
+        return img
 
     def __repr__(self):
         format_string = self.__class__.__name__ + '('
