@@ -1,0 +1,7 @@
+class_name: CommonLitTrainer
+config:
+  acceleration: gpu
+  devices: 0
+  logger: !include "../loggers/tensorboard.yaml"
+  callbacks:
+  - !include "../callbacks/modelcheckpoint.yaml"

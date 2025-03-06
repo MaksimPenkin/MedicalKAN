@@ -1,0 +1,4 @@
+module: torch.nn
+class_name: MSELoss
+config:
+  reduction: "mean"
