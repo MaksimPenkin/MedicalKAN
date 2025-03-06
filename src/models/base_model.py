@@ -61,14 +61,17 @@ class CommonLitModel(LightningModule):
         x, y = self.unpack_x_y(batch)
         y_pred = self(x)
         loss, logs = self.compute_loss(y_pred, y)
-        self.log_dict(logs)
+        logs = {"train/" + k: v for k, v in logs.items()}
+        self.log_dict(logs, on_step=True, on_epoch=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
         x, y = self.unpack_x_y(batch)
         y_pred = self(x)
         loss, logs = self.compute_loss(y_pred, y)
-        self.log_dict({"val_" + k: v for k, v in logs.items()})
+        logs = {"val/" + k: v for k, v in logs.items()}
+        logs["step"] = self.current_epoch
+        self.log_dict(logs, on_step=False, on_epoch=True)
         return loss
 
     def test_step(self, batch, batch_idx):
