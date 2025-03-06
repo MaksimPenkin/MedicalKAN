@@ -36,10 +36,10 @@ def main(args):
     cfg = load_config(args.config)
 
     # 1. Construct.
-    trainer = trainers.get(**cfg["trainer"])
-    model = models.get(**cfg["model"])
-    train_dataloaders = [data.get(**cfg_db) for cfg_db in cfg["data"]["train_dataloaders"]]
-    val_dataloaders = [data.get(**cfg_db) for cfg_db in cfg["data"]["val_dataloaders"]]
+    trainer = trainers.get(cfg["trainer"])
+    model = models.get(cfg["model"])
+    train_dataloaders = [data.get(cfg_db) for cfg_db in cfg["data"]["train_dataloaders"]]
+    val_dataloaders = [data.get(cfg_db) for cfg_db in cfg["data"]["val_dataloaders"]]
 
     # 2. Invoke.
     trainer.fit(model=model,
