@@ -90,7 +90,7 @@ def create_config(identifier, **kwargs):
     return config
 
 
-def create_object_from_config(config, module_objects=None):
+def create_object_from_config(config, module_objects=None, partial=False):
     """
     Usage example,
 
@@ -111,10 +111,14 @@ def create_object_from_config(config, module_objects=None):
     else:
         cls = getattr(import_module(cls_module), cls_name)  # Otherwise, dynamically import the target class.
 
-    return cls(**cls_config)  # Construct and return target object.
+    # Construct and return target object.
+    if not partial:
+        return cls(**cls_config)
+    else:
+        return functools.partial(cls, **cls_config)
 
 
-def create_object(identifier, module_objects=None, **kwargs):
+def create_object(identifier, module_objects=None, partial=False, **kwargs):
     if identifier is None:
         return None
 
@@ -123,7 +127,7 @@ def create_object(identifier, module_objects=None, **kwargs):
     except TypeError:
         obj = identifier
     else:
-        obj = create_object_from_config(config, module_objects=module_objects)
+        obj = create_object_from_config(config, module_objects=module_objects, partial=partial)
 
     return obj
 
