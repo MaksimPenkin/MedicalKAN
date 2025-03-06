@@ -1,4 +1,4 @@
-class_name: TensorBoardCallback
+module: lightning.pytorch.loggers.tensorboard
+class_name: TensorBoardLogger
 config:
-  log_dir: ${WORKBENCH}/runs/demo
-  update_freq: 100
+  save_dir: ${WORKBENCH}/runs/demo

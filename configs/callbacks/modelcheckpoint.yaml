@@ -1,4 +1,5 @@
-class_name: ModelCheckpointCallback
+module: lightning.pytorch.callbacks
+class_name: ModelCheckpoint
 config:
-  save_path: ${WORKBENCH}/ckpts/demo/model_e{epoch:02d}.pt
-  save_freq: "epoch"
+  dirpath: ${WORKBENCH}/ckpts/demo
+  filename: model_e{epoch:02d}.pt
