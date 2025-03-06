@@ -1,4 +1,5 @@
-class_name: srkan
+module: src.nn.models.nets.ukan.ukan
+class_name: StackedResidualKAN
 config:
   filters: 4
   S: 1
