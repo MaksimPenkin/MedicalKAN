@@ -5,7 +5,7 @@
 from lightning import LightningModule
 
 from . import nets
-from src import nn
+from .. import losses, optimizers
 from src.utils.torch_utils import split_loss_logs
 
 
@@ -16,9 +16,9 @@ class CommonLitModel(LightningModule):
 
         self._model = nets.get(model)
         if criterion is not None:
-            self._criterion = nn.losses.get(criterion)
+            self._criterion = losses.get(criterion)
         if optimizer is not None:
-            self._optimizer = nn.optimizers.get(optimizer, partial=True)
+            self._optimizer = optimizers.get(optimizer, partial=True)
 
     @staticmethod
     def unpack_x_y(batch):
