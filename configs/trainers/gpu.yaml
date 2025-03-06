@@ -1,6 +1,6 @@
 class_name: CommonLitTrainer
 config:
-  acceleration: gpu
+  accelerator: gpu
   devices: 0
   logger: !include "../loggers/tensorboard.yaml"
   callbacks:
