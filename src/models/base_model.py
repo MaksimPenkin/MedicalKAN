@@ -2,11 +2,11 @@
 # @author   Maksim Penkin
 # """
 
-from lightning import LightningModule
-
 from . import nets
 from ..nn import losses, optimizers
 from src.utils.torch_utils import split_loss_logs
+
+from lightning import LightningModule
 
 
 class CommonLitModel(LightningModule):
