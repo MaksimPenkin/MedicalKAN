@@ -6,7 +6,6 @@ from torch.utils.data import DataLoader
 from .mnist import mnist
 from .cifar import cifar10, cifar100
 from .imagenet import imagenet1k
-from .dummy import random_uniform
 from .from_dataset import from_dataset
 
 from src.utils.serialization_utils import create_object
@@ -19,7 +18,6 @@ def get(identifier, **kwargs):
                             "cifar10": cifar10,
                             "cifar100": cifar100,
                             "imagenet1k": imagenet1k,
-                            "random_uniform": random_uniform,
                             "from_dataset": from_dataset},
                         **kwargs)
 
