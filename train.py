@@ -6,8 +6,10 @@ import os
 import argparse
 from argparse import RawTextHelpFormatter
 
-import torch
-from src.nn import engines
+import lightning
+from src import data
+from src.nn import trainers, models
+from src.utils.serialization_utils import load_config
 
 
 def get_args():
@@ -17,30 +19,32 @@ def get_args():
                         help="gpu index to be used.", metavar="")
     parser.add_argument("--seed", type=int,
                         help="manual seed to be used.", metavar="")
-
-    parser.add_argument("--engine", type=str, required=True,
-                        help="engine specification.", metavar="")
-    parser.add_argument("--epochs", type=int, default=1,
-                        help="how many times to iterate over the dataset (default: 1).", metavar="")
-    parser.add_argument("--limit_batches", type=float, default=1.0,
-                        help="how much of the dataset to use (default: 1.0).", metavar="")
+    parser.add_argument("--config", type=str, required=True,
+                        help="path to an experiment configuration file in yaml (or json) format.", metavar="")
 
     return parser.parse_args()
 
 
 def main(args):
-    device = "cuda" if args.use_gpu >= 0 else "cpu"
-    if device == "cuda":
+    accelerator = "gpu" if args.use_gpu >= 0 else "cpu"
+    if accelerator == "gpu":
         os.environ["CUDA_VISIBLE_DEVICES"] = str(args.use_gpu)
 
     if args.seed is not None:
-        torch.manual_seed(args.seed)
+        lightning.seed_everything(args.seed, workers=True)
 
-    # 1. Define engine.
-    engine = engines.get(args.engine)
+    cfg = load_config(args.config)
 
-    # 2. Invoke engine.
-    engine.fit(epochs=args.epochs, limit_batches=args.limit_batches, device=device)
+    # 1. Construct.
+    trainer = trainers.get(**cfg["trainer"])
+    model = models.get(**cfg["model"])
+    train_dataloaders = [data.get(**cfg_db) for cfg_db in cfg["data"]["train_dataloaders"]]
+    val_dataloaders = [data.get(**cfg_db) for cfg_db in cfg["data"]["val_dataloaders"]]
+
+    # 2. Invoke.
+    trainer.fit(model=model,
+                train_dataloaders=train_dataloaders,
+                val_dataloaders=val_dataloaders)
 
 
 if __name__ == "__main__":
