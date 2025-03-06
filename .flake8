@@ -2,7 +2,6 @@
 max-line-length = 150
 ignore = E401, W503
 per-file-ignores =
-    ./nn/engines/base_engine.py:E722
-    ./nn/engines/train_engine.py:E722
+    ./src/models/base_model.py:E722
 exclude =
-    ./nn/models
+    ./src/models/nets
