@@ -2,4 +2,4 @@ module: lightning.pytorch.callbacks
 class_name: ModelCheckpoint
 config:
   dirpath: ${WORKBENCH}/ckpts/demo
-  filename: model_e{epoch:02d}.pt
+  filename: epoch_{epoch:03d}
