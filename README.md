@@ -10,22 +10,23 @@
 
 ## 📌 Workspace
 ```
-├── ckpts
-├── data_lists
-├── runs
-└── MedicalKAN
-    ├── configs
-    │   └── *.yaml
-    ├── requirements
-    ├── src
-    │   ├── data 
-    │   ├── metrics
-    │   ├── nn
-    │   └── utils
-    ├── .flake8
-    ├── .gitignore
-    ├── README.md
-    └── train.py
+└── $WORKBENCH
+    ├── ckpts
+    ├── data_lists
+    ├── runs
+    └── MedicalKAN
+        ├── configs
+        │   └── *.yaml
+        ├── requirements
+        ├── src
+        │   ├── data 
+        │   ├── metrics
+        │   ├── nn
+        │   └── utils
+        ├── .flake8
+        ├── .gitignore
+        ├── README.md
+        └── train.py
 ```
 
 ## 📌 Quick-start
@@ -34,6 +35,7 @@
 > git clone https://github.com/MaksimPenkin/MedicalKAN.git
 > cd MedicalKAN
 > export WORKBENCH=<...>
+> export DATASETS=<...>
 > python3 train.py --help
 
 Command-line arguments:

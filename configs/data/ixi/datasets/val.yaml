@@ -7,8 +7,8 @@ config:
 
   transform: !include "./transform.yaml"
 
-  root: "/media/datasets/IXI_0_1/255"
-  load_func: utils.io_utils.read_img
+  root: ${DATASETS}/IXI_0_1/255
+  load_func: src.utils.io_utils.read_img
   load_params:
   - key: "sketch"
     shape: [145, 145]
