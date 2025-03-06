@@ -8,7 +8,10 @@ from src.utils.serialization_utils import create_object
 
 
 def get(identifier, **kwargs):
-    obj = create_object(identifier, **kwargs)
+    obj = create_object(identifier,
+                        module_objects={
+                            "ToTensor": ToTensor},
+                        **kwargs)
 
     if callable(obj):
         return obj

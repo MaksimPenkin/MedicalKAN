@@ -1,4 +1,5 @@
-class_name: CompositeTransform
+module: src.data.transforms
+class_name: Compose
 config:
   transforms:
   - ToTensor

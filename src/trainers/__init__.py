@@ -11,7 +11,6 @@ from src.utils.serialization_utils import create_object
 def get(identifier, **kwargs):
     obj = create_object(identifier,
                         module_objects={
-                            "LitTrainer": Trainer,
                             "CommonLitTrainer": CommonLitTrainer},
                         **kwargs)
 
