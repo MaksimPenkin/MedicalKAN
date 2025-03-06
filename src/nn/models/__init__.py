@@ -2,24 +2,19 @@
 # @author   Maksim Penkin
 # """
 
-from .ckan.ckan import ConvKAN
-from .ukan.ukan import StackedResidualKAN
-from .resnet.resnet import resnet18, resnet50, resnet101
-from src.utils.torch_utils import torch_load
+from lightning import LightningModule
+from .base_model import CommonLitModel
 
 from src.utils.serialization_utils import create_object
 
 
-def get(identifier, checkpoint=None, **kwargs):
+def get(identifier, **kwargs):
     obj = create_object(identifier,
                         module_objects={
-                            "ckan": ConvKAN,
-                            "srkan": StackedResidualKAN,
-                            "resnet18": resnet18,
-                            "resnet50": resnet50,
-                            "resnet101": resnet101},
+                            "CommonLitModel": CommonLitModel},
                         **kwargs)
 
-    if checkpoint:
-        obj = torch_load(obj, checkpoint, strict=True)
-    return obj
+    if isinstance(obj, LightningModule):
+        return obj
+    raise ValueError(f"Could not interpret model instance: {obj}.")
+
