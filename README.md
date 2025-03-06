@@ -48,10 +48,13 @@ usage: train.py [-h]
 Command-line arguments
 
 options:
-  -h, --help  show this help message and exit
-  --use_gpu   gpu index to be used.
-  --seed      manual seed to be used.
-  --config    path to an experiment configuration file in yaml (or json) format.
+  -h, --help            show this help message and exit
+  --use_gpu             gpu index to be used.
+  --seed                manual seed to be used.
+  --config              path to an experiment configuration file in yaml (or json) format.
+  --limit_train_batches 
+                        how much of training dataset to check (default: 1.0).
+  --limit_val_batches   how much of validation dataset to check (default: 1.0).
 ```
 
 ## Acknowledgements

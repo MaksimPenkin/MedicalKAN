@@ -21,6 +21,11 @@ def get_args():
     parser.add_argument("--config", type=str, required=True,
                         help="path to an experiment configuration file in yaml (or json) format.", metavar="")
 
+    parser.add_argument("--limit_train_batches", type=float, default=1.0,
+                        help="how much of training dataset to check (default: 1.0).", metavar="")
+    parser.add_argument("--limit_val_batches", type=float, default=1.0,
+                        help="how much of validation dataset to check (default: 1.0).", metavar="")
+
     return parser.parse_args()
 
 
@@ -35,7 +40,7 @@ def main(args):
     cfg = load_config(args.config)
 
     # 1. Construct.
-    trainer = trainers.get(cfg["trainer"])
+    trainer = trainers.get(cfg["trainer"], limit_train_batches=args.limit_train_batches, limit_val_batches=args.limit_val_batches)
     model = models.get(cfg["model"])
     train_dataloaders = data.get(cfg["data"]["train_dataloaders"][0])  # TODO: fix the issue with multiple loaders.
     val_dataloaders = data.get(cfg["data"]["val_dataloaders"][0])  # TODO: fix the issue with multiple loaders.
