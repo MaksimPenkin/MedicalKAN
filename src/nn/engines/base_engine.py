@@ -70,7 +70,7 @@ class IEngine:
 
     @classmethod
     def export(cls, model, shapes, dtypes=None, option=None, save_path=None, **kwargs):
-        from data.dummy import random_uniform
+        from src.data.dummy import random_uniform
 
         example_inputs = next(iter(random_uniform(shapes, dtypes=dtypes)))
 
