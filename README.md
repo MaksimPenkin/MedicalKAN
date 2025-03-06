@@ -16,11 +16,12 @@
 └── MedicalKAN
     ├── configs
     │   └── *.yaml
-    ├── data
-    ├── metrics
-    ├── nn
     ├── requirements
-    ├── utils
+    ├── src
+    │   ├── data 
+    │   ├── metrics
+    │   ├── nn
+    │   └── utils
     ├── .flake8
     ├── .gitignore
     ├── README.md
@@ -34,7 +35,6 @@
 > cd MedicalKAN
 > export WORKBENCH=<...>
 > python3 train.py --help
-{'cuda': True, 'device_count': 1, 'device_current': 0, 'device_name': 'NVIDIA GeForce RTX 4080 Laptop GPU'}
 
 Command-line arguments:
 usage: train.py [-h]
