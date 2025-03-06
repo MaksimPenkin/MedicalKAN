@@ -57,24 +57,24 @@ class CommonLitModel(LightningModule):
 
         return split_loss_logs(value)
 
-    def training_step(self, batch, batch_idx, dataloader_idx):
+    def training_step(self, batch, batch_idx):
         x, y = self.unpack_x_y(batch)
         y_pred = self(x)
         loss, logs = self.compute_loss(y_pred, y)
         self.log_dict(logs)
         return loss
 
-    def validation_step(self, batch, batch_idx, dataloader_idx):
+    def validation_step(self, batch, batch_idx):
         x, y = self.unpack_x_y(batch)
         y_pred = self(x)
         loss, logs = self.compute_loss(y_pred, y)
         self.log_dict({"val_" + k: v for k, v in logs.items()})
         return loss
 
-    def test_step(self, batch, batch_idx, dataloader_idx):
+    def test_step(self, batch, batch_idx):
         raise NotImplementedError
 
-    def predict_step(self, batch, batch_idx, dataloader_idx):
+    def predict_step(self, batch, batch_idx):
         raise NotImplementedError
 
     def configure_optimizers(self):
