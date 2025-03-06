@@ -42,15 +42,16 @@
 Command-line arguments:
 usage: train.py [-h]
 
+Command-line arguments:
+usage: train.py [-h]
+
 Command-line arguments
 
 options:
-  -h, --help        show this help message and exit
-  --use_gpu         gpu index to be used.
-  --seed            manual seed to be used.
-  --engine          engine specification.
-  --epochs          how many times to iterate over the dataset (default: 1).
-  --limit_batches   how much of the dataset to use (default: 1.0).
+  -h, --help  show this help message and exit
+  --use_gpu   gpu index to be used.
+  --seed      manual seed to be used.
+  --config    path to an experiment configuration file in yaml (or json) format.
 ```
 
 ## Acknowledgements
