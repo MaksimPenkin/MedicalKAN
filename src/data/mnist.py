@@ -5,7 +5,7 @@
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 
-from utils.constants import MNIST_MEAN, MNIST_STD
+from src.utils.constants import MNIST_MEAN, MNIST_STD
 
 
 def mnist(root="/media/datasets/MNIST", split="val", **kwargs):

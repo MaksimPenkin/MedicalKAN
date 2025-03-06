@@ -4,7 +4,7 @@
 
 from .totensor_transform import ToTensor
 
-from utils.serialization_utils import create_object
+from src.utils.serialization_utils import create_object
 
 
 def get(identifier, **kwargs):

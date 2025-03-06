@@ -5,7 +5,7 @@
 from .base_sampler import ISampler
 from .source_sampler import TXTSampler, CSVSampler
 
-from utils.serialization_utils import create_object
+from src.utils.serialization_utils import create_object
 
 
 def get(identifier, **kwargs):

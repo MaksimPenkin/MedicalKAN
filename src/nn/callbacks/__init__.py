@@ -6,7 +6,7 @@ from .base_callback import ICallback
 from .ckpt_callback import ModelCheckpointCallback
 from .tb_callback import TensorBoardCallback
 
-from utils.serialization_utils import create_object
+from src.utils.serialization_utils import create_object
 
 
 def get(identifier, **kwargs):

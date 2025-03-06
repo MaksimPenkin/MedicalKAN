@@ -6,7 +6,7 @@ import os
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 
-from utils.constants import IMAGENET_MEAN, IMAGENET_STD
+from src.utils.constants import IMAGENET_MEAN, IMAGENET_STD
 
 
 def imagenet1k(root="/media/datasets/ILSVRC2012", split="val", **kwargs):

@@ -4,7 +4,7 @@
 
 from torch.optim import Optimizer, Adadelta, Adagrad, Adam, RMSprop, SGD
 
-from utils.serialization_utils import create_object
+from src.utils.serialization_utils import create_object
 
 
 def get(identifier, **kwargs):

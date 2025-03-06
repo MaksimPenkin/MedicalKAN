@@ -5,7 +5,7 @@
 from torchvision import datasets, transforms
 from torch.utils.data import DataLoader
 
-from utils.constants import CIFAR10_MEAN, CIFAR10_STD, CIFAR100_MEAN, CIFAR100_STD
+from src.utils.constants import CIFAR10_MEAN, CIFAR10_STD, CIFAR100_MEAN, CIFAR100_STD
 
 
 def cifar10(root="/media/datasets/CIFAR10", split="val", **kwargs):

@@ -5,7 +5,7 @@
 from .base_metric import IMetric
 from .mean_metric import MeanMetric
 
-from utils.serialization_utils import create_object
+from src.utils.serialization_utils import create_object
 
 
 def get(identifier, **kwargs):

@@ -7,7 +7,7 @@ import argparse
 from argparse import RawTextHelpFormatter
 
 import torch
-from nn import engines
+from src.nn import engines
 
 
 def get_args():
@@ -46,9 +46,7 @@ def main(args):
 if __name__ == "__main__":
     from pathlib import Path
     from datetime import datetime
-    from utils.torch_utils import torch_device
 
-    print(torch_device())
     print("\nCommand-line arguments:")
     cmd_args = get_args()
     for k, v in vars(cmd_args).items():

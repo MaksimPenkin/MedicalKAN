@@ -5,9 +5,9 @@
 import torch
 from tqdm import tqdm
 
-import data
-from metrics import CompositeMetric
-from utils.torch_utils import split_loss_logs, to_device
+from src import data
+from src.metrics import CompositeMetric
+from src.utils.torch_utils import split_loss_logs, to_device
 
 from .. import losses, optimizers
 from ..callbacks import CompositeCallback

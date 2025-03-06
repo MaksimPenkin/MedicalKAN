@@ -7,7 +7,7 @@ from .sampler_dataset import SamplerDataset
 from .file_dataset import FileDataset
 from .random_dataset import RandomUniformDataset
 
-from utils.serialization_utils import create_object
+from src.utils.serialization_utils import create_object
 
 
 def get(identifier, **kwargs):

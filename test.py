@@ -8,8 +8,8 @@ import argparse
 from argparse import RawTextHelpFormatter
 
 import torch
-import data
-from nn import models
+from src import data
+from src.nn import models
 
 # import numpy as np
 # from skimage.metrics import peak_signal_noise_ratio
@@ -66,9 +66,7 @@ def main(args):
 if __name__ == "__main__":
     from pathlib import Path
     from datetime import datetime
-    from utils.torch_utils import torch_device
 
-    print(torch_device())
     print("\nCommand-line arguments:")
     cmd_args = get_args()
     for k, v in vars(cmd_args).items():

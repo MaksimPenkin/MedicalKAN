@@ -5,7 +5,7 @@
 import os
 from pathlib import Path
 import torch
-from utils.os_utils import make_dir
+from src.utils.os_utils import make_dir
 
 from .base_callback import ICallback
 

@@ -9,7 +9,7 @@ from .imagenet import imagenet1k
 from .dummy import random_uniform
 from .from_dataset import from_dataset
 
-from utils.serialization_utils import create_object
+from src.utils.serialization_utils import create_object
 
 
 def get(identifier, **kwargs):
