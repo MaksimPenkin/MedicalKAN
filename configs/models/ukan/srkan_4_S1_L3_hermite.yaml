@@ -1,8 +1,13 @@
-module: src.nn.models.nets.ukan.ukan
-class_name: StackedResidualKAN
+class_name: CommonLitModel
 config:
-  filters: 4
-  S: 1
-  L: 3
-  version: hermite_func
-  degree: 5
+  model:
+    module: src.nn.models.nets.ukan.ukan
+    class_name: StackedResidualKAN
+    config:
+      filters: 4
+      S: 1
+      L: 3
+      version: hermite_func
+      degree: 5
+  criterion: !include "../losses/mse.yaml"
+  optimizer: !include "../optimizers/adam.yaml"

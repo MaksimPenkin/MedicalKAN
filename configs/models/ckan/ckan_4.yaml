@@ -1,4 +1,9 @@
-module: src.nn.models.nets.ckan.ckan
-class_name: ConvKAN
+class_name: CommonLitModel
 config:
-  n_convs: 4
+  model:
+    module: src.nn.models.nets.ckan.ckan
+    class_name: ConvKAN
+    config:
+      n_convs: 4
+  criterion: !include "../losses/mse.yaml"
+  optimizer: !include "../optimizers/adam.yaml"

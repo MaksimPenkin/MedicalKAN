@@ -1,7 +1,12 @@
-module: src.nn.models.nets.ukan.ukan
-class_name: StackedResidualKAN
+class_name: CommonLitModel
 config:
-  filters: 4
-  S: 1
-  L: 1
-  version: linear
+  model:
+    module: src.nn.models.nets.ukan.ukan
+    class_name: StackedResidualKAN
+    config:
+      filters: 4
+      S: 1
+      L: 1
+      version: linear
+  criterion: !include "../losses/mse.yaml"
+  optimizer: !include "../optimizers/adam.yaml"
