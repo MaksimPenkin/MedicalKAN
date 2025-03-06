@@ -2,9 +2,10 @@
 # @author   Maksim Penkin
 # """
 
-from lightning import Trainer
 from ..nn import callbacks as cbs
 from ..nn import loggers as lgs
+
+from lightning import Trainer
 
 
 class CommonLitTrainer(Trainer):
