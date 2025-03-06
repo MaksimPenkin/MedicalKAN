@@ -17,4 +17,3 @@ def get(identifier, **kwargs):
     if isinstance(obj, LightningModule):
         return obj
     raise ValueError(f"Could not interpret model instance: {obj}.")
-
