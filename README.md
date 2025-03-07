@@ -45,9 +45,6 @@
 Command-line arguments:
 usage: train.py [-h]
 
-Command-line arguments:
-usage: train.py [-h]
-
 Command-line arguments
 
 options:
