@@ -12,7 +12,7 @@ from src.utils.serialization_utils import load_config
 
 
 def get_args():
-    parser = argparse.ArgumentParser(description="Command-line arguments", usage="%(prog)s [-h]", formatter_class=RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(usage="%(prog)s [-h]", formatter_class=RawTextHelpFormatter)
 
     parser.add_argument("--use_gpu", type=int, default=0, help="gpu index to be used.", metavar="")
     parser.add_argument("--seed", type=int, help="manual seed to be used.", metavar="")
@@ -48,7 +48,6 @@ if __name__ == "__main__":
     from pathlib import Path
     from datetime import datetime
 
-    print("\nCommand-line arguments:")
     cmd_args = get_args()
     for k, v in vars(cmd_args).items():
         print(f"\t{k:20}: {v}")

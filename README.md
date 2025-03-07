@@ -41,11 +41,7 @@
 > export WORKBENCH=<...>
 > export DATASETS=<...>
 > python3 train.py --help
-
-Command-line arguments:
 usage: train.py [-h]
-
-Command-line arguments
 
 options:
   -h, --help            show this help message and exit
