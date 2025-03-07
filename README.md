@@ -27,7 +27,9 @@
         │   └── utils
         ├── .flake8
         ├── .gitignore
+        ├── example.png
         ├── README.md
+        ├── ruff.toml
         └── train.py
 ```
 
