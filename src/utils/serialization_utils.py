@@ -8,22 +8,20 @@ from importlib import import_module
 
 
 class ConfigLoaderMeta(type):
-
     def __new__(metacls, name, bases, namespace):
         cls = super().__new__(metacls, name, bases, namespace)
         # 1. Add !include tag processing.
-        cls.add_constructor('!include', cls.construct_include)
+        cls.add_constructor("!include", cls.construct_include)
         # 2.1 Add !path tag processing.
-        cls.add_constructor('!path', cls.construct_path)
+        cls.add_constructor("!path", cls.construct_path)
         # 2.2 Add !path tag matcher.
-        cls._path_matcher = re.compile(r'\$\{([^}^{]+)\}')  # re.compile('.*?\${(\w+)}.*?')
-        cls.add_implicit_resolver('!path', cls._path_matcher, None)  # Note: An implicit resolver can only match plain scalars, not quoted.
+        cls._path_matcher = re.compile(r"\$\{([^}^{]+)\}")  # re.compile('.*?\${(\w+)}.*?')
+        cls.add_implicit_resolver("!path", cls._path_matcher, None)  # Note: An implicit resolver can only match plain scalars, not quoted.
 
         return cls
 
 
 class ConfigLoader(yaml.Loader, metaclass=ConfigLoaderMeta):
-
     def __init__(self, stream):
         try:
             self._root = Path(stream.name).parent
@@ -36,11 +34,11 @@ class ConfigLoader(yaml.Loader, metaclass=ConfigLoaderMeta):
         filename = self._root / self.construct_scalar(node)
         ext = filename.suffix.lower()
 
-        with open(filename, 'r') as f:
+        with open(filename, "r") as f:
             if ext in (".yaml", ".yml", ".json"):  # YAML can load JSON.
                 return yaml.load(f, ConfigLoader)
             else:
-                return '\n'.join(ln for ln in (line.strip() for line in f.read().splitlines()) if ln)
+                return "\n".join(ln for ln in (line.strip() for line in f.read().splitlines()) if ln)
 
     def construct_path(self, node):
         # match():   Determine if the RE matches at the beginning of the string.
@@ -52,7 +50,7 @@ class ConfigLoader(yaml.Loader, metaclass=ConfigLoaderMeta):
 
 def load_config(filename):
     load = functools.partial(yaml.load, Loader=ConfigLoader)
-    with open(filename, 'r') as f:
+    with open(filename, "r") as f:
         config = load(f)
 
     return config
@@ -139,7 +137,7 @@ def create_func(identifier):
     if isinstance(identifier, os.PathLike):
         identifier = os.fspath(identifier)
     if isinstance(identifier, str):
-        func_module, func_name = '.'.join(identifier.split('.')[:-1]), identifier.split('.')[-1]
+        func_module, func_name = ".".join(identifier.split(".")[:-1]), identifier.split(".")[-1]
         func = getattr(import_module(func_module), func_name)
     elif callable(identifier):
         func = identifier

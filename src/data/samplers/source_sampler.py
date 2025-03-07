@@ -8,7 +8,6 @@ from .base_sampler import IterableSampler
 
 
 class SourceSampler(IterableSampler):
-
     @property
     def source(self):
         return self._source
@@ -23,7 +22,6 @@ class SourceSampler(IterableSampler):
 
 
 class TXTSampler(SourceSampler):
-
     def __init__(self, filename):
         super(TXTSampler, self).__init__()
 
@@ -37,7 +35,6 @@ class TXTSampler(SourceSampler):
 
 
 class CSVSampler(SourceSampler):
-
     def __init__(self, filename):
         super(CSVSampler, self).__init__()
 

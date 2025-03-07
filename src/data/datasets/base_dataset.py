@@ -8,7 +8,6 @@ from torch.utils.data import Dataset
 
 
 class IDataset(Dataset):
-
     @property
     def transform(self):
         return self._transform

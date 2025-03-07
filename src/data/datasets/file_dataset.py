@@ -9,7 +9,6 @@ from .sampler_dataset import SamplerDataset
 
 
 class FileDataset(SamplerDataset):
-
     @property
     def root(self):
         return self._root
@@ -23,11 +22,9 @@ class FileDataset(SamplerDataset):
 
     def _load(self, x):
         if isinstance(x, dict):
-            return {k: self._load_func(self.root / filename, **kwargs)
-                    for (k, filename), kwargs in zip(x.items(), self._load_params)}
+            return {k: self._load_func(self.root / filename, **kwargs) for (k, filename), kwargs in zip(x.items(), self._load_params)}
         elif isinstance(x, (list, tuple)):
-            return [self._load_func(self.root / filename, **kwargs)
-                    for filename, kwargs in zip(x, self._load_params)]
+            return [self._load_func(self.root / filename, **kwargs) for filename, kwargs in zip(x, self._load_params)]
         else:
             return self._load_func(self.root / x, **self._load_params)
 

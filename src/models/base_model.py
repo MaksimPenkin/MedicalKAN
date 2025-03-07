@@ -10,7 +10,6 @@ from lightning import LightningModule
 
 
 class CommonLitModel(LightningModule):
-
     def __init__(self, model, criterion=None, optimizer=None):
         super(CommonLitModel, self).__init__()
 

@@ -8,7 +8,6 @@ from .base_dataset import IDataset
 
 
 class SamplerDataset(IDataset):
-
     @property
     def sampler(self):
         return self._sampler

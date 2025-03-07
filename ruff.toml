@@ -5,6 +5,7 @@ exclude = [
     ".pytest_cache",
     ".git",
     "__pycache__",
+    "__init__.py",
     "build",
     "venv",
     "*.egg-info",

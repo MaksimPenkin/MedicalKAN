@@ -6,7 +6,6 @@ import abc
 
 
 class ITransform:
-
     @abc.abstractmethod
     def _fn(self, x):
         raise NotImplementedError("Must be implemented in subclasses.")

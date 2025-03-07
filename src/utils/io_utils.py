@@ -71,11 +71,10 @@ def read_img(read_path, dtype=None, shape=None, key=None, normalize=None):
         img = decode_png(read_path)
     elif ext in (".raw", ".bin"):
         img = decode_raw(read_path, dtype, shape)
-    elif ext in (".mat", ):
+    elif ext in (".mat",):
         img = decode_mat(read_path, key)
     else:
-        raise ValueError(f"Unrecognized filename extension found: {read_path}. "
-                         "Only `.png`, `.jpeg`, `.jpg`, `.raw`, `.bin` or `.mat` are supported.")
+        raise ValueError(f"Unrecognized filename extension found: {read_path}. Only `.png`, `.jpeg`, `.jpg`, `.raw`, `.bin` or `.mat` are supported.")
 
     # Process.
     if dtype is not None:
@@ -100,8 +99,7 @@ def save_img(img, save_path, key=None):
         encode_png(img, save_path)
     elif ext in (".raw", ".bin"):
         encode_raw(img, save_path)
-    elif ext in (".mat", ):
+    elif ext in (".mat",):
         encode_mat(img, save_path, key)
     else:
-        raise ValueError(f"Unrecognized filename extension found: {save_path}. "
-                         "Only `.png`, `.jpeg`, `.jpg`, `.raw`, `.bin` or `.mat` are supported.")
+        raise ValueError(f"Unrecognized filename extension found: {save_path}. Only `.png`, `.jpeg`, `.jpg`, `.raw`, `.bin` or `.mat` are supported.")

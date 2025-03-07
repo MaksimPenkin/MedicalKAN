@@ -8,7 +8,6 @@ from .base_transform import ITransform
 
 
 class ToTensor(ITransform):
-
     def __init__(self):
         super(ToTensor, self).__init__()
 
@@ -16,4 +15,4 @@ class ToTensor(ITransform):
         return F.to_tensor(x)
 
     def __repr__(self):
-        return self.__class__.__name__ + '()'
+        return self.__class__.__name__ + "()"

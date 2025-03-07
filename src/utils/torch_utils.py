@@ -25,7 +25,7 @@ TORCH_DTYPES = {
     "int": torch.int,
     "int64": torch.int64,
     "long": torch.long,
-    "bool": torch.bool
+    "bool": torch.bool,
 }
 
 
@@ -35,12 +35,10 @@ def torch_device():
             "cuda": True,
             "device_count": torch.cuda.device_count(),
             "device_current": torch.cuda.current_device(),
-            "device_name": torch.cuda.get_device_name(0)
+            "device_name": torch.cuda.get_device_name(0),
         }
     else:
-        return {
-            "cuda": False
-        }
+        return {"cuda": False}
 
 
 def torch_dtype(dtype):
@@ -57,7 +55,7 @@ def torch_dtype(dtype):
 def torch_random(size, low=0, high=None, dtype=None, device="cpu"):
     dtype = torch_dtype(dtype)
 
-    if dtype in (torch.bool, ):
+    if dtype in (torch.bool,):
         return torch.randint(0, 2, size, dtype=dtype, device=device)  # The `high` value is hard-coded.
     elif dtype in (torch.uint8, torch.int8, torch.int16, torch.short, torch.int32, torch.int, torch.int64, torch.long):
         return torch.randint(low, high, size, dtype=dtype, device=device)  # The `high` value is hard-coded.

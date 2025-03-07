@@ -14,17 +14,12 @@ from src.utils.serialization_utils import load_config
 def get_args():
     parser = argparse.ArgumentParser(description="Command-line arguments", usage="%(prog)s [-h]", formatter_class=RawTextHelpFormatter)
 
-    parser.add_argument("--use_gpu", type=int, default=0,
-                        help="gpu index to be used.", metavar="")
-    parser.add_argument("--seed", type=int,
-                        help="manual seed to be used.", metavar="")
-    parser.add_argument("--config", type=str, required=True,
-                        help="path to an experiment configuration file in yaml (or json) format.", metavar="")
+    parser.add_argument("--use_gpu", type=int, default=0, help="gpu index to be used.", metavar="")
+    parser.add_argument("--seed", type=int, help="manual seed to be used.", metavar="")
+    parser.add_argument("--config", type=str, required=True, help="path to an experiment configuration file in yaml (or json) format.", metavar="")
 
-    parser.add_argument("--limit_train_batches", type=float, default=1.0,
-                        help="how much of training dataset to check (default: 1.0).", metavar="")
-    parser.add_argument("--limit_val_batches", type=float, default=1.0,
-                        help="how much of validation dataset to check (default: 1.0).", metavar="")
+    parser.add_argument("--limit_train_batches", type=float, default=1.0, help="how much of training dataset to check (default: 1.0).", metavar="")
+    parser.add_argument("--limit_val_batches", type=float, default=1.0, help="how much of validation dataset to check (default: 1.0).", metavar="")
 
     return parser.parse_args()
 
@@ -46,9 +41,7 @@ def main(args):
     val_dataloaders = data.get(cfg["data"]["val_dataloaders"][0])  # TODO: fix the issue with multiple loaders.
 
     # 2. Invoke.
-    trainer.fit(model=model,
-                train_dataloaders=train_dataloaders,
-                val_dataloaders=val_dataloaders)
+    trainer.fit(model=model, train_dataloaders=train_dataloaders, val_dataloaders=val_dataloaders)
 
 
 if __name__ == "__main__":
@@ -64,5 +57,7 @@ if __name__ == "__main__":
     print(f"\n{start_time}: Script `{Path(__file__).name}` has started.")
     main(cmd_args)
     end_time = datetime.now()
-    print(f"\n{end_time}: Script `{Path(__file__).name}` has stopped.\n"
-          f"Elapsed time: {end_time - start_time} (hours : minutes : seconds : microseconds).")
+    print(
+        f"\n{end_time}: Script `{Path(__file__).name}` has stopped.\n"
+        f"Elapsed time: {end_time - start_time} (hours : minutes : seconds : microseconds)."
+    )

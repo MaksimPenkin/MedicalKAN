@@ -9,7 +9,6 @@ from torch.utils.data import Dataset
 
 
 class RandomUniformDataset(Dataset):
-
     @property
     def shapes(self):
         return self._shapes
@@ -24,7 +23,7 @@ class RandomUniformDataset(Dataset):
         if isinstance(dtypes, (list, tuple)):
             self._dtypes = tuple(torch_dtype(x) for x in dtypes)
         else:
-            self._dtypes = (torch_dtype(dtypes), )
+            self._dtypes = (torch_dtype(dtypes),)
 
         self._n = n
 

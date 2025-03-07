@@ -6,7 +6,6 @@ import abc
 
 
 class ISampler:
-
     @abc.abstractmethod
     def __len__(self):
         raise NotImplementedError("Must be implemented in subclasses.")
@@ -27,7 +26,6 @@ class ISampler:
 
 
 class IterableSampler(ISampler):
-
     def __init__(self):
         super(IterableSampler, self).__init__()
 
