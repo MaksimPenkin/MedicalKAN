@@ -9,7 +9,7 @@ from argparse import RawTextHelpFormatter
 import lightning
 from src import trainers, models, data
 from src.utils.serialization_utils import load_config
-
+asd
 
 def get_args():
     parser = argparse.ArgumentParser(description="Command-line arguments", usage="%(prog)s [-h]", formatter_class=RawTextHelpFormatter)
