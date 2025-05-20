@@ -1,16 +1,15 @@
-| Package             | Version          |
-|---------------------|------------------|
-| `OS`                | `ubuntu 24.04.1` |
-| `cuda`              | `12.6`           |
-| `cudnn`             | `9`              |
-| `python`            | `3.12.3`         |
-| `numpy`             | `2.2.3`          |
-| `torch`             | `2.6.0`          |
-| `torchaudio`        | `2.6.0`          |
-| `torchmetrics`      | `1.6.3`          |
-| `torchvision`       | `0.21.0`         |
-| `pytorch-lightning` | `2.5.0`          |
-
+| Package                | Version          |
+|------------------------|------------------|
+| `OS`                   | `ubuntu 24.04.1` |
+| `cuda`                 | `12.6`           |
+| `cudnn`                | `9`              |
+| `python`               | `3.12.3`         |
+| `numpy`                | `2.1.2`          |
+| `torch`                | `2.5.0`          |
+| `torchaudio`           | `2.5.0`          |
+| `torchmetrics`         | `1.7.0`          |
+| `torchvision`          | `0.20.0`         |
+| `pytorch-lightning`    | `2.5.1`          |
 
 ```
 cd ~
