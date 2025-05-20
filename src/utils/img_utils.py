@@ -39,7 +39,7 @@ def encode_png(img, save_path):
     cv2.imwrite(save_path, img)
 
 
-def read_img(read_path, dtype=None, shape=None, key=None, normalize=None):
+def read_img(read_path, **kwargs):
     # Setup.
     read_path = Path(read_path)
     if not read_path.exists():
@@ -50,25 +50,28 @@ def read_img(read_path, dtype=None, shape=None, key=None, normalize=None):
     if ext in (".png", ".jpeg", ".jpg"):
         img = decode_png(read_path)
     elif ext in (".raw", ".bin"):
-        img = decode_raw(read_path, dtype, shape)
+        img = decode_raw(read_path, **kwargs)
     elif ext in (".mat",):
-        img = decode_mat(read_path, key)
+        img = decode_mat(read_path, **kwargs)
     else:
         raise ValueError(f"Unrecognized filename extension found: {read_path}. Only `.png`, `.jpeg`, `.jpg`, `.raw`, `.bin` or `.mat` are supported.")
 
     # Process.
+    dtype = kwargs.get("dtype")
     if dtype is not None:
         assert img.dtype == np.dtype(dtype), f"`dtype` mismatch: `{img.dtype}` != `{dtype}`."
+    shape = kwargs.get("shape")
     if shape is not None:
         if all(shape):  # Do not assert, if shape is only partly known, e.g. [None, None, 3].
             assert img.shape == tuple(shape), f"`shape` mismatch: `{img.shape}` != `{shape}`."
+    normalize = kwargs.get("normalize")
     if normalize is not None:
         img = img / float(normalize)
 
     return img
 
 
-def save_img(img, save_path, key=None):
+def save_img(img, save_path, **kwargs):
     # Setup.
     save_path = Path(save_path)
     make_dir(save_path.parent, exist_ok=True)
@@ -78,8 +81,8 @@ def save_img(img, save_path, key=None):
     if ext in (".png", ".jpeg", ".jpg"):
         encode_png(img, save_path)
     elif ext in (".raw", ".bin"):
-        encode_raw(img, save_path)
+        encode_raw(img, save_path, **kwargs)
     elif ext in (".mat",):
-        encode_mat(img, save_path, key)
+        encode_mat(img, save_path, **kwargs)
     else:
         raise ValueError(f"Unrecognized filename extension found: {save_path}. Only `.png`, `.jpeg`, `.jpg`, `.raw`, `.bin` or `.mat` are supported.")
