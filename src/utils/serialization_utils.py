@@ -103,7 +103,7 @@ def create_object_from_config(config, module_objects=None, partial=False):
     if config is None:
         return None
 
-    cls_module, cls_name, cls_config = config.get("module", None), config["class_name"], config["config"]
+    cls_module, cls_name, cls_config = config.get("module"), config["class_name"], config["config"]
     if not cls_module:
         cls = module_objects[cls_name]  # If module name is not provided by the config, try to find the target class in table.
     else:
@@ -139,9 +139,10 @@ def create_func(identifier):
     if isinstance(identifier, str):
         func_module, func_name = ".".join(identifier.split(".")[:-1]), identifier.split(".")[-1]
         func = getattr(import_module(func_module), func_name)
-    elif callable(identifier):
-        func = identifier
     else:
-        raise TypeError(f"Expected `identifier` to be None, str or callable, found: {identifier} of type {type(identifier)}.")
+        func = identifier
 
-    return func
+    if callable(func):
+        return func
+    else:
+        raise ValueError(f"Expected callable output, found: {func} of type {type(func)}.")
