@@ -32,6 +32,10 @@
         └── train.py
 ```
 
+## 📌 Installation
+You may find requirements
+[here](https://github.com/MaksimPenkin/MedicalKAN/tree/main/requirements).
+
 ## 📌 Quick-start
 ```
 > cd ~
@@ -64,6 +68,17 @@ Big thank you for the awesome works!
 
 
 ## Citation
+
+```python
+@inproceedings{penkin2025kolmogorov,
+  title={Adaptive Method for Selecting Basis Functions in Kolmogorov–Arnold Networks for Magnetic Resonance Image Enhancement},
+  author={Penkin, Maksim and Krylov, Andrey},
+  booktitle={Programming and Computer Software},
+  pages={167--172},
+  year={2025}
+}
+```
+
 ```python
 @inproceedings{penkin2024kolmogorov,
   title={Kolmogorov-Arnold Networks as Deep Feature Extractors for MRI Reconstruction},
