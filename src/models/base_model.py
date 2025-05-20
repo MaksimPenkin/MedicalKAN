@@ -19,11 +19,6 @@ class CommonLitModel(LightningModule):
         if optimizer is not None:
             self._optimizer = optimizers.get(optimizer, partial=True)
 
-    @staticmethod
-    def unpack_x_y(batch):
-        x, y = batch
-        return x, y
-
     def forward(self, x, **kwargs):
         if isinstance(x, dict):
             try:
@@ -57,21 +52,10 @@ class CommonLitModel(LightningModule):
         return split_loss_logs(value)
 
     def training_step(self, batch, batch_idx):
-        x, y = self.unpack_x_y(batch)
-        y_pred = self(x)
-        loss, logs = self.compute_loss(y_pred, y)
-        logs = {"train/" + k: v for k, v in logs.items()}
-        self.log_dict(logs, on_step=True, on_epoch=True)
-        return loss
+        raise NotImplementedError
 
     def validation_step(self, batch, batch_idx):
-        x, y = self.unpack_x_y(batch)
-        y_pred = self(x)
-        loss, logs = self.compute_loss(y_pred, y)
-        logs = {"val/" + k: v for k, v in logs.items()}
-        logs["step"] = self.current_epoch
-        self.log_dict(logs, on_step=False, on_epoch=True)
-        return loss
+        raise NotImplementedError
 
     def test_step(self, batch, batch_idx):
         raise NotImplementedError
