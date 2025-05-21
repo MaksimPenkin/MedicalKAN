@@ -1,0 +1,6 @@
+module: src.models
+class_name: CommonLitModel
+config:
+  network: !include "./nets/srkan_4_S1_L3_mha.yaml"
+  criterion: !include "../../losses/mse.yaml"
+  optimizer: !include "../../optimizers/adam.yaml"
