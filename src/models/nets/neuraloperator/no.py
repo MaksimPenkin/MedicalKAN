@@ -18,7 +18,7 @@ class NeuralOperator(nn.Module):
         if version == "fourier":
             self.backbone = nn.ModuleList([SpectralConv2d(hid_ch, hid_ch, **kwargs) for _ in range(3)])
         elif version == "hartley":
-            self.backbone = nn.ModuleList([HartleyConv2d(hid_ch, hid_ch, **kwargs) for _ in range(3)])
+            self.backbone = nn.ModuleList([HartleyConv2d(hid_ch, hid_ch, 3, padding=1, **kwargs) for _ in range(3)])
         elif version == "hermite":
             self.backbone = nn.ModuleList([Hermite2d(hid_ch, hid_ch, **kwargs) for _ in range(3)])
         else:
