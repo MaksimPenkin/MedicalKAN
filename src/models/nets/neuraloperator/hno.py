@@ -2,9 +2,8 @@
 # @author   Maksim Penkin
 # """
 
-import torch
-import torch.nn.functional as F
 from torch import nn
+from .hartley import HartleyLayer
 
 
 class NeuralOperator(nn.Module):
