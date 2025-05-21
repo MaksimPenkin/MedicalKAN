@@ -10,10 +10,10 @@ from lightning import LightningModule
 
 
 class CommonLitModel(LightningModule):
-    def __init__(self, model, criterion=None, optimizer=None):
+    def __init__(self, network, criterion=None, optimizer=None):
         super(CommonLitModel, self).__init__()
 
-        self._model = nets.get(model)
+        self._model = nets.get(network)
         if criterion is not None:
             self._criterion = losses.get(criterion)
         if optimizer is not None:
