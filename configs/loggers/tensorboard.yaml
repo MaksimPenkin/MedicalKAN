@@ -1,4 +1,4 @@
-module: lightning.pytorch.loggers.tensorboard
+module: lightning.pytorch.loggers
 class_name: TensorBoardLogger
 config:
   save_dir: ${WORKBENCH}/runs
