@@ -1,13 +1,8 @@
-class_name: CommonLitModel
+module: src.models.nets
+class_name: srkan
 config:
-  model:
-    module: src.models.nets.ukan.ukan
-    class_name: StackedResidualKAN
-    config:
-      filters: 4
-      S: 1
-      L: 3
-      version: cheby
-      degree: 5
-  criterion: !include "../losses/mse.yaml"
-  optimizer: !include "../optimizers/adam.yaml"
+  filters: 4
+  S: 1
+  L: 3
+  version: cheby
+  degree: 5
