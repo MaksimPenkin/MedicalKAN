@@ -6,6 +6,7 @@ from .ckan.ckan import ConvKAN
 from .resnet.resnet import resnet18, resnet50, resnet101
 from .srkan.srkan import StackedResidualKAN
 from .unet.unet import UNet
+from .neuraloperator.no import NeuralOperator
 from src.utils.torch_utils import torch_load
 
 from src.utils.serialization_utils import create_object
@@ -19,7 +20,8 @@ def get(identifier, checkpoint=None, **kwargs):
                             "resnet50": resnet50,
                             "resnet101": resnet101,
                             "StackedResidualKAN": StackedResidualKAN,
-                            "UNet": UNet},
+                            "UNet": UNet,
+                            "NeuralOperator": NeuralOperator},
                         **kwargs)
 
     if checkpoint:
