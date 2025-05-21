@@ -1,5 +1,5 @@
 trainer: !include "./trainers/gpu.yaml"
-model: !include "./models/srkan_4_S1_L3_mha.yaml"
+model: !include "./models/srkan/model.yaml"
 data:
   train_dataloaders:
   - !include "./data/ixi/train_dataloader.yaml"
