@@ -69,7 +69,7 @@ def torch_load(model, ckpt, **kwargs):
     checkpoint = torch.load(ckpt, map_location="cpu")
     if "state_dict" in checkpoint:
         checkpoint = checkpoint["state_dict"]
-        state_dict = {name[6:]: checkpoint[name] for name in checkpoint}
+        state_dict = {name[7:]: checkpoint[name] for name in checkpoint}
     else:
         state_dict = checkpoint
 
