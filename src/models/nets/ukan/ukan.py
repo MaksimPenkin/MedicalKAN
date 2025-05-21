@@ -10,7 +10,7 @@ import torch.nn.functional as F
 from torch import nn
 from timm.models.layers import trunc_normal_
 
-from ..resnet.resnet import ResBlock, conv3x3, conv1x1
+from ..layers import ResBlock, conv3x3, conv1x1
 from .linear import KANLinear
 from .chebyshev import ChebyKANLinear
 from .hermite import HermiteKANLinear, HermiteFuncKANLinear
