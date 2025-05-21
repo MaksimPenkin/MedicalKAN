@@ -1,3 +1,4 @@
+module: src.trainers
 class_name: CommonLitTrainer
 config:
   accelerator: gpu
@@ -6,3 +7,4 @@ config:
   logger: !include "../loggers/tensorboard.yaml"
   callbacks:
   - !include "../callbacks/modelcheckpoint.yaml"
+  max_epochs: 100
