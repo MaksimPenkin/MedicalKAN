@@ -6,10 +6,10 @@ from torch import nn
 from .hartley import HartleyLayer
 
 
-class NeuralOperator(nn.Module):
+class NeuralOperator2D(nn.Module):
 
     def __init__(self, in_ch=1, out_ch=1, hid_ch=64, version="hartley", **kwargs):
-        super(NeuralOperator, self).__init__()
+        super(NeuralOperator2D, self).__init__()
 
         self.emb = nn.Linear(in_ch, hid_ch)
 
