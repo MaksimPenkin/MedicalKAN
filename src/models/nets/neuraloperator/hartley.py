@@ -106,4 +106,3 @@ class HartleyConv2d(nn.Module):
         x = self.idht1(x)
         x = self.idht1(x.transpose(-1, -2)).transpose(-1, -2)
         return x
-
