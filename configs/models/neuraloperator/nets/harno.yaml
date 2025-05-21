@@ -1,0 +1,9 @@
+module: src.models.nets
+class_name: NeuralOperator
+config:
+  in_ch: 1
+  out_ch: 1
+  hid_ch: 64
+  version: hartley
+  modes1: 16
+  modes2: 16
