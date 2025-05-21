@@ -45,5 +45,4 @@ class HartleyConv2d(nn.Module):
         out_ht[:, :, :self.modes1, -self.modes2:] = self.compl_mul2d(x_ht[:, :, :self.modes1, -self.modes2:], self.weights2)
 
         x = iht2(out_ht)
-
         return x
