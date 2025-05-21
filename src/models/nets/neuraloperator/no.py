@@ -7,10 +7,10 @@ from torch import nn
 from .fourier import SpectralConv2d
 
 
-class NeuralOperator2d(nn.Module):
+class NeuralOperator(nn.Module):
 
     def __init__(self, in_ch=1, out_ch=1, hid_ch=64, version="fourier", **kwargs):
-        super(NeuralOperator2d, self).__init__()
+        super(NeuralOperator, self).__init__()
 
         self.emb = nn.Linear(in_ch, hid_ch)
 
