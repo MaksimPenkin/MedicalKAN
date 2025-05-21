@@ -4,61 +4,46 @@
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 
-def hartley_transform(x):
-    """
-    Computes the Hartley Transform (real-valued alternative to Fourier).
-    Args:
-        x: Input tensor of shape (..., N), where N is the signal length.
-    Returns:
-        Hartley transform of x, same shape.
-    """
-    # FFT gives (a + jb), Hartley is a - b
-    fft = torch.fft.fft(x, dim=-1)
+def ht2(x):
+    fft = torch.fft.fft2(x)
     real, imag = fft.real, fft.imag
     return real - imag
 
 
-def inverse_hartley_transform(x):
-    """
-    Inverse Hartley Transform (same as forward transform up to normalization).
-    """
-    return hartley_transform(x) / x.shape[-1]
+def iht2(x):
+    return 1 / (x.shape[-1] * x.shape[-2]) * x
 
 
-class HartleyLayer(nn.Module):
-    """
-    Hartley Neural Operator layer (similar to Fourier Layer in FNO but real-valued).
-    """
+class HartleyConv2d(nn.Module):
 
-    def __init__(self, in_channels, out_channels, modes):
-        super().__init__()
+    def __init__(self, in_channels, out_channels, modes1=16, modes2=16):
+        super(HartleyConv2d, self).__init__()
+
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.modes = modes  # Number of Hartley modes to keep
+        self.modes1 = modes1
+        self.modes2 = modes2
 
-        # Learnable weights for Hartley space (real-valued)
-        self.weights = nn.Parameter(torch.rand(in_channels, out_channels, modes, dtype=torch.float32))
+        self.scale = (1 / (in_channels * out_channels))
+        self.weights1 = nn.Parameter(self.scale * torch.rand(in_channels, out_channels, self.modes1, self.modes2, dtype=torch.float32))
+        self.weights2 = nn.Parameter(self.scale * torch.rand(in_channels, out_channels, self.modes1, self.modes2, dtype=torch.float32))
+
+    def compl_mul2d(self, input, weights):
+        return torch.einsum("bixy,ioxy->boxy", input, weights)
 
     def forward(self, x):
-        # x shape: (batch, channels, spatial)
-        batch_size = x.shape[0]
+        batchsize = x.shape[0]
+        x_ht = ht2(x)
 
-        # Compute Hartley transform
-        x_ht = hartley_transform(x)
+        out_ht = torch.zeros(batchsize, self.out_channels, x.size(-2), x.size(-1), device=x.device, dtype=torch.float32)
+        out_ht[:, :, :self.modes1, :self.modes2] = self.compl_mul2d(x_ht[:, :, :self.modes1, :self.modes2], self.weights1)
+        out_ht[:, :, -self.modes1:, :self.modes2] = self.compl_mul2d(x_ht[:, :, -self.modes1:, :self.modes2], self.weights2)
 
-        # Truncate high modes (keep low-frequency components)
-        x_ht_trunc = x_ht[..., :self.modes]
+        out_ht[:, :, -self.modes1:, -self.modes2:] = self.compl_mul2d(x_ht[:, :, -self.modes1:, -self.modes2:], self.weights1)
+        out_ht[:, :, :self.modes1, -self.modes2:] = self.compl_mul2d(x_ht[:, :, :self.modes1, -self.modes2:], self.weights2)
 
-        # Multiply by learnable weights in Hartley space
-        out_ht_trunc = torch.einsum("bix,iox->box", x_ht_trunc, self.weights)
+        x = iht2(out_ht)
 
-        # Pad zeros for discarded modes
-        out_ht = F.pad(out_ht_trunc, (0, x.shape[-1] - self.modes))
-
-        # Inverse Hartley transform to get spatial output
-        x_out = inverse_hartley_transform(out_ht)
-
-        return x_out
+        return x
