@@ -23,12 +23,12 @@ class SpectralConv2d(nn.Module):
         return torch.einsum("bixy,ioxy->boxy", input, weights)
 
     def forward(self, x):
-      batchsize = x.shape[0]
-      x_ft = torch.fft.rfft2(x)
+        batchsize = x.shape[0]
+        x_ft = torch.fft.rfft2(x)
 
-      out_ft = torch.zeros(batchsize, self.out_channels, x.size(-2), x.size(-1)//2 + 1, device=x.device, dtype=torch.cfloat)
-      out_ft[:, :, :self.modes1, :self.modes2] = self.compl_mul2d(x_ft[:, :, :self.modes1, :self.modes2], self.weights1)
-      out_ft[:, :, -self.modes1:, :self.modes2] = self.compl_mul2d(x_ft[:, :, -self.modes1:, :self.modes2], self.weights2)
+        out_ft = torch.zeros(batchsize, self.out_channels, x.size(-2), x.size(-1)//2 + 1, device=x.device, dtype=torch.cfloat)
+        out_ft[:, :, :self.modes1, :self.modes2] = self.compl_mul2d(x_ft[:, :, :self.modes1, :self.modes2], self.weights1)
+        out_ft[:, :, -self.modes1:, :self.modes2] = self.compl_mul2d(x_ft[:, :, -self.modes1:, :self.modes2], self.weights2)
 
-      x = torch.fft.irfft2(out_ft, s=(x.size(-2), x.size(-1)))
-      return x
+        x = torch.fft.irfft2(out_ft, s=(x.size(-2), x.size(-1)))
+        return x
