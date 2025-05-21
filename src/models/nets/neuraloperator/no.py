@@ -28,8 +28,6 @@ class NeuralOperator(nn.Module):
         self.activation = nn.ReLU()
 
     def forward(self, x):
-        B, C, H, W = x.shape
-
         x = self.emb(x)
         for layer in self.backbone:
             x = self.activation(layer(x) + x)
