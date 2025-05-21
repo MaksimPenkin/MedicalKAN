@@ -1,5 +1,4 @@
 # """
-# @author   https://github.com/CUHK-AIM-Group/U-KAN
 # @author   Maksim Penkin
 # """
 
