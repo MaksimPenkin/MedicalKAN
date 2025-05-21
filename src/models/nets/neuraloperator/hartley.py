@@ -18,7 +18,6 @@ class HartleyConv2d(nn.Module):
 
         # Initialize weights
         self.weight = nn.Parameter(torch.randn(out_channels, in_channels, *self.kernel_size))
-        self.bias = nn.Parameter(torch.randn(out_channels))
 
     def forward(self, x):
         batch_size, _, h, w = x.shape
@@ -66,7 +65,6 @@ class HartleyConv2d(nn.Module):
 
         # Crop to correct output size and add bias
         output = output[:, :, :out_h, :out_w]
-        output = output + self.bias.view(1, -1, 1, 1)
 
         return output
 
@@ -80,7 +78,7 @@ class HartleyConv2d(nn.Module):
     @staticmethod
     def idht1(x):
         """Inverse 1D Discrete Hartley Transform"""
-        return HartleyConv2d.dht1(x) / x.shape[-1]
+        return x / x.shape[-1]
 
     def dht2(self, x, fft_h=None, fft_w=None):
         """2D Discrete Hartley Transform"""
