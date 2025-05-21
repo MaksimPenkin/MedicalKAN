@@ -22,6 +22,7 @@ def get_args():
 
     return parser.parse_args()
 
+
 def main(args):
     # 1. Setup.
     if args.seed is not None:
