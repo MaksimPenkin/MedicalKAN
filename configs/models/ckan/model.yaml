@@ -1,5 +1,5 @@
 module: src.models
-class_name: CommonLitModel
+class_name: MRIEnhancementModel
 config:
   network: !include "./nets/ckan_8.yaml"
   criterion: !include "../../losses/mse.yaml"

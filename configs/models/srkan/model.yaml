@@ -1,5 +1,5 @@
 module: src.models
-class_name: CommonLitModel
+class_name: MRIEnhancementModel
 config:
   network: !include "./nets/srkan_4_S1_L3_mha.yaml"
   criterion: !include "../../losses/mse.yaml"
