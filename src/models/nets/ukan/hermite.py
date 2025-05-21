@@ -38,6 +38,7 @@ class HermiteKANLinear(nn.Module):
 
 
 class HermiteFuncKANLinear(nn.Module):
+    # https://github.com/Rob217/hermite-functions/blob/master/hermite_functions/hermite_functions.py
     def __init__(self, input_dim, output_dim, degree, eps=1, einsum=True):
         super(HermiteFuncKANLinear, self).__init__()
         self.inputdim = input_dim
