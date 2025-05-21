@@ -1,4 +1,4 @@
 module: src.models.nets
-class_name: ckan
+class_name: ConvKAN
 config:
   n_convs: 8

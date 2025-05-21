@@ -1,5 +1,5 @@
 module: src.models.nets
-class_name: srkan
+class_name: StackedResidualKAN
 config:
   filters: 4
   S: 1

@@ -14,12 +14,12 @@ from src.utils.serialization_utils import create_object
 def get(identifier, checkpoint=None, **kwargs):
     obj = create_object(identifier,
                         module_objects={
-                            "ckan": ConvKAN,
+                            "ConvKAN": ConvKAN,
                             "resnet18": resnet18,
                             "resnet50": resnet50,
                             "resnet101": resnet101,
-                            "srkan": StackedResidualKAN,
-                            "unet": UNet},
+                            "StackedResidualKAN": StackedResidualKAN,
+                            "UNet": UNet},
                         **kwargs)
 
     if checkpoint:
