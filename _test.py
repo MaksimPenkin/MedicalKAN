@@ -5,29 +5,25 @@
 import argparse
 from argparse import RawTextHelpFormatter
 
+import numpy as np
+import tensorflow as tf
 import lightning
-from src import trainers, models, data
+from src import models, data
 from src.utils.serialization_utils import load_config
+
+from tqdm import tqdm
+from skimage.metrics import peak_signal_noise_ratio
 
 
 def get_args():
     parser = argparse.ArgumentParser(usage="%(prog)s [-h]", formatter_class=RawTextHelpFormatter)
 
     parser.add_argument("--config", type=str, required=True, help="path to experiment configuration file (*.yaml).", metavar="")
-
-    parser.add_argument("--limit_train_batches", type=float, default=1.0, help="how much of training dataset to use (default: 1.0).", metavar="")
     parser.add_argument("--limit_val_batches", type=float, default=1.0, help="how much of validation dataset to use (default: 1.0).", metavar="")
-
     parser.add_argument("--seed", type=int, help="if specified, sets the seed for pseudo-random number generators.", metavar="")
 
     return parser.parse_args()
 
-
-import cv2
-import numpy as np
-import tensorflow as tf
-from skimage.metrics import peak_signal_noise_ratio
-from tqdm import tqdm
 
 def main(args):
     # 1. Setup.
@@ -63,8 +59,8 @@ def main(args):
         psnr_list.append(psnr)
         tv_list.append(tv)
 
-    print(np.array(psnr_list).mean())
-    print(np.array(tv_list).mean())
+    print("Avg. PSNR: {0:.4f}".format(np.array(psnr_list).mean()))
+    print("Avg. TV: {0:.2f}".format(np.array(tv_list).mean()))
 
 
 if __name__ == "__main__":
