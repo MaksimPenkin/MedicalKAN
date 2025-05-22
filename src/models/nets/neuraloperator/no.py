@@ -4,7 +4,7 @@
 
 from torch import nn
 from .fourier import FourierSpectralConv2d
-# from .hartley import HartleySpectralConv2d
+from .hartley import HartleySpectralConv2d
 from .hermite import Hermite2d
 from ..layers import conv3x3
 
@@ -17,8 +17,8 @@ class NeuralOperator(nn.Module):
         self.emb = conv3x3(in_ch, hid_ch)
         if version == "fourier":
             self.backbone = nn.ModuleList([FourierSpectralConv2d(hid_ch, hid_ch, **kwargs) for _ in range(3)])
-        # elif version == "hartley":
-        #     self.backbone = nn.ModuleList([HartleySpectralConv2d(hid_ch, hid_ch, **kwargs) for _ in range(3)])
+        elif version == "hartley":
+            self.backbone = nn.ModuleList([HartleySpectralConv2d(hid_ch, hid_ch, **kwargs) for _ in range(3)])
         elif version == "hermite":
             self.backbone = nn.ModuleList([Hermite2d(hid_ch, hid_ch, **kwargs) for _ in range(3)])
         else:
