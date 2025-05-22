@@ -5,3 +5,4 @@ config:
   out_ch: 1
   hid_ch: 32
   version: hartley
+  n_modes: [16, 16]
