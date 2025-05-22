@@ -19,11 +19,18 @@ class Hermite2d(nn.Module):
 
         self.weights = nn.Parameter(torch.empty(in_channels, out_channels, degree + 1))
         nn.init.normal_(self.weights, mean=0.0, std=1 / (in_channels * (degree + 1)))
+        self.norm = nn.LayerNorm(in_channels)
+
+    def _init_weights(self, m):
+        if isinstance(m, nn.LayerNorm):
+            nn.init.constant_(m.bias, 0)
+            nn.init.constant_(m.weight, 1.0)
 
     def forward(self, x):
         B, C, H, W = x.shape
         x = x.flatten(start_dim=2).transpose(1, 2)
         x = torch.reshape(x, (-1, self.in_channels))
+        x = self.norm(x)
 
         # We need to normalize x to [-1, 1] using tanh
         x = torch.tanh(x) * (math.sqrt(2 * self.degree + 1) + self.eps)
