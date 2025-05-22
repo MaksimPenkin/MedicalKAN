@@ -6,10 +6,10 @@ import torch
 import torch.nn as nn
 
 
-class SpectralConv2d(nn.Module):
+class FourierSpectralConv2d(nn.Module):
 
     def __init__(self, in_channels, out_channels, modes1=16, modes2=16):
-        super(SpectralConv2d, self).__init__()
+        super(FourierSpectralConv2d, self).__init__()
 
         self.in_channels = in_channels
         self.out_channels = out_channels
