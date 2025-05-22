@@ -8,17 +8,16 @@ import torch.nn as nn
 
 class FourierSpectralConv2d(nn.Module):
 
-    def __init__(self, in_channels, out_channels, modes1=16, modes2=16):
+    def __init__(self, in_channels, out_channels, n_modes=(16, 16)):
         super(FourierSpectralConv2d, self).__init__()
 
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.modes1 = modes1
-        self.modes2 = modes2
+        self.n_modes = (n_modes, n_modes) if isinstance(n_modes, int) else tuple(n_modes)
 
         self.scale = (1 / (in_channels * out_channels))
-        self.weights1 = nn.Parameter(self.scale * torch.rand(in_channels, out_channels, self.modes1, self.modes2, dtype=torch.cfloat))
-        self.weights2 = nn.Parameter(self.scale * torch.rand(in_channels, out_channels, self.modes1, self.modes2, dtype=torch.cfloat))
+        self.weights1 = nn.Parameter(self.scale * torch.rand(in_channels, out_channels, *self.n_modes, dtype=torch.cfloat))
+        self.weights2 = nn.Parameter(self.scale * torch.rand(in_channels, out_channels, *self.n_modes, dtype=torch.cfloat))
 
     def compl_mul2d(self, input, weights):
         return torch.einsum("bixy,ioxy->boxy", input, weights)

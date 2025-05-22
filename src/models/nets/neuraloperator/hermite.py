@@ -9,7 +9,7 @@ import torch.nn as nn
 
 class Hermite2d(nn.Module):
 
-    def __init__(self, in_channels, out_channels, degree, eps=1):
+    def __init__(self, in_channels, out_channels, degree=5, eps=1):
         super(Hermite2d, self).__init__()
 
         self.in_channels = in_channels
