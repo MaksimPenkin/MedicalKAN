@@ -1,106 +1,126 @@
 # """
-# @author   Maksim Penkin
+# @author   Dmitry Nesterov https://github.com/dmitrylala/denoising-fno/tree/master
 # """
 
+import numpy as np
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
+from torch import nn
 
 
-class HartleyConv2d(nn.Module):
-    def __init__(self, in_channels, out_channels, kernel_size, padding=0, stride=1):
-        super(HartleyConv2d, self).__init__()
+def dht2d(x: torch.Tensor, is_inverse: bool = False) -> torch.Tensor:
+    if not is_inverse:
+        x_ft = torch.fft.fftshift(torch.fft.fft2(x, norm='backward'), dim=(-2, -1))
+    else:
+        x_ft = torch.fft.fft2(torch.fft.ifftshift(x, dim=(-2, -1)), norm='backward')
+
+    x_ht = x_ft.real - x_ft.imag
+
+    if is_inverse:
+        n = x.size()[-2:].numel()
+        x_ht = x_ht / n
+
+    return x_ht
+
+
+def flip_periodic(x: torch.Tensor, axes: int | tuple | None = None) -> torch.Tensor:
+    if axes is None:
+        axes = (-2, -1)
+
+    if isinstance(axes, int):
+        axes = (axes,)
+
+    return torch.roll(torch.flip(x, axes), shifts=(1,) * len(axes), dims=axes)
+
+
+def contract_dense(x: torch.Tensor, w: nn.Parameter) -> torch.Tensor:
+    # (batch, in_channel, x, y), (in_channel, out_channel, x, y) -> (batch, out_channel, x, y)
+    return torch.einsum("bixy,ioxy->boxy", x, w)
+
+
+class HartleySpectralConv2d(nn.Module):
+    def __init__(  # noqa: PLR0913
+        self,
+        in_channels: int,
+        out_channels: int,
+        n_modes: int | tuple[int],
+        factorization: str = 'dense',
+        bias: bool = True,
+        dtype: torch.dtype = torch.float,
+        **_,  # noqa: ANN003
+    ) -> None:
+        super().__init__()
+
+        if factorization != 'dense':
+            msg = 'Supported only dense weight tensors'
+            raise ValueError(msg)
+
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.kernel_size = kernel_size if isinstance(kernel_size, tuple) else (kernel_size, kernel_size)
-        self.padding = padding
-        self.stride = stride
+        self.n_modes = n_modes  # n_modes is the total number of modes kept along each dimension
 
-        # Initialize weights
-        self.weight = nn.Parameter(torch.randn(out_channels, in_channels, *self.kernel_size))
+        # Create spectral weight tensor
+        init_std = (2 / (in_channels + out_channels)) ** 0.5
+        self.weight = nn.Parameter(torch.rand(in_channels, out_channels, *tuple(np.array(self.n_modes) * 2), dtype=dtype))
+        nn.init.normal_(self.weight, mean=0.0, std=init_std)
 
-    def forward(self, x):
-        batch_size, _, h, w = x.shape
-        kh, kw = self.kernel_size
+        # Contraction function
+        self._contract = contract_dense
 
-        # Calculate output dimensions
-        out_h = (h + 2 * self.padding - kh) // self.stride + 1
-        out_w = (w + 2 * self.padding - kw) // self.stride + 1
+        self.bias = None
+        if bias:
+            self.bias = nn.Parameter(
+                init_std * torch.randn(*((out_channels,) + (1,) * len(self.n_modes))),
+            )
 
-        # Pad input if needed
-        if self.padding > 0:
-            x_padded = F.pad(x, (self.padding, self.padding, self.padding, self.padding))
-        else:
-            x_padded = x
+    def hartley_conv(
+        self,
+        x: torch.Tensor,
+        x_reverse: torch.Tensor,
+        kernel: torch.Tensor,
+        kernel_reverse: torch.Tensor,
+    ) -> torch.Tensor:
+        x_even = (x + x_reverse) / 2
+        x_odd = (x - x_reverse) / 2
+        return self._contract(x_even, kernel) + self._contract(x_odd, kernel_reverse)
 
-        # Compute required FFT size
-        fft_h = h + 2 * self.padding + kh - 1
-        fft_w = w + 2 * self.padding + kw - 1
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        _, _, h, w = x.size()
+        modes_h, modes_w = self.n_modes
+        if h < 2 * modes_h or w < 2 * modes_w:
+            msg = f'Expected input with bigger spatial dims: h>={w * modes_h}, w>={2 * modes_w}, got: {h=}, {w=}'  # noqa: E501
+            raise ValueError(msg)
 
-        # Compute 2D Hartley transforms
-        x_ht = self.dht2(x_padded, fft_h, fft_w)
-        weight_ht = self.dht2(self.weight, fft_h, fft_w)
+        x = dht2d(x)
+        x_reverse = flip_periodic(x)
 
-        # Prepare for proper Hartley convolution
-        x_ht = x_ht.unsqueeze(1)  # [batch, 1, in_channels, fft_h, fft_w]
-        weight_ht = weight_ht.unsqueeze(0)  # [1, out_channels, in_channels, fft_h, fft_w]
+        center = tuple(s // 2 for s in x.size()[-2:])
+        slices_x = [
+            slice(None),
+            slice(None),
+            slice(center[0] - modes_h, center[0] + modes_h),
+            slice(center[1] - modes_w, center[1] + modes_w),
+        ]
+        kernel = self.weight
+        kernel_reverse = flip_periodic(kernel)
+        total = self.hartley_conv(
+            x[slices_x],
+            x_reverse[slices_x],
+            kernel,
+            kernel_reverse,
+        )
 
-        # CORRECT HARTLEY CONVOLUTION FORMULA
-        # Need to compute special combinations
-        weight_ht_flipped = torch.flip(weight_ht, dims=[-2, -1])
+        # pad with zeros before idht
+        pad = [
+            (w - 2 * modes_w) // 2,
+            (w - 2 * modes_w) // 2 + int(w % 2 == 1),
+            (h - 2 * modes_h) // 2,
+            (h - 2 * modes_h) // 2 + int(h % 2 == 1),
+        ]
+        x = torch.nn.functional.pad(total, pad, mode='constant', value=0)
 
-        # Main terms
-        term1 = x_ht * weight_ht
-        term2 = x_ht * weight_ht_flipped
-        term3 = torch.flip(x_ht, dims=[-2, -1]) * weight_ht
+        x = dht2d(x, is_inverse=True)
 
-        # Combine terms according to Hartley convolution theorem
-        out_ht = (term1 + term2 + term3 - torch.flip(x_ht, dims=[-2, -1]) * weight_ht_flipped) / 2
+        if self.bias is not None:
+            x = x + self.bias
 
-        # Sum over input channels
-        out_ht = out_ht.sum(dim=2)
-
-        # Inverse Hartley transform
-        output = self.idht2(out_ht, fft_h, fft_w)
-
-        # Crop to correct output size and add bias
-        output = output[:, :, :out_h, :out_w]
-
-        return output
-
-    @staticmethod
-    def dht1(x):
-        """1D Discrete Hartley Transform using FFT"""
-        n = x.shape[-1]
-        fft = torch.fft.fft(x, dim=-1)
-        return fft.real - fft.imag
-
-    @staticmethod
-    def idht1(x):
-        """Inverse 1D Discrete Hartley Transform"""
-        return x / x.shape[-1]
-
-    def dht2(self, x, fft_h=None, fft_w=None):
-        """2D Discrete Hartley Transform"""
-        if fft_h is not None and fft_w is not None:
-            # Pad to desired FFT size
-            if len(x.shape) == 4:  # [batch, channels, h, w]
-                pad_h = fft_h - x.shape[-2]
-                pad_w = fft_w - x.shape[-1]
-                x = F.pad(x, (0, pad_w, 0, pad_h))
-            else:  # [channels_out, channels_in, h, w]
-                pad_h = fft_h - x.shape[-2]
-                pad_w = fft_w - x.shape[-1]
-                x = F.pad(x, (0, pad_w, 0, pad_h))
-
-        # Apply 1D DHT along rows then columns
-        x = self.dht1(x)
-        x = self.dht1(x.transpose(-1, -2)).transpose(-1, -2)
-        return x
-
-    def idht2(self, x, fft_h=None, fft_w=None):
-        """Inverse 2D Discrete Hartley Transform"""
-        # Apply 1D inverse DHT along rows then columns
-        x = self.idht1(x)
-        x = self.idht1(x.transpose(-1, -2)).transpose(-1, -2)
         return x
