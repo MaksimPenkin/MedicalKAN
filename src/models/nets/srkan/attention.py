@@ -53,7 +53,8 @@ class AttentionKANLinear(nn.Module):
 
         # v1.2
         q_x = x.unsqueeze(1)
-        k_x = torch.cat([layer(x) for layer in self.subspaces], dim=-1).permute(0, 2, 1)
-        x, m = self.mha(q_x, k_x, k_x)
-        x = self.proj(x.squeeze(1))
+        x = torch.cat([layer(x) for layer in self.subspaces], dim=-1).permute(0, 2, 1)
+        x, _ = self.mha(q_x, x, x)
+        x = x.squeeze(1)
+        x = self.proj(x)
         return x.view(-1, self.outdim)
