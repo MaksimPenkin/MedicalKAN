@@ -42,7 +42,6 @@ class AttentionKANLinear(nn.Module):
         # x = torch.cat([layer(x) for layer in self.subspaces], dim=-1)
         # x, _ = self.mha(x, x, x)
         # x = self.proj(x)
-        # x = torch.einsum('bid,iod->bo', x, self.coeffs)
         # return x.view(-1, self.outdim)
 
         # v1.1
