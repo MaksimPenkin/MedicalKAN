@@ -31,7 +31,7 @@ class AttentionKANLinear(nn.Module):
         self.coeffs = nn.Parameter(torch.empty(input_dim, output_dim, (degree + 1) * len(self.subspaces)))
         nn.init.normal_(self.coeffs, mean=0.0, std=1 / (input_dim * (degree + 1) * len(self.subspaces)))
 
-        # # v1.2
+        # v1.2
         # self.mha = nn.MultiheadAttention(input_dim, num_heads=1, batch_first=True)
         # self.proj = nn.Linear(input_dim, output_dim)
 
@@ -51,10 +51,9 @@ class AttentionKANLinear(nn.Module):
         x = torch.einsum('bid,iod->bo', x, self.coeffs)
         return x.view(-1, self.outdim)
 
-        # # v1.2
+        # v1.2
         # q_x = x.unsqueeze(1)
         # k_x = torch.cat([layer(x) for layer in self.subspaces], dim=-1).permute(0, 2, 1)
         # x, m = self.mha(q_x, k_x, k_x)
-        # np.save("mask.npy", m.detach().cpu().numpy())
         # x = self.proj(x.squeeze(1))
         # return x.view(-1, self.outdim)
