@@ -31,6 +31,10 @@ class AttentionKANLinear(nn.Module):
         self.coeffs = nn.Parameter(torch.empty(output_dim, output_dim, (degree + 1) * len(self.subspaces)))
         nn.init.normal_(self.coeffs, mean=0.0, std=1 / (output_dim * (degree + 1) * len(self.subspaces)))
 
+        # # v1.2
+        # self.mha = nn.MultiheadAttention(input_dim, num_heads=1, batch_first=True)
+        # self.proj = nn.Linear(input_dim, output_dim)
+
     def forward(self, x):
         x = torch.reshape(x, (-1, self.inputdim))
 
@@ -38,10 +42,19 @@ class AttentionKANLinear(nn.Module):
         # x = torch.cat([layer(x) for layer in self.subspaces], dim=-1)
         # x, _ = self.mha(x, x, x)
         # x = self.proj(x)
+        # x = torch.einsum('bid,iod->bo', x, self.coeffs)
+        # return x.view(-1, self.outdim)
 
         # v1.1
         x = torch.cat([layer(x) for layer in self.subspaces], dim=-1).permute(0, 2, 1)
         x = self.mha(x, x, x)[0].permute(0, 2, 1)
-
         x = torch.einsum('bid,iod->bo', x, self.coeffs)
         return x.view(-1, self.outdim)
+
+        # # v1.2
+        # q_x = x.unsqueeze(1)
+        # k_x = torch.cat([layer(x) for layer in self.subspaces], dim=-1).permute(0, 2, 1)
+        # x, m = self.mha(q_x, k_x, k_x)
+        # np.save("mask.npy", m.detach().cpu().numpy())
+        # x = self.proj(x.squeeze(1))
+        # return x.view(-1, self.outdim)
