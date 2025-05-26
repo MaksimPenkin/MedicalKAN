@@ -22,16 +22,16 @@ class AttentionKANLinear(nn.Module):
             ChebyKANLinear(input_dim, output_dim, degree, einsum=False),
             HermiteFuncKANLinear(input_dim, output_dim, degree, einsum=False)
         ])
-        # v1.0
+        # v1.0: Feasibility for Programming and Computer Software 2025.
         # self.mha = nn.MultiheadAttention(input_dim * len(self.subspaces), num_heads=1, batch_first=True)
         # self.proj = nn.Linear(input_dim * len(self.subspaces), output_dim)
 
-        # v1.1
+        # v1.1: Fix attention map size from \theta x \theta to more interpretable kd x kd, where d is degree + 1.
         # self.mha = nn.MultiheadAttention(input_dim, num_heads=1, batch_first=True)
         # self.coeffs = nn.Parameter(torch.empty(input_dim, output_dim, (degree + 1) * len(self.subspaces)))
         # nn.init.normal_(self.coeffs, mean=0.0, std=1 / (input_dim * (degree + 1) * len(self.subspaces)))
 
-        # v1.2
+        # v1.2: Interpretable attention map of shape BHW x kd, encoding basis functions distribution over kd basis funcs for each processing patch.
         self.mha = nn.MultiheadAttention(input_dim, num_heads=1, batch_first=True)
         self.proj = nn.Linear(input_dim, output_dim)
 
