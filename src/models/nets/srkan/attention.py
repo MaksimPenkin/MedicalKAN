@@ -22,6 +22,7 @@ class AttentionKANLinear(nn.Module):
             ChebyKANLinear(input_dim, output_dim, degree, einsum=False),
             HermiteFuncKANLinear(input_dim, output_dim, degree, einsum=False)
         ])
+        # v1.0
         # self.mha = nn.MultiheadAttention(output_dim * len(self.subspaces), num_heads=1, batch_first=True)
         # self.proj = nn.Linear(output_dim * len(self.subspaces), output_dim)
 
@@ -32,6 +33,7 @@ class AttentionKANLinear(nn.Module):
     def forward(self, x):
         x = torch.reshape(x, (-1, self.inputdim))
 
+        # v1.0
         # x = torch.cat([layer(x) for layer in self.subspaces], dim=-1)
         # x, _ = self.mha(x, x, x)
         # x = self.proj(x)
