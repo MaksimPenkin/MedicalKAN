@@ -23,13 +23,13 @@ class AttentionKANLinear(nn.Module):
             HermiteFuncKANLinear(input_dim, output_dim, degree, einsum=False)
         ])
         # v1.0
-        # self.mha = nn.MultiheadAttention(output_dim * len(self.subspaces), num_heads=1, batch_first=True)
-        # self.proj = nn.Linear(output_dim * len(self.subspaces), output_dim)
+        # self.mha = nn.MultiheadAttention(input_dim * len(self.subspaces), num_heads=1, batch_first=True)
+        # self.proj = nn.Linear(input_dim * len(self.subspaces), output_dim)
 
         # v1.1
-        self.mha = nn.MultiheadAttention(output_dim, num_heads=1, batch_first=True)
-        self.coeffs = nn.Parameter(torch.empty(output_dim, output_dim, (degree + 1) * len(self.subspaces)))
-        nn.init.normal_(self.coeffs, mean=0.0, std=1 / (output_dim * (degree + 1) * len(self.subspaces)))
+        self.mha = nn.MultiheadAttention(input_dim, num_heads=1, batch_first=True)
+        self.coeffs = nn.Parameter(torch.empty(input_dim, output_dim, (degree + 1) * len(self.subspaces)))
+        nn.init.normal_(self.coeffs, mean=0.0, std=1 / (input_dim * (degree + 1) * len(self.subspaces)))
 
         # # v1.2
         # self.mha = nn.MultiheadAttention(input_dim, num_heads=1, batch_first=True)
