@@ -25,6 +25,23 @@ def fc(in_ch, out_ch, **kwargs):
     return nn.Linear(in_ch, out_ch, **kwargs)
 
 
+def activate(activation=None):
+    if not activation:
+        return nn.Identity()
+    elif activation == "sigmoid":
+        return nn.Sigmoid()
+    elif activation == "Tanh":
+        return nn.Tanh()
+    elif activation == "relu":
+        return nn.ReLU
+    elif activation == "relu6":
+        return nn.ReLU6
+    elif activation == "elu":
+        return nn.ELU
+    elif activation == "leaky_relu":
+        return nn.LeakyReLU
+
+
 class ResBlock(nn.Module):
     """Pre-activated residual block.
 
