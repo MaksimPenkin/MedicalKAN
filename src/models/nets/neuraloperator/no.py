@@ -32,7 +32,7 @@ class NeuralOperator(nn.Module):
     def forward(self, x):
         x = self.emb(x)
         for layer in self.backbone:
-            x = layer(x)
+            x = x + layer(x)
         x = self.restore(x)
 
         return x
