@@ -35,13 +35,13 @@ def activate(activation=None):
     elif activation == "Tanh":
         return nn.Tanh()
     elif activation == "relu":
-        return nn.ReLU
+        return nn.ReLU()
     elif activation == "relu6":
-        return nn.ReLU6
+        return nn.ReLU6()
     elif activation == "elu":
-        return nn.ELU
+        return nn.ELU()
     elif activation == "leaky_relu":
-        return nn.LeakyReLU
+        return nn.LeakyReLU()
 
 
 class ResBlock(nn.Module):
