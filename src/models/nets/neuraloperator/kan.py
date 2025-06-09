@@ -33,11 +33,8 @@ class KAN(nn.Module):
         B, C, H, W = x.shape
         identity = x
 
-        # Pre-process.
         x = x.flatten(start_dim=2).transpose(1, 2)
-        # Apply KAN.
         x = self.fc(self.norm(x)).view(B, H * W, C).contiguous()
-        # Post-process.
         x = x.transpose(1, 2).view(B, C, H, W)
 
         return x + identity
