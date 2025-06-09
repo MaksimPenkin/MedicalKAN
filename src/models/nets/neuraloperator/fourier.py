@@ -5,10 +5,12 @@
 import torch
 import torch.nn as nn
 
+from ..layers import activate
+
 
 class FourierSpectralConv2d(nn.Module):
 
-    def __init__(self, in_channels, out_channels, n_modes=(16, 16)):
+    def __init__(self, in_channels, out_channels, n_modes=(16, 16), activation=None):
         super(FourierSpectralConv2d, self).__init__()
 
         self.in_channels = in_channels
@@ -18,6 +20,8 @@ class FourierSpectralConv2d(nn.Module):
         self.scale = (1 / (in_channels * out_channels))
         self.weights1 = nn.Parameter(self.scale * torch.rand(in_channels, out_channels, self.modes1, self.modes2, dtype=torch.cfloat))
         self.weights2 = nn.Parameter(self.scale * torch.rand(in_channels, out_channels, self.modes1, self.modes2, dtype=torch.cfloat))
+
+        self.activation = activate(activation)
 
     def compl_mul2d(self, input, weights):
         return torch.einsum("bixy,ioxy->boxy", input, weights)
@@ -31,4 +35,4 @@ class FourierSpectralConv2d(nn.Module):
         out_ft[:, :, -self.modes1:, :self.modes2] = self.compl_mul2d(x_ft[:, :, -self.modes1:, :self.modes2], self.weights2)
 
         x = torch.fft.irfft2(out_ft, s=(x.size(-2), x.size(-1)))
-        return x
+        return self.activation(x)

@@ -6,6 +6,8 @@ import numpy as np
 import torch
 from torch import nn
 
+from ..layers import activate
+
 
 def dht2d(x: torch.Tensor, is_inverse: bool = False) -> torch.Tensor:
     if not is_inverse:
@@ -46,6 +48,7 @@ class HartleySpectralConv2d(nn.Module):
         factorization: str = 'dense',
         bias: bool = True,
         dtype: torch.dtype = torch.float,
+        activation=None,
         **_,  # noqa: ANN003
     ) -> None:
         super().__init__()
@@ -71,6 +74,8 @@ class HartleySpectralConv2d(nn.Module):
             self.bias = nn.Parameter(
                 init_std * torch.randn(*((out_channels,) + (1,) * len(self.n_modes))),
             )
+
+        self.activation = activate(activation)
 
     def hartley_conv(
         self,
@@ -123,4 +128,4 @@ class HartleySpectralConv2d(nn.Module):
         if self.bias is not None:
             x = x + self.bias
 
-        return x
+        return self.activation(x)
