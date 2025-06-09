@@ -28,6 +28,8 @@ def fc(in_ch, out_ch, **kwargs):
 def activate(activation=None):
     if not activation:
         return nn.Identity()
+    elif activation == "linear":
+        return nn.Identity()
     elif activation == "sigmoid":
         return nn.Sigmoid()
     elif activation == "Tanh":
