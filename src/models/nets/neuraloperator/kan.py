@@ -23,6 +23,7 @@ class KAN(nn.Module):
             self.fc = HermiteFuncKANLinear(dim, dim, **kwargs)
 
         self.norm = nn.LayerNorm(dim)
+        self.apply(self._init_weights)
 
     def _init_weights(self, m):
         if isinstance(m, nn.LayerNorm):
