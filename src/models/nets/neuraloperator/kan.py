@@ -2,7 +2,6 @@
 # @author   Maksim Penkin
 # """
 
-import torch
 import torch.nn as nn
 
 from ..srkan.linear import KANLinear
