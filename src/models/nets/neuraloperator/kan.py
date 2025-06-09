@@ -12,20 +12,17 @@ from ..srkan.hermite import HermiteFuncKANLinear
 
 class KAN(nn.Module):
 
-    def __init__(self, in_channels, out_channels, poly=None, **kwargs):
+    def __init__(self, dim, poly=None, **kwargs):
         super(KAN, self).__init__()
 
-        self.in_channels = in_channels
-        self.out_channels = out_channels
-
         if not poly:
-            self.fc = KANLinear(in_channels, out_channels, **kwargs)
+            self.fc = KANLinear(dim, dim, **kwargs)
         elif poly == "cheby":
-            self.fc = ChebyKANLinear(in_channels, out_channels, **kwargs)
+            self.fc = ChebyKANLinear(dim, dim, **kwargs)
         elif poly == "hermite":
-            self.fc = HermiteFuncKANLinear(in_channels, out_channels, **kwargs)
+            self.fc = HermiteFuncKANLinear(dim, dim, **kwargs)
 
-        self.norm = nn.LayerNorm(in_channels)
+        self.norm = nn.LayerNorm(dim)
 
     def _init_weights(self, m):
         if isinstance(m, nn.LayerNorm):
@@ -33,14 +30,14 @@ class KAN(nn.Module):
             nn.init.constant_(m.weight, 1.0)
 
     def forward(self, x):
-        # Pre-process.
         B, C, H, W = x.shape
+        identity = x
+
+        # Pre-process.
         x = x.flatten(start_dim=2).transpose(1, 2)
-        x = torch.reshape(x, (-1, self.in_channels))
-
         # Apply KAN.
-        y = self.fc(self.norm(x))
-
+        x = self.fc(self.norm(x)).view(B, H * W, C).contiguous()
         # Post-process.
-        y = y.view(B, H * W, self.out_channels).contiguous()
-        return y.transpose(1, 2).view(B, self.out_channels, H, W)
+        x = x.transpose(1, 2).view(B, C, H, W)
+
+        return x + identity
