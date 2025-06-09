@@ -5,6 +5,7 @@
 from torch import nn
 from .fourier import FourierSpectralConv2d
 from .hartley import HartleySpectralConv2d
+from .mlp import MLP
 from .kan import KAN
 
 from ..layers import conv3x3
@@ -21,8 +22,7 @@ class NeuralOperator(nn.Module):
         elif version == "hartley2d":
             self.backbone = nn.ModuleList([HartleySpectralConv2d(hid_ch, hid_ch, activation="relu", **kwargs) for _ in range(3)])
         elif version == "mlp":
-            pass
-            # self.backbone = nn.ModuleList([MLP(hid_ch, hid_ch, **kwargs) for _ in range(3)])
+            self.backbone = nn.ModuleList([MLP(hid_ch, hid_ch, activation="sigmoid", **kwargs) for _ in range(3)])
         elif version == "kan":
             self.backbone = nn.ModuleList([KAN(hid_ch, hid_ch, **kwargs) for _ in range(3)])
         else:
