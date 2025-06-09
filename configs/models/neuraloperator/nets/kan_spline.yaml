@@ -4,5 +4,6 @@ config:
   in_ch: 1
   out_ch: 1
   hid_ch: 32
-  version: hermite
-  degree: 5
+  version: kan
+  spline_order: 3
+  grid_size: 5

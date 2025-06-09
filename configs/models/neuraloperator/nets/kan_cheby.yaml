@@ -4,5 +4,6 @@ config:
   in_ch: 1
   out_ch: 1
   hid_ch: 32
-  version: hermite
+  version: kan
+  poly: cheby
   degree: 5
