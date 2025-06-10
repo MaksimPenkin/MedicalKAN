@@ -10,14 +10,15 @@ import torch.nn.functional as F
 
 class HermiteFuncs(nn.Module):
     # https://github.com/Rob217/hermite-functions/blob/master/hermite_functions/hermite_functions.py
-    def __init__(self, r):
+    def __init__(self, r, n):
         super(HermiteFuncs, self).__init__()
         self.r = r
+        self.register_buffer("x_d", torch.linspace(-1, 1, n))
 
     def forward(self, x):
         B, HW, C = x.shape
 
-        x_d = torch.tanh(torch.linspace(-1, 1, C)) * (math.sqrt(2 * self.r + 1) + 1)
+        x_d = torch.tanh(self.x_d) * (math.sqrt(2 * self.r + 1) + 1)
 
         psi = torch.ones(self.r + 1, C, device=x.device)
         psi[0, :] = math.pi ** (-1 / 4) * torch.exp(-(x_d ** 2) / 2)
@@ -37,7 +38,7 @@ class FUNKAN(nn.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
 
-        self.basis = HermiteFuncs(degree)
+        self.basis = HermiteFuncs(degree, in_channels)
         self.fc = nn.Conv1d(in_channels, out_channels, 1)
 
         self.norm = nn.LayerNorm(in_channels)
