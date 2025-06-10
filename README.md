@@ -4,7 +4,7 @@
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 
-# Medical Image Processing using Kolmogorov-Arnold Networks
+# FUNKAN: Medical Image Processing using Kolmogorov-Arnold Networks
 
 ![alt text](./example.png)
 
@@ -69,6 +69,8 @@ Big thank you for the awesome works!
 ## Citation
 
 ```python
+@abbr.: FUNKAN / ex-MBA-KAN
+
 @inproceedings{penkin2025kolmogorov,
   title={Adaptive Method for Selecting Basis Functions in Kolmogorov–Arnold Networks for Magnetic Resonance Image Enhancement},
   author={Penkin, Maksim and Krylov, Andrey},
