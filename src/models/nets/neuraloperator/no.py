@@ -7,8 +7,8 @@ import torch.nn.functional as F
 
 from .fourier import FourierSpectralConv2d
 from .hartley import HartleySpectralConv2d
-from .mlp import MLP
 from .kan import KAN
+from .funkan import FUNKAN
 
 from ..layers import conv1x1, conv3x3, conv5x5
 
@@ -24,10 +24,10 @@ class NeuralOperator(nn.Module):
             self.backbone = nn.ModuleList([FourierSpectralConv2d(hid_ch, hid_ch, activation="relu", **kwargs) for _ in range(3)])
         elif version == "hartley2d":
             self.backbone = nn.ModuleList([HartleySpectralConv2d(hid_ch, hid_ch, activation="relu", **kwargs) for _ in range(3)])
-        elif version == "mlp":
-            self.backbone = nn.ModuleList([MLP(hid_ch, hid_ch, activation="sigmoid", **kwargs) for _ in range(3)])
         elif version == "kan":
             self.backbone = nn.ModuleList([KAN(hid_ch, hid_ch, **kwargs) for _ in range(3)])
+        elif version == "funkan":
+            self.backbone = nn.ModuleList([FUNKAN(hid_ch, hid_ch, **kwargs) for _ in range(3)])
         else:
             raise NotImplementedError(f"Unrecognized `version` found: {version}.")
         self.projection = conv1x1(hid_ch, hid_ch // 2)
