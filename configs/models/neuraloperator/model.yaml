@@ -1,6 +1,6 @@
 module: src.models
 class_name: MRIEnhancementModel
 config:
-  network: !include "./nets/fno.yaml"
+  network: !include "./nets/fourier.yaml"
   criterion: !include "../../losses/mse.yaml"
   optimizer: !include "../../optimizers/adam.yaml"
