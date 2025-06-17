@@ -24,17 +24,17 @@ def hermite_funcs(N, r=6):
 
 class BasisFuncs(nn.Module):
 
-    def __init__(self, r=6, version="hermite"):
+    def __init__(self, r=6, basis="hermite"):
         super(BasisFuncs, self).__init__()
 
         self.r = r
-        self.version = version
+        self.basis = basis
 
     def forward(self, x):
-        if self.version == "hermite":
+        if self.basis == "hermite":
             return hermite_funcs(x.shape[-1], self.r)
         else:
-            raise NotImplementedError(f"Unrecognized `version` found: {self.version}.")
+            raise NotImplementedError(f"Unrecognized `basis` found: {self.basis}.")
 
 
 class FUNKAN(nn.Module):
@@ -45,7 +45,7 @@ class FUNKAN(nn.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
 
-        self.basis = BasisFuncs(**kwargs)
+        self.psi = BasisFuncs(**kwargs)
         self.fc = nn.Conv1d(in_channels, out_channels, 1, bias=False)
         self.activation = activate(activation)
 
@@ -62,7 +62,7 @@ class FUNKAN(nn.Module):
         x = x.flatten(start_dim=2)
 
         x = self.norm(x)  # (B, n, N): Get n feature functions, discretized by N nodes.
-        psi = self.basis(x)  # (B, r, N): Get r basis functions, discretized by N nodes.
+        psi = self.psi(x)  # (B, r, N): Get r basis functions, discretized by N nodes.
         cost = torch.bmm(x, psi.transpose(1, 2))  # (B, n, r): Calculate cost matrix of feature functions projections on basis functions.
         x = torch.bmm(cost, psi)  # (B, n, N): Construct Kolmogorov-Arnold functions as decomposition over basis functions (with attention).
 
