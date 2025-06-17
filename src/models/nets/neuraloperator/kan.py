@@ -34,9 +34,10 @@ class KAN(nn.Module):
 
     def forward(self, x):
         B, C, H, W = x.shape
-
         x = x.flatten(start_dim=2).transpose(1, 2)
-        x = self.fc(self.norm(x)).view(B, H * W, self.out_channels).contiguous()
+        x = self.norm(x)
+
+        x = self.fc(x).view(B, H * W, self.out_channels).contiguous()
         x = x.transpose(1, 2).view(B, self.out_channels, H, W)
 
         return x

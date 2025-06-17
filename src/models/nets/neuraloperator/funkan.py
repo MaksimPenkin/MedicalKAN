@@ -67,7 +67,7 @@ class FUNKAN(nn.Module):
         else:
             raise NotImplementedError(f"Unrecognized `poly` found: {poly}.")
 
-        self.fc = nn.Conv1d(in_channels, out_channels, 1)
+        self.fc = nn.Conv1d(in_channels, out_channels, 1, bias=False)
 
         self.norm = nn.LayerNorm(in_channels)
         self.apply(self._init_weights)
@@ -86,6 +86,7 @@ class FUNKAN(nn.Module):
         cost = torch.bmm(x, psi.transpose(1, 2))
         x = torch.bmm(cost, psi)
 
-        x = self.fc(x.transpose(1, 2)).view(B, self.out_channels, H*W).contiguous()
+        x = self.fc(x.transpose(1, 2)).view(B, self.out_channels, H * W).contiguous()
+        x = x.view(B, self.out_channels, H, W)
 
-        return x.view(B, self.out_channels, H, W)
+        return x
