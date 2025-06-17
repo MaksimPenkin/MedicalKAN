@@ -42,6 +42,8 @@ def activate(activation=None):
         return nn.ELU()
     elif activation == "leaky_relu":
         return nn.LeakyReLU()
+    else:
+        raise NotImplementedError(f"Unrecognized `activation` found: {activation}.")
 
 
 class ResBlock(nn.Module):
