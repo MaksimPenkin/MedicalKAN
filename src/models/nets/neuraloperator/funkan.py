@@ -6,6 +6,8 @@ import math
 import torch
 import torch.nn as nn
 
+from ..layers import activate
+
 
 class RandomFuncs(nn.Module):
 
@@ -54,11 +56,10 @@ class HermiteFuncs(nn.Module):
 
 class FUNKAN(nn.Module):
 
-    def __init__(self, in_channels, out_channels, poly=None, **kwargs):
+    def __init__(self, in_channels, out_channels=None, poly=None, activation=None, **kwargs):
         super(FUNKAN, self).__init__()
 
         self.in_channels = in_channels
-        self.out_channels = out_channels
 
         if not poly:
             self.basis = RandomFuncs(in_channels, **kwargs)
@@ -67,7 +68,13 @@ class FUNKAN(nn.Module):
         else:
             raise NotImplementedError(f"Unrecognized `poly` found: {poly}.")
 
-        self.fc = nn.Conv1d(in_channels, out_channels, 1, bias=False)
+        self.fc = nn.Conv1d(in_channels, in_channels, 1, bias=False)
+        if out_channels is not None:
+            self.proj = nn.Conv2d(in_channels, out_channels, 1)
+        else:
+            self.proj = nn.Identity()
+
+        self.activation = activate(activation)
 
         self.norm = nn.LayerNorm(in_channels)
         self.apply(self._init_weights)
@@ -82,11 +89,11 @@ class FUNKAN(nn.Module):
         x = x.flatten(start_dim=2).transpose(1, 2)
         x = self.norm(x)
 
-        psi = self.basis(x)
-        cost = torch.bmm(x, psi.transpose(1, 2))
-        x = torch.bmm(cost, psi)
+        psi = self.basis(x)  # (B, r, d): Get r basis functions, discretized on d nodes.
+        cost = torch.bmm(x, psi.transpose(1, 2))  # (B, n, r): Calculate cost matrix of feature functions projections on basis functions.
+        x = torch.bmm(cost, psi)  # (B, n, d): Calculate Kolmogorov-Arnold functions as decomposition over basis functions (with attention).
 
-        x = self.fc(x.transpose(1, 2)).view(B, self.out_channels, H * W).contiguous()
-        x = x.view(B, self.out_channels, H, W)
+        x = self.fc(x).view(B, H * W, self.in_channels).contiguous()  # Convolve over all feature functions like in K-A theorem.
+        x = x.transpose(1, 2).view(B, self.in_channels, H, W)
 
-        return x
+        return self.proj(self.activation(x))  # Optional functions' (non-linear) re-discretization.
