@@ -6,4 +6,3 @@ config:
   hid_ch: 32
   version: funkan
   r: 6
-  basis: "hermite"
