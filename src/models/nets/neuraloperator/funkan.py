@@ -18,15 +18,15 @@ class HermiteFuncs(nn.Module):
         self.r = r
 
     def forward(self, x):
-        B, C, HW = x.shape
+        B, n, N = x.shape
 
         x = torch.tanh(x) * math.sqrt(2 * self.r + 1)
-        psi = torch.ones(B, self.r, C, HW, device=x.device)
-        psi[:, 0, :, :] = math.pi ** (-1 / 4) * torch.exp(-(x ** 2) / 2)
+        psi = torch.ones(B, n, self.r, N, device=x.device)
+        psi[:, :, 0, :] = math.pi ** (-1 / 4) * torch.exp(-(x ** 2) / 2)
         if self.r > 0:
-            psi[:, 1, :, :] = math.sqrt(2) * math.pi ** (-1 / 4) * x * torch.exp(-(x ** 2) / 2)
+            psi[:, :, 1, :] = math.sqrt(2) * math.pi ** (-1 / 4) * x * torch.exp(-(x ** 2) / 2)
         for k in range(2, self.r):
-            psi[:, k, :, :] = math.sqrt(2 / k) * x * psi[:, k - 1, :, :].clone() - math.sqrt((k - 1) / k) * psi[:, k - 2, :, :].clone()
+            psi[:, :, k, :] = math.sqrt(2 / k) * x * psi[:, :, k - 1, :].clone() - math.sqrt((k - 1) / k) * psi[:, :, k - 2, :].clone()
 
         return psi
 
