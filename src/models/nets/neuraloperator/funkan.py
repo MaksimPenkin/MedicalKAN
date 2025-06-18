@@ -48,12 +48,12 @@ class FUNKAN(nn.Module):
     def forward(self, x):
         B, C, H, W = x.shape
 
-        x = x.flatten(start_dim=2)  # (B, n, N)
+        x = x.flatten(start_dim=2)  # (B, n, N): n feature functions.
         x = self.norm(x)
 
-        psi = self.psi(x)  # (B, r, n, N)
-        cost = torch.einsum("bkid,bid->bki", psi, x)  # (B, r, n)
-        x = torch.einsum("bki,bkid->bid", F.softmax(cost, dim=1), psi)
+        psi = self.psi(x)  # (B, n, r, N): basis functions.
+        cost = torch.einsum("bikd,bid->bik", psi, x)  # (B, n, r)
+        x = torch.einsum("bik,bikd->bid", F.softmax(cost, dim=2), psi)  # (B, n, N)
         x = self.fc(x).view(B, self.out_channels, H, W).contiguous()  # Convolve over all feature functions like in K-A theorem.
 
         return self.activation(x)
