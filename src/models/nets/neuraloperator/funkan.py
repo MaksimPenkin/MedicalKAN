@@ -23,7 +23,8 @@ class Hermite2d(nn.Module):
         super(Hermite2d, self).__init__()
 
         self.r = r
-        self.coords = nn.Linear(1, 2)
+        self.fc1 = nn.Linear(1, 8, bias=False)
+        self.fc2 = nn.Linear(8, 2, bias=False)
 
     def forward(self, x):
         B, n, H, W = x.shape
@@ -32,7 +33,7 @@ class Hermite2d(nn.Module):
                                         torch.linspace(-1, 1, W, device=x.device),
                                         indexing='xy')
 
-        x_field, y_field = torch.split(self.coords(x.unsqueeze(-1)), 1, dim=-1)
+        x_field, y_field = torch.split(self.fc2(F.relu(self.fc1(x.unsqueeze(-1)))), 1, dim=-1)
 
         x_grid = x_field.squeeze(-1) + x_grid.unsqueeze(0).unsqueeze(0)
         y_grid = y_field.squeeze(-1) + y_grid.unsqueeze(0).unsqueeze(0)
