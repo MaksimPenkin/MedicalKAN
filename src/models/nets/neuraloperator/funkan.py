@@ -23,6 +23,7 @@ class Hermite2d(nn.Module):
         super(Hermite2d, self).__init__()
 
         self.r = r
+        self.coords = nn.Linear(1, 2)
 
     def forward(self, x):
         B, n, H, W = x.shape
@@ -30,8 +31,11 @@ class Hermite2d(nn.Module):
         x_grid, y_grid = torch.meshgrid(torch.linspace(-1, 1, H, device=x.device),
                                         torch.linspace(-1, 1, W, device=x.device),
                                         indexing='xy')
-        x_grid = torch.tanh(x) + x_grid.unsqueeze(0).unsqueeze(0)
-        y_grid = torch.tanh(x) + y_grid.unsqueeze(0).unsqueeze(0)
+
+        x_field, y_field = torch.split(self.coords(x.unsqueeze(-1)), 1, dim=-1)
+
+        x_grid = x_field.squeeze(-1) + x_grid.unsqueeze(0).unsqueeze(0)
+        y_grid = y_field.squeeze(-1) + y_grid.unsqueeze(0).unsqueeze(0)
         return torch.stack([hermite_function(k, x_grid) * hermite_function(k, y_grid) for k in range(self.r)], 2)
 
 
