@@ -26,7 +26,7 @@ class NeuralOperator(nn.Module):
         elif backbone == "kan":
             self.backbone = nn.ModuleList([KAN(hid_ch, hid_ch, **kwargs) for _ in range(3)])
         elif backbone == "funkan":
-            self.backbone = nn.ModuleList([FUNKAN(hid_ch, hid_ch, activation=activation, **kwargs) for _ in range(3)])
+            self.backbone = nn.ModuleList([FUNKAN(hid_ch, hid_ch, **kwargs) for _ in range(3)])
         else:
             raise NotImplementedError(f"Unrecognized `backbone` found: {backbone}.")
         self.projection = conv1x1(hid_ch, hid_ch // 2)
