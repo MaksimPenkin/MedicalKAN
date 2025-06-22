@@ -25,7 +25,7 @@ class Hermite2d(nn.Module):
         super(Hermite2d, self).__init__()
 
         self.r = r
-        self.offset = ResBlock(in_channels, in_channels*2)
+        self.offset = ResBlock(in_channels, in_channels*2, bn=True)
 
     def forward(self, x):
         B, n, H, W = x.shape
@@ -59,12 +59,10 @@ class FUNKAN(nn.Module):
         # Theta params.
         self.theta = nn.Conv2d(in_channels, out_channels, 1)
 
-        self.norm = nn.BatchNorm2d(in_channels)
-
     def forward(self, x):
         B, C, H, W = x.shape
 
-        psi = self.psi(self.norm(x))  # (B, n, r, H, W): basis Hermite functions, encoded on HxW grid.
+        psi = self.psi(x)  # (B, n, r, H, W): basis Hermite functions, encoded on HxW grid.
         cost = torch.einsum("bikd,id->bik", psi.flatten(start_dim=3), self.phi.flatten(start_dim=1))  # (B, n, r): dot product matrix.
         x = torch.einsum("bik,bikd->bid", F.softmax(cost, dim=2), psi.flatten(start_dim=3)).view(B, self.in_channels, H, W)
         x = self.theta(x)  # Reduction across n feature functions, encoded on HxW grid, like in K-A theorem.
