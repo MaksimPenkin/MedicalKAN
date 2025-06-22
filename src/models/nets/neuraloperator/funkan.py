@@ -49,7 +49,9 @@ class FUNKAN(nn.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
 
-        # Kolmogorov-Arnold functions.
+        # Learnable Kolmogorov-Arnold functions on a grid HxW.
+        # TODO: 145x145 is a hard-coded constant here, however, the K-A functions are learnt on any grid by functional construction (dot-product),
+        #       so the implementation should be refactored a little bit. But it's ok for experiments.
         self.phi = nn.Parameter(torch.empty(in_channels, 145, 145))
         nn.init.orthogonal_(self.phi)
         # Basis functions.
