@@ -7,6 +7,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from ..layers import ResBlock
+
 
 def hermite_function(n, x):
     if n == 0:
@@ -19,10 +21,11 @@ def hermite_function(n, x):
 
 class Hermite2d(nn.Module):
 
-    def __init__(self, r=6):
+    def __init__(self, in_channels, r=6):
         super(Hermite2d, self).__init__()
 
         self.r = r
+        self.offset = ResBlock(in_channels, in_channels*2)
 
     def forward(self, x):
         B, n, H, W = x.shape
@@ -31,8 +34,10 @@ class Hermite2d(nn.Module):
                                         torch.linspace(-1, 1, W, device=x.device),
                                         indexing='xy')
 
-        x_grid = x + x_grid.unsqueeze(0).unsqueeze(0)
-        y_grid = x + y_grid.unsqueeze(0).unsqueeze(0)
+        x_delta, y_delta = torch.split(self.offset(x), n, dim=1)
+
+        x_grid = x_delta + x_grid.unsqueeze(0).unsqueeze(0)
+        y_grid = y_delta + y_grid.unsqueeze(0).unsqueeze(0)
         return torch.stack([hermite_function(k, x_grid) * hermite_function(k, y_grid) for k in range(self.r)], 2)
 
 
