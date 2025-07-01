@@ -2,7 +2,8 @@
 [![pytorch](https://img.shields.io/badge/PyTorch_2.5.0-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/get-started/previous-versions/#v250)
 [![lightning](https://img.shields.io/badge/-Lightning_2.0+-792ee5?logo=pytorchlightning&logoColor=white)](https://pytorchlightning.ai/)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-
+[![arXiv](https://img.shields.io/badge/DOI-10.1134/S0361768825700057-b31b1b.svg)](https://link.springer.com/article/10.1134/S0361768825700057)
+[![arXiv](https://img.shields.io/badge/DOI-10.1145/3707172.3707186-b31b1b.svg)](https://dl.acm.org/doi/10.1145/3707172.3707186)
 
 # FUNKAN: Medical Image Processing using Kolmogorov-Arnold Networks
 
