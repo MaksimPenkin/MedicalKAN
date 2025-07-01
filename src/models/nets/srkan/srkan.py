@@ -9,11 +9,12 @@ import torch.nn.functional as F
 from torch import nn
 from timm.models.layers import trunc_normal_
 
-from ..layers import ResBlock, conv3x3, conv1x1
 from .linear import KANLinear
 from .chebyshev import ChebyKANLinear
 from .hermite import HermiteKANLinear, HermiteFuncKANLinear
 from .attention import AttentionKANLinear
+
+from ..layers import ResBlock, conv3x3, conv1x1
 
 
 def space_to_depth(x, block_size):
