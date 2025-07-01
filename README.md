@@ -63,12 +63,12 @@ options:
 ## Acknowledgements
 Big thank you for the awesome works!
 
-| arXiv                                                                                        | GitHub                                                                            |
-|----------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
-| [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/pdf/2404.19756)                          | [GitHub-pykan](https://github.com/KindXiaoming/pykan)                             |
-| [Convolutional Kolmogorov–Arnold Networks](https://arxiv.org/pdf/2406.13155v1)               | [GitHub-Convolutional-KANs](https://github.com/AntonioTepsich/Convolutional-KANs) |
-| [Chebyshev Polynomial-Based Kolmogorov-Arnold Networks](https://arxiv.org/html/2405.07200v1) | [GitHub-Chebyshev-KANs](https://github.com/SynodicMonth/ChebyKAN)                 |
-|                                                                                              | [GitHub-X-KANeRF](https://github.com/lif314/X-KANeRF)                                                                        |
+| Paper                                                                                        | Code                                                                                |
+|----------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| [KAN: Kolmogorov-Arnold Networks](https://arxiv.org/pdf/2404.19756)                          | [GitHub-pykan](https://github.com/KindXiaoming/pykan)                               |
+| [Convolutional Kolmogorov–Arnold Networks](https://arxiv.org/pdf/2406.13155v1)               | [GitHub-Convolutional-KANs](https://github.com/AntonioTepsich/Convolutional-KANs)   |
+| [Chebyshev Polynomial-Based Kolmogorov-Arnold Networks](https://arxiv.org/html/2405.07200v1) | [GitHub-Chebyshev-KANs](https://github.com/SynodicMonth/ChebyKAN)                   |
+|                                                                                              | [GitHub-X-KANeRF](https://github.com/lif314/X-KANeRF)                               |
 
 
 ## Cite this Project
@@ -99,12 +99,15 @@ If you use this project in your research or wish to refer to the baseline result
 ## Contributions
 Contributions are welcome. Please raise issues as necessary. 
 
-<a id="item-nine"></a>
 ## References
+[1] Liu, Ziming, Yixuan Wang, Sachin Vaidya, Fabian Ruehle, James Halverson, Marin Soljačić, Thomas Y. Hou, and Max Tegmark. "KAN: Kolmogorov-Arnold Networks." arXiv preprint arXiv:2404.19756 (2024).
 
-- [1] Liu, Ziming, Yixuan Wang, Sachin Vaidya, Fabian Ruehle, James Halverson, Marin Soljačić, Thomas Y. Hou, and Max Tegmark. "KAN: Kolmogorov-Arnold Networks." arXiv preprint arXiv:2404.19756 (2024).
-- [2] Liu, Ziming, Pingchuan Ma, Yixuan Wang, Wojciech Matusik, and Max Tegmark. "KAN 2.0: Kolmogorov-Arnold Networks Meet Science." arXiv preprint arXiv:2408.10205 (2024).
-- [3] Bodner, Alexander Dylan, Antonio Santiago Tepsich, Jack Natan Spolski, and Santiago Pourteau. "Convolutional Kolmogorov-Arnold Networks." arXiv preprint arXiv:2406.13155 (2024).
-- [4] SS, Sidharth, Keerthana AR, and Anas KP. "Chebyshev Polynomial-based Kolmogorov-Arnold Networks: An Efficient Architecture for Nonlinear Function Approximation." arXiv preprint arXiv:2405.07200 (2024).
-- [5] Seydi, Seyd Teymoor. "Exploring the Potential of Polynomial Basis Functions in Kolmogorov-Arnold Networks: A Comparative Study of Different Groups of Polynomials." arXiv preprint arXiv:2406.02583 (2024).
-- [6] Drokin, Ivan. "Kolmogorov-Arnold Convolutions: Design Principles and Empirical Studies." arXiv preprint arXiv:2407.01092 (2024).
+[2] Liu, Ziming, Pingchuan Ma, Yixuan Wang, Wojciech Matusik, and Max Tegmark. "KAN 2.0: Kolmogorov-Arnold Networks Meet Science." arXiv preprint arXiv:2408.10205 (2024).
+
+[3] Bodner, Alexander Dylan, Antonio Santiago Tepsich, Jack Natan Spolski, and Santiago Pourteau. "Convolutional Kolmogorov-Arnold Networks." arXiv preprint arXiv:2406.13155 (2024).
+
+[4] SS, Sidharth, Keerthana AR, and Anas KP. "Chebyshev Polynomial-based Kolmogorov-Arnold Networks: An Efficient Architecture for Nonlinear Function Approximation." arXiv preprint arXiv:2405.07200 (2024).
+
+[5] Seydi, Seyd Teymoor. "Exploring the Potential of Polynomial Basis Functions in Kolmogorov-Arnold Networks: A Comparative Study of Different Groups of Polynomials." arXiv preprint arXiv:2406.02583 (2024).
+
+[6] Drokin, Ivan. "Kolmogorov-Arnold Convolutions: Design Principles and Empirical Studies." arXiv preprint arXiv:2407.01092 (2024).
