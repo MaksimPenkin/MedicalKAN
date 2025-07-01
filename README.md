@@ -7,9 +7,13 @@
 
 # FUNKAN: Medical Image Processing using Kolmogorov-Arnold Networks
 
-## Project Status: Under Development
+## ⏳ Project Status: Under Development
 ### Updates
-- ✅ [2024/05/13] Convolutional KALN layers are available
+- ✅ [2025/06/22] FUNKAN: Comming soon...
+- ✅ [2025/05/12] MBA-KAN: Programming and Computer Software: Adaptive Method for Selecting Basis Functions in Kolmogorov–Arnold Networks for Magnetic Resonance Image Enhancement
+- ✅ [2025/01/17] 9th International Conference on Biomedical Imaging, Signal Processing: Kolmogorov-Arnold Networks as Deep Feature Extractors for MRI Reconstruction
+- ✅ [2024/11/20] 1st International School-Conference on Tensor Methods in Mathematics and Artificial Intelligence: Fourier Neural Networks and Kolmogorov-Arnold Neural Networks for MRI Reconstruction
+- ✅ [2024/09/19] 34rd International Conference Graphicon 2024: Scale Invariance property of Kolmogorov-Arnold Networks for MRI Gibbs Ringing Suppression
 
 ![alt text](./example.png)
 
