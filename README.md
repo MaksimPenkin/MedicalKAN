@@ -7,6 +7,10 @@
 
 # FUNKAN: Medical Image Processing using Kolmogorov-Arnold Networks
 
+## Project Status: Under Development
+### Updates
+- ✅ [2024/05/13] Convolutional KALN layers are available
+
 ![alt text](./example.png)
 
 ## 📌 Workspace
@@ -67,7 +71,8 @@ Big thank you for the awesome works!
 |                                                                                              | [GitHub-X-KANeRF](https://github.com/lif314/X-KANeRF)                                                                        |
 
 
-## Citation
+## Cite this Project
+If you use this project in your research or wish to refer to the baseline results, please use the following BibTeX entry.
 
 ```python
 @abbr.: FUNKAN / ex-MBA-KAN
@@ -90,3 +95,16 @@ Big thank you for the awesome works!
   year={2024}
 }
 ```
+
+## Contributions
+Contributions are welcome. Please raise issues as necessary. 
+
+<a id="item-nine"></a>
+## References
+
+- [1] Liu, Ziming, Yixuan Wang, Sachin Vaidya, Fabian Ruehle, James Halverson, Marin Soljačić, Thomas Y. Hou, and Max Tegmark. "KAN: Kolmogorov-Arnold Networks." arXiv preprint arXiv:2404.19756 (2024).
+- [2] Liu, Ziming, Pingchuan Ma, Yixuan Wang, Wojciech Matusik, and Max Tegmark. "KAN 2.0: Kolmogorov-Arnold Networks Meet Science." arXiv preprint arXiv:2408.10205 (2024).
+- [3] Bodner, Alexander Dylan, Antonio Santiago Tepsich, Jack Natan Spolski, and Santiago Pourteau. "Convolutional Kolmogorov-Arnold Networks." arXiv preprint arXiv:2406.13155 (2024).
+- [4] SS, Sidharth, Keerthana AR, and Anas KP. "Chebyshev Polynomial-based Kolmogorov-Arnold Networks: An Efficient Architecture for Nonlinear Function Approximation." arXiv preprint arXiv:2405.07200 (2024).
+- [5] Seydi, Seyd Teymoor. "Exploring the Potential of Polynomial Basis Functions in Kolmogorov-Arnold Networks: A Comparative Study of Different Groups of Polynomials." arXiv preprint arXiv:2406.02583 (2024).
+- [6] Drokin, Ivan. "Kolmogorov-Arnold Convolutions: Design Principles and Empirical Studies." arXiv preprint arXiv:2407.01092 (2024).
