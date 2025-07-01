@@ -9,7 +9,7 @@
 
 ## ⏳ Project Status: Under Development
 ### Updates
-- [2025/06/22] FUNKAN: Coming soon...
+- 🔧 [2025/06/22] FUNKAN: Coming soon...
 - ✅ [2025/05/12] **Paper published!** MBA-KAN: Adaptive Method for Selecting Basis Functions in Kolmogorov–Arnold Networks for Magnetic Resonance Image Enhancement, *Programming and Computer Software*
 - ✅ [2025/01/17] **Conference paper published!** *9th International Conference on Biomedical Imaging, Signal Processing:* Kolmogorov-Arnold Networks as Deep Feature Extractors for MRI Reconstruction
 - ✅ [2024/11/20] **Poster session!** *1st International School-Conference on Tensor Methods in Mathematics and Artificial Intelligence:* Fourier Neural Networks and Kolmogorov-Arnold Neural Networks for MRI Reconstruction
