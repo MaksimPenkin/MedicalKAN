@@ -1,0 +1,11 @@
+class_name: FileDataset
+config:
+  sampler:
+    class_name: CSVSampler
+    config:
+      filename: ${WORKBENCH}/data_lists/BUSI/train.csv
+
+  transform: !include "./transform.yaml"
+
+  root: ${DATASETS}/BUSI
+  load_func: src.utils.img_utils.read_img

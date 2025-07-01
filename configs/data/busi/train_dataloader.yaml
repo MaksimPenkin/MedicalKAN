@@ -1,0 +1,6 @@
+class_name: from_dataset
+config:
+  dataset: !include "./datasets/train.yaml"
+  batch_size: 8
+  shuffle: true
+  pin_memory: true
