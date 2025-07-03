@@ -9,3 +9,8 @@ config:
 
   root: ${DATASETS}/BUSI
   load_func: src.utils.img_utils.read_img
+  load_params:
+  - normalize: 255.
+    dtype: float32
+  - normalize: 255.
+    dtype: float32
