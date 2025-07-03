@@ -1,0 +1,4 @@
+module: torch.nn
+class_name: BCEWithLogitsLoss
+config:
+  reduction: "mean"
