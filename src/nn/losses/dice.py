@@ -20,9 +20,9 @@ class DiceWithLogits(nn.Module):
             c_inp = inputs[:, i].view(inputs.shape[0], -1)
             c_tgt = targets[:, i].view(inputs.shape[0], -1)
 
-            intersection = torch.sum(c_inp * c_tgt, dim=1)
-            dice += (2. * intersection + self.smooth) / (c_inp.sum(dim=1) + c_tgt.sum(dim=1) + self.smooth)
-        dice = torch.mean(dice) / float(inputs.shape[1])
+            intersection = torch.sum(c_inp * c_tgt, dim=-1)
+            dice += (2. * intersection + self.smooth) / (c_inp.sum(dim=-1) + c_tgt.sum(dim=-1) + self.smooth)
+        dice = torch.mean(dice) / inputs.shape[1]
         return dice
 
     def forward(self, inputs, targets):
