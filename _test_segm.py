@@ -5,8 +5,8 @@
 import argparse
 from argparse import RawTextHelpFormatter
 
-from torch.nn import functional as F
 import numpy as np
+from torch.nn import functional as F
 from src import models, data
 from src.utils.serialization_utils import load_config
 

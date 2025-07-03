@@ -7,7 +7,6 @@ from argparse import RawTextHelpFormatter
 
 import numpy as np
 import tensorflow as tf
-import lightning
 from src import models, data
 from src.utils.serialization_utils import load_config
 
@@ -20,16 +19,12 @@ def get_args():
 
     parser.add_argument("--config", type=str, required=True, help="path to experiment configuration file (*.yaml).", metavar="")
     parser.add_argument("--limit_val_batches", type=float, default=1.0, help="how much of validation dataset to use (default: 1.0).", metavar="")
-    parser.add_argument("--seed", type=int, help="if specified, sets the seed for pseudo-random number generators.", metavar="")
 
     return parser.parse_args()
 
 
 def main(args):
     # 1. Setup.
-    if args.seed is not None:
-        lightning.seed_everything(args.seed, workers=True)
-
     cfg = load_config(args.config)
 
     # 2.1 Construct model.
@@ -41,8 +36,9 @@ def main(args):
     model = model._model
     model.eval()
     model.to("cuda")
-    psnr_list = []
-    tv_list = []
+
+    metrics_list = {'psnr': [], 'tv': []}
+
     for batch in tqdm(val_loader):
         x, y = batch
         y_pred = model(x.to("cuda"))
@@ -56,11 +52,11 @@ def main(args):
         psnr = peak_signal_noise_ratio(y, y_pred, data_range=1.0)
         tv = tf.image.total_variation(tf.convert_to_tensor(y_pred[None, ..., None]))
 
-        psnr_list.append(psnr)
-        tv_list.append(tv)
+        metrics_list['psnr'].append(psnr)
+        metrics_list['tv'].append(tv)
 
-    print("Avg. PSNR: {0:.4f}".format(np.array(psnr_list).mean()))
-    print("Avg. TV: {0:.2f}".format(np.array(tv_list).mean()))
+    for k, v in metrics_list.items():
+        print(f"Avg. {k}: {np.mean(v):.4f}")
 
 
 if __name__ == "__main__":
