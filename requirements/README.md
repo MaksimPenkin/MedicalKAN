@@ -5,6 +5,7 @@
 | `cudnn`                | `9`              |
 | `python`               | `3.12.3`         |
 | `numpy`                | `2.1.2`          |
+| `MedPy`                | `0.5.2`          |
 | `torch`                | `2.5.0`          |
 | `torchaudio`           | `2.5.0`          |
 | `torchmetrics`         | `1.7.0`          |
