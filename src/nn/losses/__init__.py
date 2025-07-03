@@ -23,37 +23,22 @@ def get(identifier, **kwargs):
     raise ValueError(f"Could not interpret loss instance: {obj}.")
 
 
-class WeightedLoss(nn.Module):
-
-    @property
-    def weight(self):
-        return self._weight
-
-    def __init__(self, loss):
-        super(WeightedLoss, self).__init__()
-
-        self.loss = get(loss)
-
-    def forward(self, *args, **kwargs):
-        return self.weight * self.loss(*args, **kwargs)
-
-
 class CompositeLoss(nn.Module):
 
     def __init__(self, losses=None):
         super(CompositeLoss, self).__init__()
 
         if losses:
-            self.losses = {l_name: get(l_cfg) for l_name, l_cfg in losses}
+            self.losses = {l_name: (float(l_w), get(l_cfg)) for l_name, l_w, l_cfg in losses}
         else:
             self.losses = {}
 
     def forward(self, *args, **kwargs):
         total_loss = 0.0
         logs = {}
-        for loss_name, loss_fn in self.losses.items():
+        for loss_name, (loss_weight, loss_fn) in self.losses.items():
             v = loss_fn(*args, **kwargs)
-            total_loss += v
+            total_loss += loss_weight * v
             logs[loss_name] = v
         logs["loss"] = total_loss
 
