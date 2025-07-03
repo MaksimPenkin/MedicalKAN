@@ -57,13 +57,13 @@ def read_img(read_path, dtype=None, shape=None, normalize=None, **kwargs):
         raise ValueError(f"Unrecognized filename extension found: {read_path}. Only `.png`, `.jpeg`, `.jpg`, `.raw`, `.bin` or `.mat` are supported.")
 
     # Process.
-    if dtype is not None:
-        assert img.dtype == np.dtype(dtype), f"`dtype` mismatch: `{img.dtype}` != `{dtype}`."
     if shape is not None:
         if all(shape):  # Do not assert, if shape is only partly known, e.g. [None, None, 3].
             assert img.shape == tuple(shape), f"`shape` mismatch: `{img.shape}` != `{shape}`."
     if normalize is not None:
         img = img / float(normalize)
+    if dtype is not None:
+        img = img.astype(np.dtype(dtype))
 
     return img
 
