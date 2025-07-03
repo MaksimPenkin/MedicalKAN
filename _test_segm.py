@@ -75,8 +75,8 @@ def main(args):
         for k in m:
             metrics_list[k].append(m[k])
 
-    for k in metrics_list:
-        print(f"{k}: {np.mean(metrics_list[k]):.2f}")
+    for k, v in metrics_list.items():
+        print(f"Avg. {k}: {np.mean(v):.4f}")
 
 
 if __name__ == "__main__":
