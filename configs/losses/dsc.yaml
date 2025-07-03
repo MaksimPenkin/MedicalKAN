@@ -1,0 +1,4 @@
+module: src.nn.losses
+class_name: DiceWithLogitsLoss
+config:
+  smooth: 1.0
