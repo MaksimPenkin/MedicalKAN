@@ -7,4 +7,4 @@ config:
   logger: !include "../loggers/tensorboard.yaml"
   callbacks:
   - !include "../callbacks/modelcheckpoint.yaml"
-  max_epochs: 100
+  max_epochs: 1000
