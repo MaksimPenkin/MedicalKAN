@@ -109,7 +109,7 @@ class ResBlock(nn.Module):
         elif layer == "conv7x7":
             return conv7x7
         else:
-            raise ValueError(f"Unrecognized layer found: {layer}.")
+            raise ValueError(f"Unrecognized `layer` found: {layer}.")
 
     def forward(self, x):
         identity = x

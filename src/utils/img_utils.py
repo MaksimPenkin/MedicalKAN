@@ -16,7 +16,7 @@ def _as_hwc(img):
     if img.ndim == 2:
         img = img[..., np.newaxis]
     elif img.ndim != 3:
-        raise ValueError(f"Expected 2 or 3 dimensional image, found ndim: {img.ndim}.")
+        raise ValueError(f"Expected 2 or 3 dimensional image, found `ndim`: {img.ndim}.")
     return img
 
 

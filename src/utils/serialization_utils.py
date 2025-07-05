@@ -145,4 +145,4 @@ def create_func(identifier):
     if callable(func):
         return func
     else:
-        raise ValueError(f"Expected callable output, found: {func} of type {type(func)}.")
+        raise ValueError(f"Expected callable `func`, found: {func} of type {type(func)}.")
