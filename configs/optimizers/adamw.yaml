@@ -1,4 +1,5 @@
 module: torch.optim
-class_name: Adam
+class_name: AdamW
 config:
   lr: 0.0001
+  weight_decay: 0.01
