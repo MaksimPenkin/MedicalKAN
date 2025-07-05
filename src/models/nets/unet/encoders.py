@@ -3,21 +3,7 @@
 # """
 
 from torch import nn
-from ..layers import conv3x3, ResBlock
-
-
-class ResidualEncoderBlock(nn.Module):
-
-    def __init__(self, in_ch, out_ch, **kwargs):
-        super(ResidualEncoderBlock, self).__init__()
-
-        self.feat = ResBlock(in_ch, **kwargs)
-        self.down = conv3x3(in_ch, out_ch, stride=2)
-
-    def forward(self, x):
-        feat = self.feat(x)
-        x = self.down(feat)
-        return x, feat
+from ..layers import ResidualEncoderBlock
 
 
 class ResidualEncoder(nn.Module):

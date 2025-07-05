@@ -118,3 +118,34 @@ class ResBlock(nn.Module):
         x = self.block2(x)
 
         return self.shortcut(identity) + x
+
+
+class ResidualEncoderBlock(nn.Module):
+
+    def __init__(self, in_ch, out_ch, **kwargs):
+        super(ResidualEncoderBlock, self).__init__()
+
+        self.feat = ResBlock(in_ch, **kwargs)
+        self.down = conv3x3(in_ch, out_ch, stride=2)
+
+    def forward(self, x):
+        feat = self.feat(x)
+        x = self.down(feat)
+        return x, feat
+
+
+class ResidualDecoderBlock(nn.Module):
+
+    def __init__(self, in_ch, out_ch, **kwargs):
+        super(ResidualDecoderBlock, self).__init__()
+
+        self.up = nn.Sequential(
+            nn.Upsample(scale_factor=2, mode="bilinear", align_corners=True),
+            conv3x3(in_ch, out_ch)
+        )
+        self.feat = ResBlock(out_ch, **kwargs)
+
+    def forward(self, x, skip):
+        x = self.up(x) + skip
+        x = self.feat(x)
+        return x
