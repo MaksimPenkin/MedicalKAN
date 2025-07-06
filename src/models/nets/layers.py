@@ -46,6 +46,24 @@ def activate(activation=None):
         raise NotImplementedError(f"Unrecognized `activation` found: {activation}.")
 
 
+def _make_layer(layer, *args, **kwargs):
+    if layer is None:
+        return conv3x3(*args, **kwargs)
+
+    if layer == "conv1x1":
+        return conv1x1(*args, **kwargs)
+    elif layer == "conv3x3":
+        return conv3x3(*args, **kwargs)
+    elif layer == "conv5x5":
+        return conv5x5(*args, **kwargs)
+    elif layer == "conv7x7":
+        return conv7x7(*args, **kwargs)
+    elif layer == "fc":
+        return fc(*args, **kwargs)
+    else:
+        raise ValueError(f"Unrecognized `layer` found: {layer}.")
+
+
 class ResBlock(nn.Module):
     """Pre-activated residual block.
 
@@ -62,7 +80,7 @@ class ResBlock(nn.Module):
         layer: Layer to be used. Either nn.Module, or string (e.g. "conv3x3").
     """
 
-    def __init__(self, in_ch, out_ch=None, hid_ch=None, bn=False, layer=None, **kwargs):
+    def __init__(self, in_ch, out_ch=None, hid_ch=None, bn=False, layer="conv3x3", **kwargs):
         super(ResBlock, self).__init__()
 
         if out_ch is None:
@@ -70,46 +88,25 @@ class ResBlock(nn.Module):
         if hid_ch is None:
             hid_ch = min(in_ch, out_ch)
 
-        layer = self._make_layer(layer)
-
         self.block1 = nn.Sequential(
             nn.BatchNorm2d(in_ch) if bn else nn.Identity(),
             nn.ReLU(),
-            layer(in_ch, hid_ch, **kwargs)
+            _make_layer(layer, in_ch, hid_ch, **kwargs)
         )
 
         self.block2 = nn.Sequential(
             nn.BatchNorm2d(hid_ch) if bn else nn.Identity(),
             nn.ReLU(),
-            layer(hid_ch, out_ch, **kwargs)
+            _make_layer(layer, hid_ch, out_ch, **kwargs)
         )
 
         if in_ch != out_ch:
             self.shortcut = nn.Sequential(
                 nn.BatchNorm2d(in_ch) if bn else nn.Identity(),
-                layer(in_ch, out_ch, bias=False, **kwargs)
+                _make_layer(layer, in_ch, out_ch, bias=False, **kwargs)
             )
         else:
             self.shortcut = nn.Identity()
-
-    def _make_layer(self, layer):
-        if layer is None:
-            return conv3x3
-
-        if callable(layer):
-            return layer
-        if layer == "fc":
-            return fc
-        elif layer == "conv1x1":
-            return conv1x1
-        elif layer == "conv3x3":
-            return conv3x3
-        elif layer == "conv5x5":
-            return conv5x5
-        elif layer == "conv7x7":
-            return conv7x7
-        else:
-            raise ValueError(f"Unrecognized `layer` found: {layer}.")
 
     def forward(self, x):
         identity = x
@@ -120,6 +117,23 @@ class ResBlock(nn.Module):
         return self.shortcut(identity) + x
 
 
+class ConvBlock(nn.Module):
+
+    def __init__(self, in_ch, out_ch, bn=False, layer="conv3x3", activation="relu", **kwargs):
+        super(ConvBlock, self).__init__()
+
+        self.bn = nn.BatchNorm2d(in_ch) if bn else nn.Identity()
+        self.act = activate(activation)
+        self.conv = _make_layer(layer, in_ch, out_ch, **kwargs)
+
+    def forward(self, x, skip=None, return_feature=False):
+        feat = self.act(self.bn(x))
+        x = self.conv(feat)
+        if skip is not None:
+            x += skip
+        return x if not return_feature else (x, feat)
+
+
 class ResidualEncoderBlock(nn.Module):
 
     def __init__(self, in_ch, out_ch, **kwargs):
@@ -128,10 +142,10 @@ class ResidualEncoderBlock(nn.Module):
         self.feat = ResBlock(in_ch, **kwargs)
         self.down = conv3x3(in_ch, out_ch, stride=2)
 
-    def forward(self, x):
+    def forward(self, x, return_feature=False):
         feat = self.feat(x)
         x = self.down(feat)
-        return x, feat
+        return x if not return_feature else (x, feat)
 
 
 class ResidualDecoderBlock(nn.Module):
@@ -145,7 +159,9 @@ class ResidualDecoderBlock(nn.Module):
         )
         self.feat = ResBlock(out_ch, **kwargs)
 
-    def forward(self, x, skip):
-        x = self.up(x) + skip
+    def forward(self, x, skip=None):
+        x = self.up(x)
+        if skip is not None:
+            x += skip
         x = self.feat(x)
         return x
