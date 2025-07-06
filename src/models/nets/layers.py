@@ -118,9 +118,23 @@ class ResBlock(nn.Module):
 
 
 class ConvBlock(nn.Module):
+    """Pre-activated convolutional block.
 
-    def __init__(self, in_ch, out_ch, bn=False, layer="conv3x3", activation="relu", **kwargs):
+    The block activates inputs, applies convolution and adds skip connection if specified.
+
+    Args:
+        in_ch: Input feature dimension.
+        out_ch: Output feature dimension. If not specified, in_ch is used.
+        bn: If True, batch normalization is applied.
+        layer: Layer to be used. Either nn.Module, or string (e.g. "conv3x3").
+        activation: Activation to be used.
+    """
+
+    def __init__(self, in_ch, out_ch=None, bn=False, layer="conv3x3", activation="relu", **kwargs):
         super(ConvBlock, self).__init__()
+
+        if out_ch is None:
+            out_ch = in_ch
 
         self.bn = nn.BatchNorm2d(in_ch) if bn else nn.Identity()
         self.act = activate(activation)
@@ -135,9 +149,20 @@ class ConvBlock(nn.Module):
 
 
 class ResidualEncoderBlock(nn.Module):
+    """Residual encoder block.
 
-    def __init__(self, in_ch, out_ch, **kwargs):
+    The block generates features using ResBlock and encodes (projects) features to the output feature dimension via conv3x3 with stride 2.
+
+    Args:
+        in_ch: Input feature dimension.
+        out_ch: Output feature dimension. If not specified, in_ch is used.
+    """
+
+    def __init__(self, in_ch, out_ch=None, **kwargs):
         super(ResidualEncoderBlock, self).__init__()
+
+        if out_ch is None:
+            out_ch = in_ch
 
         self.feat = ResBlock(in_ch, **kwargs)
         self.down = conv3x3(in_ch, out_ch, stride=2)
@@ -149,9 +174,21 @@ class ResidualEncoderBlock(nn.Module):
 
 
 class ResidualDecoderBlock(nn.Module):
+    """Residual decoder block.
 
-    def __init__(self, in_ch, out_ch, **kwargs):
+    The block decodes features to the output feature dimension via bilinear upsample and conv3x3,
+    applies skip connection if specified and generates features by ResBlock.
+
+    Args:
+        in_ch: Input feature dimension.
+        out_ch: Output feature dimension. If not specified, in_ch is used.
+    """
+
+    def __init__(self, in_ch, out_ch=None, **kwargs):
         super(ResidualDecoderBlock, self).__init__()
+
+        if out_ch is None:
+            out_ch = in_ch
 
         self.up = nn.Sequential(
             nn.Upsample(scale_factor=2, mode="bilinear", align_corners=True),
