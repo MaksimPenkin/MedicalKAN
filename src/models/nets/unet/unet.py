@@ -41,7 +41,7 @@ class UNet(nn.Module):
         bottleneck_kwargs = bottleneck_kwargs or {}
         bottleneck_kwargs.update(kwargs)
         if bottleneck == "ResBlock":
-            self.bottleneck = ResBlock(enc_filters[-1], out_ch=enc_filters[-1], **bottleneck_kwargs)
+            self.bottleneck = ResBlock(enc_filters[-1], **bottleneck_kwargs)
         else:
             raise ValueError(f"Unrecognized bottleneck found: {bottleneck}.")
 
