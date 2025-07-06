@@ -117,7 +117,7 @@ class ResBlock(nn.Module):
 class ConvBlock(nn.Module):
     """Pre-activated convolutional block.
 
-    The block activates inputs, applies convolution and adds skip connection if specified.
+    The block activates inputs, applies convolution and adds skip connection, if specified.
 
     Args:
         in_ch: Input feature dimension.
@@ -148,7 +148,7 @@ class ConvBlock(nn.Module):
 class ResidualEncoderBlock(nn.Module):
     """Residual encoder block.
 
-    The block generates features using ResBlock and encodes (projects) features to the output feature dimension via conv3x3 with stride 2.
+    The block generates features by ResBlock and encodes (projects) features to the output feature dimension via conv3x3 with stride 2.
 
     Args:
         in_ch: Input feature dimension.
@@ -173,8 +173,8 @@ class ResidualEncoderBlock(nn.Module):
 class ResidualDecoderBlock(nn.Module):
     """Residual decoder block.
 
-    The block decodes features to the output feature dimension via bilinear upsample and conv3x3,
-    applies skip connection if specified and generates features by ResBlock.
+    The block decodes (up-projects) features to the output feature dimension via bilinear upsample and conv3x3,
+    applies skip connection, if specified, and generates features by ResBlock.
 
     Args:
         in_ch: Input feature dimension.
