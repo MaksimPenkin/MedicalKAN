@@ -47,9 +47,6 @@ def activate(activation=None):
 
 
 def _make_layer(layer, *args, **kwargs):
-    if layer is None:
-        return conv3x3(*args, **kwargs)
-
     if layer == "conv1x1":
         return conv1x1(*args, **kwargs)
     elif layer == "conv3x3":
@@ -70,14 +67,14 @@ class ResBlock(nn.Module):
     Pre-activation ResNet is a variant of the original Residual Network (ResNet) architecture
     that modifies the order of operations within the residual blocks to improve training and performance.
     Introduced by Kaiming He et al., this architecture aims to address the issues related to gradient flow
-    in deep networks by changing the placement of activation functions and Batch Normalization layers.
+    in deep networks by changing the placement of activation functions and batch normalization layers.
 
     Args:
         in_ch: Input feature dimension.
         out_ch: Output feature dimension. If not specified, in_ch is used.
         hid_ch: Hidden feature dimension. If not specified, min(in_ch, out_ch) is used.
         bn: If True, batch normalization is applied.
-        layer: Layer to be used. Either nn.Module, or string (e.g. "conv3x3").
+        layer: Layer to be used (deserialized by internal def _make_layer(...)).
     """
 
     def __init__(self, in_ch, out_ch=None, hid_ch=None, bn=False, layer="conv3x3", **kwargs):
@@ -126,8 +123,8 @@ class ConvBlock(nn.Module):
         in_ch: Input feature dimension.
         out_ch: Output feature dimension. If not specified, in_ch is used.
         bn: If True, batch normalization is applied.
-        layer: Layer to be used. Either nn.Module, or string (e.g. "conv3x3").
-        activation: Activation to be used.
+        layer: Layer to be used (deserialized by internal def _make_layer(...)).
+        activation: Activation to be used (deserialized by internal def activate(...)).
     """
 
     def __init__(self, in_ch, out_ch=None, bn=False, layer="conv3x3", activation="relu", **kwargs):
