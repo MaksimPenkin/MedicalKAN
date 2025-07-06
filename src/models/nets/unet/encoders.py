@@ -11,18 +11,12 @@ class ResidualEncoder(nn.Module):
     def __init__(self, filters, **kwargs):
         super(ResidualEncoder, self).__init__()
 
-        num_blocks = len(filters) - 1
-        assert num_blocks >= 1
-
-        self.blocks = nn.ModuleList([])
-        for i in range(num_blocks):
-            self.blocks.append(
-                ResidualEncoderBlock(filters[i], filters[i + 1], **kwargs)
-            )
+        assert len(filters) - 1 >= 1, "at least 2 filters are required"
+        self.blocks = nn.ModuleList([ResidualEncoderBlock(filters[i], filters[i + 1], **kwargs) for i in range(len(filters) - 1)])
 
     def forward(self, x):
         feats = []
         for block in self.blocks:
-            x, feat = block(x)
+            x, feat = block(x, return_feature=True)
             feats.append(feat)
         return x, feats
