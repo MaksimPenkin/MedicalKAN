@@ -1,4 +1,4 @@
-class_name: from_dataset
+class_name: ixi
 config:
   dataset: !include "./datasets/val.yaml"
   split: val
