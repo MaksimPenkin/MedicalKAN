@@ -5,8 +5,6 @@ config:
     config:
       filename: ${WORKBENCH}/data_lists/IXI_0_1/val.csv
 
-  transform: !include "./transform.yaml"
-
   root: ${DATASETS}/IXI_0_1/255
   load_func: src.utils.img_utils.read_img
   load_params:

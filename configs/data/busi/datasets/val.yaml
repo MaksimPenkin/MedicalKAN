@@ -5,8 +5,6 @@ config:
     config:
       filename: ${WORKBENCH}/data_lists/BUSI/val.csv
 
-  transform: !include "./transform.yaml"
-
   root: ${DATASETS}/BUSI
   load_func: src.utils.img_utils.read_img
   load_params:
