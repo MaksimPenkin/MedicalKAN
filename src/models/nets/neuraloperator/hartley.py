@@ -48,7 +48,7 @@ class HartleySpectralConv2d(nn.Module):
         factorization: str = 'dense',
         bias: bool = True,
         dtype: torch.dtype = torch.float,
-        activation=None,
+        activation="relu",
         **_,  # noqa: ANN003
     ) -> None:
         super().__init__()

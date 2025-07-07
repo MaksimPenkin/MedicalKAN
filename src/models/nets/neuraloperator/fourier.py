@@ -10,7 +10,7 @@ from ..layers import activate
 
 class FourierSpectralConv2d(nn.Module):
 
-    def __init__(self, in_channels, out_channels, n_modes=(16, 16), activation=None):
+    def __init__(self, in_channels, out_channels, n_modes=(16, 16), activation="relu"):
         super(FourierSpectralConv2d, self).__init__()
 
         self.in_channels = in_channels
