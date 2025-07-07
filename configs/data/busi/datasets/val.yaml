@@ -1,6 +1,8 @@
+module: src.data.datasets
 class_name: FileDataset
 config:
   sampler:
+    module: src.data.samplers
     class_name: CSVSampler
     config:
       filename: ${WORKBENCH}/data_lists/BUSI/val.csv
