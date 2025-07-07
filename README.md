@@ -50,6 +50,7 @@ You may find requirements
 > cd ~
 > git clone https://github.com/MaksimPenkin/MedicalKAN.git
 > cd MedicalKAN
+> export ALBUMENTATIONS_NO_TELEMETRY=1
 > export WORKBENCH=<...>
 > export DATASETS=<...>
 > python3 train.py --help
