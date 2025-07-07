@@ -31,7 +31,7 @@ def _make_backbone(layer, *args, **kwargs):
 
 class NeuralOperator(nn.Module):
 
-    def __init__(self, in_ch, out_ch=None, filters=(16, 32), backbone="fourier2d", depth=3, lifting=None, projection=None, skip=False, **kwargs):
+    def __init__(self, in_ch, out_ch=None, filters=(16, 32), backbone="fourier2d", lifting=None, projection=None, depth=3, skip=False, **kwargs):
         super(NeuralOperator, self).__init__()
 
         if out_ch is None:
@@ -52,13 +52,14 @@ class NeuralOperator(nn.Module):
         self.backbone = nn.ModuleList([_make_backbone(backbone, filters[-1], filters[-1], **kwargs) for _ in range(depth)])
 
         # 3. Projection.
+        filters = filters[::-1]  # Reverse the order.
         if projection == "u-dec":
-            self.projection = nn.ModuleList([ResidualDecoderBlock(filters[i], filters[i - 1]) for i in range(len(filters) - 1, 0, -1)])
+            self.projection = nn.ModuleList([ResidualDecoderBlock(filters[i], filters[i + 1]) for i in range(len(filters) - 1)])
         else:
-            self.projection = nn.ModuleList([ConvBlock(filters[i], filters[i - 1], layer="conv1x1") for i in range(len(filters) - 1, 0, -1)])
+            self.projection = nn.ModuleList([ConvBlock(filters[i], filters[i + 1], layer="conv1x1") for i in range(len(filters) - 1)])
 
         # Restoration.
-        self.restoration = conv1x1(filters[0], out_ch)
+        self.restoration = conv1x1(filters[-1], out_ch)
 
     def forward(self, x):
         # Embedding.
