@@ -52,7 +52,7 @@ class FUNKAN(nn.Module):
         # Learnable Kolmogorov-Arnold functions on a grid HxW.
         # TODO: 145x145 is a hard-coded constant here, however, the K-A functions are learnt on any grid by functional construction (dot-product),
         #       so the implementation should be refactored a little bit. But it's ok for experiments.
-        self.phi = nn.Parameter(torch.empty(in_channels, 145, 145))
+        self.phi = nn.Parameter(torch.empty(in_channels, 145, 145))  # 32 32
         nn.init.orthogonal_(self.phi)
         # Basis functions.
         self.psi = Hermite2d(in_channels, **kwargs)
