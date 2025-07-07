@@ -16,11 +16,13 @@ def busi(dataset, split="val", **kwargs):
             A.RandomRotate90(p=0.5),
             A.Transpose(p=0.5),
             A.Rotate(p=0.5),
+            A.Normalize(max_pixel_value=255.),
             A.ToTensorV2(transpose_mask=True)
         ])
     elif split == "val":
         transform = A.Compose([
             A.Resize(256, 256),
+            A.Normalize(max_pixel_value=255.),
             A.ToTensorV2(transpose_mask=True)
         ])
     else:
