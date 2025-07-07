@@ -2,7 +2,7 @@
 # @author   Maksim Penkin
 # """
 
-from .totensor_transform import ToTensor
+from .img_transform import ToTensor
 
 from src.utils.serialization_utils import create_object
 
