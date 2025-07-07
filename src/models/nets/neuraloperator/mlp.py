@@ -8,7 +8,7 @@ from ..layers import activate
 
 class MLP(nn.Module):
 
-    def __init__(self, in_channels, out_channels, activation=None, **kwargs):
+    def __init__(self, in_channels, out_channels, activation="relu", **kwargs):
         super(MLP, self).__init__()
 
         self.in_channels = in_channels
