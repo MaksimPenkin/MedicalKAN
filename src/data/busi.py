@@ -18,11 +18,13 @@ def busi(dataset, split="val", **kwargs):
             A.Rotate(p=0.5),
             A.ToTensorV2()
         ])
-    else:
+    elif split == "val":
         transform = A.Compose([
             A.Resize(256, 256),
             A.ToTensorV2()
         ])
+    else:
+        raise ValueError(f"Unrecognized `split` found: {split}.")
 
     db = datasets.get(dataset, transform=transform)
     return DataLoader(db, **kwargs)
