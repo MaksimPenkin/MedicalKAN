@@ -41,4 +41,4 @@ class CSVSampler(SourceSampler):
         self._source = pd.read_csv(filename)
 
     def __getitem__(self, index):
-        return self.source.iloc[index].values.tolist()
+        return self.source.iloc[index].to_dict()
