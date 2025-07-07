@@ -31,5 +31,5 @@ class FileDataset(SamplerDataset):
     def __getitem__(self, index):
         sample = self._load(self.sampler[index])
         if self.transform:
-            sample = self.transform(sample)
+            sample = self.apply_transform(sample)
         return sample

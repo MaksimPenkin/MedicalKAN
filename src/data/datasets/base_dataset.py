@@ -2,8 +2,6 @@
 # @author   Maksim Penkin
 # """
 
-from .. import transforms
-
 from torch.utils.data import Dataset
 
 
@@ -13,10 +11,15 @@ class IDataset(Dataset):
         return self._transform
 
     def __init__(self, transform=None):
-        # The transforms must be designed to fit the dataset.
-        # As such, the dataset must output a sample compatible with the library transform functions,
-        # or transforms must be defined for the particular sample case.
-        self._transform = transforms.get(transform) if transform is not None else None
+        self._transform = transform
+
+    def apply_transform(self, x):
+        if isinstance(x, dict):
+            return self.transform(**x)
+        elif isinstance(x, (list, tuple)):
+            return self.transform(*x)
+        else:
+            return self.transform(x)
 
     def __len__(self):
         raise NotImplementedError("Must be implemented in subclasses.")
