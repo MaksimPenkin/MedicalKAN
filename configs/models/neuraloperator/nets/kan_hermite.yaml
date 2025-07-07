@@ -3,7 +3,9 @@ class_name: NeuralOperator
 config:
   in_ch: 1
   out_ch: 1
-  hid_ch: 32
+  filters: [16, 32]
   backbone: kan
+  depth: 3
+  skip: false
   poly: hermite
   degree: 5
