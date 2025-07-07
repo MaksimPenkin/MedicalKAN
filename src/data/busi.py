@@ -16,12 +16,12 @@ def busi(dataset, split="val", **kwargs):
             A.RandomRotate90(p=0.5),
             A.Transpose(p=0.5),
             A.Rotate(p=0.5),
-            A.ToTensorV2()
+            A.ToTensorV2(transpose_mask=True)
         ])
     elif split == "val":
         transform = A.Compose([
             A.Resize(256, 256),
-            A.ToTensorV2()
+            A.ToTensorV2(transpose_mask=True)
         ])
     else:
         raise ValueError(f"Unrecognized `split` found: {split}.")
