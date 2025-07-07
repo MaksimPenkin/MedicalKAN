@@ -8,3 +8,4 @@ config:
   depth: 3
   skip: false
   n_modes: [16, 16]
+  activation: relu
