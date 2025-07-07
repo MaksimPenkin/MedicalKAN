@@ -1,3 +1,4 @@
+module: src.data
 class_name: busi
 config:
   dataset: !include "./datasets/train.yaml"
