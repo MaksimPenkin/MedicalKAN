@@ -1,0 +1,12 @@
+module: src.models.nets
+class_name: NeuralOperator
+config:
+  in_ch: 3
+  out_ch: 1
+  filters: [128, 160, 256, 256]
+  lifting: u-enc
+  backbone: funkan
+  projection: u-dec
+  depth: 3
+  skip: true
+  r: 6
