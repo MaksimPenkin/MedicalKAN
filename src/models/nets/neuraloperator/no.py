@@ -11,7 +11,7 @@ from .mlp import MLP
 from .kan import KAN
 from .funkan import FUNKAN
 
-from ..layers import conv1x1, conv5x5, ConvBlock, ResidualEncoderBlock, ResidualDecoderBlock
+from ..layers import conv1x1, conv3x3, conv5x5, ConvBlock, ResidualEncoderBlock, ResidualDecoderBlock
 
 
 def _make_backbone(layer, *args, **kwargs):
@@ -40,7 +40,10 @@ class NeuralOperator(nn.Module):
         self.skip = bool(skip)
 
         # Embedding.
-        self.embedding = conv5x5(in_ch, filters[0])
+        if len(filters) <= 2:
+            self.embedding = conv5x5(in_ch, filters[0])
+        else:
+            self.embedding = conv3x3(in_ch, filters[0])
 
         # 1. Lifting.
         if lifting == "u-enc":
