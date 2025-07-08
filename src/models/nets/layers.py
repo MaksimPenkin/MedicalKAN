@@ -188,7 +188,7 @@ class ResidualDecoderBlock(nn.Module):
             out_ch = in_ch
 
         self.up = nn.Sequential(
-            nn.Upsample(scale_factor=2, mode="bilinear", align_corners=True),
+            nn.Upsample(scale_factor=2),
             conv3x3(in_ch, out_ch)
         )
         self.feat = ResBlock(out_ch, **kwargs)
