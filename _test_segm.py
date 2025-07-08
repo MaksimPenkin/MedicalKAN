@@ -65,7 +65,7 @@ def main(args):
                     'recall': [], "specificity": [], "precision": [], 'f1_score': []}
 
     for batch in tqdm(val_loader):
-        x, y = batch
+        x, y = batch["image"], batch["mask"]
         y_pred = F.sigmoid(model(x.to("cuda")))
 
         y = y.detach().cpu().numpy()

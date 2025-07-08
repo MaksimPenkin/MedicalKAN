@@ -40,7 +40,7 @@ def main(args):
     metrics_list = {'psnr': [], 'tv': []}
 
     for batch in tqdm(val_loader):
-        x, y = batch
+        x, y = batch["image"], batch["mask"]
         y_pred = model(x.to("cuda"))
 
         y_pred = np.clip(y_pred.detach().cpu().numpy(), 0., 1.)[0, 0]

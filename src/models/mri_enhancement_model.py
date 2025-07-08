@@ -10,7 +10,7 @@ class MRIEnhancementModel(CommonLitModel):
         super(MRIEnhancementModel, self).__init__(*args, **kwargs)
 
     def training_step(self, batch, batch_idx):
-        x, y = batch
+        x, y = batch["image"], batch["mask"]
         y_pred = self(x)
         loss, logs = self.compute_loss(y_pred, y)
         logs = {"train/" + k: v for k, v in logs.items()}
@@ -18,7 +18,7 @@ class MRIEnhancementModel(CommonLitModel):
         return loss
 
     def validation_step(self, batch, batch_idx):
-        x, y = batch
+        x, y = batch["image"], batch["mask"]
         y_pred = self(x)
         loss, logs = self.compute_loss(y_pred, y)
         logs = {"val/" + k: v for k, v in logs.items()}
