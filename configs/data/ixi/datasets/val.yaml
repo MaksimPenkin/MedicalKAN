@@ -14,5 +14,5 @@ config:
     shape: [145, 145]
     dtype: float32
   - key: "gt"
-    shape: [255, 255]
+    shape: [145, 145]
     dtype: float32

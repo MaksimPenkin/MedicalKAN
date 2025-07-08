@@ -59,7 +59,8 @@ def read_img(read_path, dtype=None, shape=None, normalize=None, **kwargs):
     # Process.
     if shape is not None:
         if all(shape):  # Do not assert, if shape is only partly known, e.g. [None, None, 3].
-            assert img.shape == tuple(shape), f"`shape` mismatch: `{img.shape}` != `{shape}`."
+            img = cv2.resize(img, shape, interpolation=cv2.INTER_LINEAR)
+            # assert img.shape == tuple(shape), f"`shape` mismatch: `{img.shape}` != `{shape}`."
     if normalize is not None:
         img = img / float(normalize)
     if dtype is not None:
