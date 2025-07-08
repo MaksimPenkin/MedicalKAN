@@ -11,7 +11,7 @@ config:
   load_func: src.utils.img_utils.read_img
   load_params:
   - key: "sketch"
-    shape: [255, 255]
+    shape: [145, 145]
     normalize: 255.
     dtype: float32
   - key: "gt"
