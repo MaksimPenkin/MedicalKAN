@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 
 def ixi(dataset, **kwargs):
     transform = A.Compose([
-        A.ToTensorV2()
+        A.ToTensorV2(transpose_mask=True)
     ])
 
     db = datasets.get(dataset, transform=transform)
