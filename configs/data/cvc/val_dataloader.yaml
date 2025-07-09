@@ -1,0 +1,8 @@
+module: src.data
+class_name: cvc
+config:
+  dataset: !include "./datasets/val.yaml"
+  split: val
+  batch_size: 1
+  shuffle: false
+  pin_memory: true

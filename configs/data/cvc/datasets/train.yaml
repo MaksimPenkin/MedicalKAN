@@ -1,0 +1,15 @@
+module: src.data.datasets
+class_name: FileDataset
+config:
+  sampler:
+    module: src.data.samplers
+    class_name: CSVSampler
+    config:
+      filename: ${WORKBENCH}/data_lists/CVC/train.csv
+
+  root: ${DATASETS}/CVC
+  load_func: src.utils.img_utils.read_img
+  load_params:
+  - dtype: uint8
+  - normalize: 255.
+    dtype: float32
