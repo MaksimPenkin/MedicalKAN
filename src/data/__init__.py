@@ -8,6 +8,7 @@ from .cifar import cifar10, cifar100
 from .imagenet import imagenet1k
 from .ixi import ixi
 from .busi import busi
+from .cvc import cvc
 
 from src.utils.serialization_utils import create_object
 
@@ -20,7 +21,8 @@ def get(identifier, **kwargs):
                             "cifar100": cifar100,
                             "imagenet1k": imagenet1k,
                             "ixi": ixi,
-                            "busi": busi},
+                            "busi": busi,
+                            "cvc": cvc},
                         **kwargs)
 
     if isinstance(obj, DataLoader):
