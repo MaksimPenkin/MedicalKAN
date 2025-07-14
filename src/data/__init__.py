@@ -9,6 +9,7 @@ from .imagenet import imagenet1k
 from .ixi import ixi
 from .busi import busi
 from .cvc import cvc
+from .glas import glas
 
 from src.utils.serialization_utils import create_object
 
@@ -22,7 +23,8 @@ def get(identifier, **kwargs):
                             "imagenet1k": imagenet1k,
                             "ixi": ixi,
                             "busi": busi,
-                            "cvc": cvc},
+                            "cvc": cvc,
+                            "glas": glas},
                         **kwargs)
 
     if isinstance(obj, DataLoader):
