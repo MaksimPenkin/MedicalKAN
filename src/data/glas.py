@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 def glas(dataset, split="val", **kwargs):
     if split == "train":
         transform = A.Compose([
-            A.Resize(256, 256),
+            A.Resize(512, 512),
             A.VerticalFlip(p=0.5),
             A.HorizontalFlip(p=0.5),
             A.RandomRotate90(p=0.5),
@@ -21,7 +21,7 @@ def glas(dataset, split="val", **kwargs):
         ])
     elif split == "val":
         transform = A.Compose([
-            A.Resize(256, 256),
+            A.Resize(512, 512),
             A.Normalize(max_pixel_value=255., normalization="min_max"),
             A.ToTensorV2(transpose_mask=True)
         ])
