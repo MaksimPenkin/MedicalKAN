@@ -1,5 +1,5 @@
 module: src.data
-class_name: cvc
+class_name: glas
 config:
   dataset: !include "./datasets/train.yaml"
   split: train
