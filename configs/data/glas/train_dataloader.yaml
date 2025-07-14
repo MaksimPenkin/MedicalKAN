@@ -1,0 +1,8 @@
+module: src.data
+class_name: cvc
+config:
+  dataset: !include "./datasets/train.yaml"
+  split: train
+  batch_size: 8
+  shuffle: true
+  pin_memory: true
