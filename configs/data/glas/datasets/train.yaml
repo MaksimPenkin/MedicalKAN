@@ -5,9 +5,9 @@ config:
     module: src.data.samplers
     class_name: CSVSampler
     config:
-      filename: ${WORKBENCH}/data_lists/CVC/train.csv
+      filename: ${WORKBENCH}/data_lists/glas/train.csv
 
-  root: ${DATASETS}/CVC
+  root: ${DATASETS}/glas
   load_func: src.utils.img_utils.read_img
   load_params:
   - dtype: uint8
