@@ -17,7 +17,7 @@
 
 ![alt text](./example.png)
 
-## 📌 Workspace
+## 📌 Workspacee
 ```
 └── $WORKBENCH
     ├── ckpts
