@@ -81,8 +81,6 @@ Big thank you for the awesome works!
 If you use this project in your research or wish to refer to the baseline results, please use the following BibTeX entry.
 
 ```python
-@abbr.: MBA-KAN
-
 @inproceedings{penkin2025kolmogorov,
   title={Adaptive Method for Selecting Basis Functions in Kolmogorov–Arnold Networks for Magnetic Resonance Image Enhancement},
   author={Penkin, Maksim and Krylov, Andrey},
