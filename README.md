@@ -8,7 +8,7 @@
 
 # FunKAN: Medical Image Processing using Kolmogorov-Arnold Networks
 
-## ⏳ Project Status:ss Finished
+## ⏳ Project Status: Finished
 ### Updates
 - ✅ [2025/08/01] **Paper submitted!** FunKAN: Functional Kolmogorov-Arnold Network for Medical Image Enhancement and Segmentation
 - ✅ [2025/05/12] **Paper published!** MBA-KAN: Adaptive Method for Selecting Basis Functions in Kolmogorov–Arnold Networks for Magnetic Resonance Image Enhancement, *Programming and Computer Software*
