@@ -81,6 +81,15 @@ Big thank you for the awesome works!
 If you use this project in your research or wish to refer to the baseline results, please use the following BibTeX entry.
 
 ```python
+@article{penkin2025funkan,
+  title={FunKAN: Functional Kolmogorov-Arnold Network for Medical Image Enhancement and Segmentation},
+  author={Penkin, Maksim and Krylov, Andrey},
+  journal={arXiv preprint arXiv:2509.13508},
+  year={2025}
+}
+```
+
+```python
 @inproceedings{penkin2025kolmogorov,
   title={Adaptive Method for Selecting Basis Functions in Kolmogorov–Arnold Networks for Magnetic Resonance Image Enhancement},
   author={Penkin, Maksim and Krylov, Andrey},
